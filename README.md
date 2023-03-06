@@ -6,3 +6,7 @@
 4. `adb pair ip:pair_port`
 5. Connect: `adb connect ip:port`
 6. `npx react-native run-android`
+
+# Tools
+
+- [Audio Player](https://react-native-track-player.js.org/docs/basics/platform-support)
