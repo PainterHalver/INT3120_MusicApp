@@ -20,6 +20,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import TrackPlayer, {State} from 'react-native-track-player';
+import type {Track} from 'react-native-track-player';
 
 import Hello from './screens/Hello';
 import NewApp from './screens/NewApp';
@@ -32,9 +34,32 @@ export type RootTabParamList = {
   Welcome: undefined;
 };
 
+const tracks: Track[] = [
+  {
+    id: 1,
+    url: require('./assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.mp3'),
+    title: 'Thang Tu La Loi Noi Doi Cua Em',
+  },
+];
+
 function App(): JSX.Element {
   useEffect(() => {
-    console.log('Hello World!');
+    const setUpTrackPlayer = async () => {
+      try {
+        // If TrackPlayer is already initialized, skip
+        if (!(await TrackPlayer.isServiceRunning())) {
+          await TrackPlayer.setupPlayer();
+        }
+        await TrackPlayer.reset();
+        await TrackPlayer.add(tracks);
+        console.log('Tracks: ', await TrackPlayer.getQueue());
+        TrackPlayer.play();
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    setUpTrackPlayer();
   }, []);
 
   return (
