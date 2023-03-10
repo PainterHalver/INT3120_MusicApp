@@ -1,11 +1,11 @@
 import {Button, StatusBar, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 
-import {RootStackParamList} from '../App';
+import {RootTabParamList} from '../App';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Hello'>;
+type Props = BottomTabScreenProps<RootTabParamList, 'Hello'>;
 
 const Hello = ({navigation}: Props) => {
   return (

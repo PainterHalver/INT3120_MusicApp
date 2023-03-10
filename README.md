@@ -10,3 +10,5 @@
 # Tools
 
 - [Audio Player](https://react-native-track-player.js.org/docs/basics/platform-support)
+- [React Navigation](https://reactnavigation.org/docs/getting-started)
+- [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons)

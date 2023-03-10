@@ -17,15 +17,17 @@ import {
   View,
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Hello from './screens/Hello';
 import NewApp from './screens/NewApp';
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
 // https://reactnavigation.org/docs/typescript/#type-checking-screens
-export type RootStackParamList = {
+export type RootTabParamList = {
   Hello: undefined;
   Welcome: undefined;
 };
@@ -37,20 +39,30 @@ function App(): JSX.Element {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
+      <Tab.Navigator>
+        <Tab.Screen
           name="Hello"
           component={Hello}
-          options={{title: 'Hello Screen', headerShown: false}}
+          options={{
+            title: 'Hello',
+            headerShown: false,
+            tabBarIcon: ({focused, color, size}) => (
+              <FontAwesomeIcon name="sun-o" size={size} color={color} />
+            ),
+          }}
         />
-        <Stack.Screen
+        <Tab.Screen
           name="Welcome"
           component={NewApp}
           options={{
-            title: 'Welcome Screen',
+            title: 'Welcome',
+            headerShown: false,
+            tabBarIcon: ({focused, color, size}) => (
+              <MaterialCommunityIcon name="new-box" size={size} color={color} />
+            ),
           }}
         />
-      </Stack.Navigator>
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
