@@ -17,6 +17,7 @@ const Player = () => {
   const [trackArtist, setTrackArtist] = useState<string>('');
 
   // Chỉnh metadata state khi track thay đổi
+  // FIXME: Hết track cuối có lỗi
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type === Event.PlaybackTrackChanged) {
       const track = await TrackPlayer.getTrack(event.nextTrack);
