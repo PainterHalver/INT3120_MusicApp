@@ -1,23 +1,30 @@
 import {Button, StatusBar, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
+
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {CompositeScreenProps} from '@react-navigation/native';
 
-import {RootTabParamList} from '../App';
+import {BottomTabParamList} from '../App';
+import {RootStackParamList} from '../App';
 
-type Props = BottomTabScreenProps<RootTabParamList, 'Hello'>;
+// Prop 1 là prop gần nhất, 2 là của parent
+type Props = CompositeScreenProps<
+  BottomTabScreenProps<BottomTabParamList, 'Hello'>,
+  NativeStackScreenProps<RootStackParamList>
+>;
 
 const Hello = ({navigation}: Props) => {
   return (
     <SafeAreaView style={styles.containerWrapper}>
-      <StatusBar barStyle={'default'} />
+      <StatusBar barStyle={'dark-content'} backgroundColor={'cyan'} />
       <View style={styles.container}>
         <Text>Hello</Text>
         <Button
-          title="NewApp Screen"
+          title="Open Player"
           onPress={() => {
-            console.log('Button pressed');
-            navigation.navigate('Welcome');
+            navigation.navigate('Player');
           }}
         />
       </View>

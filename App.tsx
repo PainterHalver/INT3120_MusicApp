@@ -16,8 +16,12 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  NavigatorScreenParams,
+} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import TrackPlayer, {State} from 'react-native-track-player';
@@ -25,18 +29,30 @@ import type {Track} from 'react-native-track-player';
 
 import Hello from './screens/Hello';
 import NewApp from './screens/NewApp';
+import Player from './screens/Player';
 
-const Tab = createBottomTabNavigator<RootTabParamList>();
+const BottomTab = createBottomTabNavigator<BottomTabParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 // https://reactnavigation.org/docs/typescript/#type-checking-screens
-export type RootTabParamList = {
+export type BottomTabParamList = {
   Hello: undefined;
   Welcome: undefined;
+};
+
+export type RootStackParamList = {
+  Home: NavigatorScreenParams<BottomTabParamList>;
+  Player: undefined;
 };
 
 const tracks: Track[] = [
   {
     id: 1,
+    url: require('./assets/Gnarls-Barkley-Crazy.mp3'),
+    title: 'Crazy',
+  },
+  {
+    id: 2,
     url: require('./assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.mp3'),
     title: 'Thang Tu La Loi Noi Doi Cua Em',
   },
@@ -62,10 +78,10 @@ function App(): JSX.Element {
     setUpTrackPlayer();
   }, []);
 
-  return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen
+  const Home = () => {
+    return (
+      <BottomTab.Navigator>
+        <BottomTab.Screen
           name="Hello"
           component={Hello}
           options={{
@@ -76,7 +92,7 @@ function App(): JSX.Element {
             ),
           }}
         />
-        <Tab.Screen
+        <BottomTab.Screen
           name="Welcome"
           component={NewApp}
           options={{
@@ -87,7 +103,20 @@ function App(): JSX.Element {
             ),
           }}
         />
-      </Tab.Navigator>
+      </BottomTab.Navigator>
+    );
+  };
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen name="Player" component={Player} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
