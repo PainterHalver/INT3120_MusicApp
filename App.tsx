@@ -24,7 +24,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import TrackPlayer, {State} from 'react-native-track-player';
+import TrackPlayer, {Capability} from 'react-native-track-player';
 import type {Track} from 'react-native-track-player';
 
 import Hello from './screens/Hello';
@@ -50,11 +50,13 @@ const tracks: Track[] = [
     id: 1,
     url: require('./assets/Gnarls-Barkley-Crazy.mp3'),
     title: 'Crazy',
+    artist: 'Gnarls Barkley',
   },
   {
     id: 2,
     url: require('./assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.mp3'),
     title: 'Thang Tu La Loi Noi Doi Cua Em',
+    artist: 'Ha Anh Tuan',
   },
 ];
 
@@ -65,11 +67,19 @@ function App(): JSX.Element {
         // If TrackPlayer is already initialized, skip
         if (!(await TrackPlayer.isServiceRunning())) {
           await TrackPlayer.setupPlayer();
+          await TrackPlayer.updateOptions({
+            capabilities: [
+              Capability.Play,
+              Capability.Pause,
+              Capability.SkipToNext,
+              Capability.SkipToPrevious,
+              Capability.Stop,
+            ],
+          });
         }
         await TrackPlayer.reset();
         await TrackPlayer.add(tracks);
-        console.log('Tracks: ', await TrackPlayer.getQueue());
-        TrackPlayer.play();
+        console.log(`Added ${tracks.length} tracks`);
       } catch (e) {
         console.log(e);
       }
@@ -115,7 +125,14 @@ function App(): JSX.Element {
           component={Home}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="Player" component={Player} />
+        <Stack.Screen
+          name="Player"
+          component={Player}
+          options={{
+            // headerShown: false,
+            animation: 'slide_from_bottom',
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
