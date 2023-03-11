@@ -3,7 +3,7 @@ import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {CompositeScreenProps} from '@react-navigation/native';
 
 import {BottomTabParamList} from '../App';
@@ -12,7 +12,7 @@ import {RootStackParamList} from '../App';
 // Prop 1 là prop gần nhất, 2 là của parent
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'Hello'>,
-  NativeStackScreenProps<RootStackParamList>
+  StackScreenProps<RootStackParamList>
 >;
 
 const Hello = ({navigation}: Props) => {

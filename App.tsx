@@ -21,7 +21,7 @@ import {
   NavigatorScreenParams,
 } from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import TrackPlayer, {Capability} from 'react-native-track-player';
@@ -30,9 +30,11 @@ import type {Track} from 'react-native-track-player';
 import Hello from './screens/Hello';
 import NewApp from './screens/NewApp';
 import Player from './screens/Player';
+import {TransitionSpec} from '@react-navigation/stack/lib/typescript/src/types';
+import {Easing} from 'react-native';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<RootStackParamList>();
 
 // https://reactnavigation.org/docs/typescript/#type-checking-screens
 export type BottomTabParamList = {
@@ -130,13 +132,21 @@ function App(): JSX.Element {
           component={Player}
           options={{
             // headerShown: false,
-            animation: 'slide_from_bottom',
+            ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
           }}
         />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
+const playerTransitionConfig: TransitionSpec = {
+  animation: 'timing',
+  config: {
+    duration: 1000,
+    easing: t => (t === 1.0 ? 1 : Math.pow(t, 2)),
+  },
+};
 
 const styles = StyleSheet.create({});
 
