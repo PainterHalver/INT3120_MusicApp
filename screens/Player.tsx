@@ -10,9 +10,11 @@ import TrackPlayer, {
   useProgress,
   useTrackPlayerEvents,
 } from 'react-native-track-player';
+import Slider from '@react-native-community/slider';
 
 const Player = () => {
   const playbackState = usePlaybackState();
+  const progress = useProgress();
   const [trackTitle, setTrackTitle] = useState<string>('');
   const [trackArtist, setTrackArtist] = useState<string>('');
 
@@ -78,6 +80,37 @@ const Player = () => {
         <Text style={{color: 'white', fontSize: 24}}>{trackTitle}</Text>
         <Text style={{color: 'white', fontSize: 16}}>{trackArtist}</Text>
       </View>
+      <View style={styles.progressContainer}>
+        <Text style={{color: '#fff'}}>
+          {Math.floor(progress.position / 60)
+            .toString()
+            .padStart(2, '0') +
+            ':' +
+            Math.floor(progress.position % 60)
+              .toString()
+              .padStart(2, '0')}
+        </Text>
+        <Slider
+          style={styles.slider}
+          minimumValue={0}
+          maximumValue={progress.duration}
+          value={progress.position}
+          minimumTrackTintColor="#FFFFFF"
+          maximumTrackTintColor="#000000"
+          onSlidingComplete={async value => {
+            await TrackPlayer.seekTo(value);
+          }}
+        />
+        <Text style={{color: '#fff'}}>
+          {Math.floor((progress.duration - progress.position) / 60)
+            .toString()
+            .padStart(2, '0') +
+            ':' +
+            Math.floor((progress.duration - progress.position) % 60)
+              .toString()
+              .padStart(2, '0')}
+        </Text>
+      </View>
       <View style={styles.controlContainer}>
         <TouchableOpacity onPress={skipToPrevious}>
           <MaterialIcon name="skip-previous" size={45} color="#ddd" />
@@ -111,6 +144,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'green',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  progressContainer: {
+    flex: 1,
+    backgroundColor: '#712722',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  slider: {
+    height: 40,
+    width: '70%',
   },
   controlContainer: {
     flex: 1,
