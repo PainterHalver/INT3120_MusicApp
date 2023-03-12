@@ -36,6 +36,6 @@ jobs:
       - name: Publish release APK
         uses: 'marvinpinto/action-automatic-releases@latest'
         with:
-          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          repo_token: '${{ secrets.GH_MY_TOKEN }}'
           prerelease: false
           files: app_release_${{github.ref_name}}.apk
