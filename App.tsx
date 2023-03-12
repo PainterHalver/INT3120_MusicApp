@@ -77,7 +77,9 @@ function App(): JSX.Element {
               Capability.SkipToPrevious,
               Capability.Stop,
             ],
+            progressUpdateEventInterval: 1,
           });
+          console.log('TrackPlayer is initialized');
         }
         await TrackPlayer.reset();
         await TrackPlayer.add(tracks);

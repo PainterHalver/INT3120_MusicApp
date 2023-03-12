@@ -12,7 +12,7 @@
 - [Audio Player](https://react-native-track-player.js.org/docs/basics/platform-support)
 - [React Navigation](https://reactnavigation.org/docs/getting-started)
 - [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons)
-- [react-native-slider](https://github.com/miblanchard/react-native-slider)
+- [slider](https://www.npmjs.com/package/@react-native-community/slider)
 
 # Apk
 

@@ -17,16 +17,25 @@ const Player = () => {
   const progress = useProgress();
   const [trackTitle, setTrackTitle] = useState<string>('');
   const [trackArtist, setTrackArtist] = useState<string>('');
+  const [sliderValue, setSliderValue] = useState<number>(0);
+  const [slidingSlider, setSlidingSlider] = useState<boolean>(false);
 
   // Chỉnh metadata state khi track thay đổi
   // FIXME: Hết track cuối có lỗi
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type === Event.PlaybackTrackChanged) {
       const track = await TrackPlayer.getTrack(event.nextTrack);
-      console.log(track);
       if (track) {
         setTrackTitle(track.title || '');
         setTrackArtist(track.artist || '');
+      }
+    }
+  });
+
+  useTrackPlayerEvents([Event.PlaybackProgressUpdated], async event => {
+    if (event.type === Event.PlaybackProgressUpdated) {
+      if (!slidingSlider) {
+        setSliderValue(event.position);
       }
     }
   });
@@ -82,11 +91,11 @@ const Player = () => {
       </View>
       <View style={styles.progressContainer}>
         <Text style={{color: '#fff'}}>
-          {Math.floor(progress.position / 60)
+          {Math.floor(sliderValue / 60)
             .toString()
             .padStart(2, '0') +
             ':' +
-            Math.floor(progress.position % 60)
+            Math.floor(sliderValue % 60)
               .toString()
               .padStart(2, '0')}
         </Text>
@@ -94,19 +103,24 @@ const Player = () => {
           style={styles.slider}
           minimumValue={0}
           maximumValue={progress.duration}
-          value={progress.position}
+          value={sliderValue}
           minimumTrackTintColor="#FFFFFF"
           maximumTrackTintColor="#000000"
           onSlidingComplete={async value => {
+            setSlidingSlider(false);
             await TrackPlayer.seekTo(value);
           }}
+          onValueChange={value => {
+            setSliderValue(value);
+          }}
+          onSlidingStart={() => setSlidingSlider(true)}
         />
         <Text style={{color: '#fff'}}>
-          {Math.floor((progress.duration - progress.position) / 60)
+          {Math.floor((progress.duration - sliderValue) / 60)
             .toString()
             .padStart(2, '0') +
             ':' +
-            Math.floor((progress.duration - progress.position) % 60)
+            Math.floor((progress.duration - sliderValue) % 60)
               .toString()
               .padStart(2, '0')}
         </Text>
