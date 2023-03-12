@@ -32,6 +32,7 @@ import NewApp from './screens/NewApp';
 import Player from './screens/Player';
 import {TransitionSpec} from '@react-navigation/stack/lib/typescript/src/types';
 import {Easing} from 'react-native';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -47,18 +48,21 @@ export type RootStackParamList = {
   Player: undefined;
 };
 
+// Cần artwork để hiện trong thông báo hoặc lock screen
 const tracks: Track[] = [
   {
     id: 1,
     url: require('./assets/Gnarls-Barkley-Crazy.mp3'),
     title: 'Crazy',
     artist: 'Gnarls Barkley',
+    artwork: require('./assets/Gnarls-Barkley-Crazy.jpg'),
   },
   {
     id: 2,
     url: require('./assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.mp3'),
     title: 'Thang Tu La Loi Noi Doi Cua Em',
     artist: 'Ha Anh Tuan',
+    artwork: require('./assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.jpg'),
   },
 ];
 
@@ -122,34 +126,27 @@ function App(): JSX.Element {
   };
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Player"
-          component={Player}
-          options={{
-            // headerShown: false,
-            ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Player"
+            component={Player}
+            options={{
+              headerShown: false,
+              // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
+              ...TransitionPresets.ModalSlideFromBottomIOS,
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
-
-const playerTransitionConfig: TransitionSpec = {
-  animation: 'timing',
-  config: {
-    duration: 1000,
-    easing: t => (t === 1.0 ? 1 : Math.pow(t, 2)),
-  },
-};
-
-const styles = StyleSheet.create({});
 
 export default App;

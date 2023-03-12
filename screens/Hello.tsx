@@ -1,5 +1,13 @@
-import {Button, StatusBar, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {
+  Button,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  ImageBackground,
+  Platform,
+} from 'react-native';
+import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
@@ -17,10 +25,14 @@ type Props = CompositeScreenProps<
 
 const Hello = ({navigation}: Props) => {
   return (
-    <SafeAreaView style={styles.containerWrapper}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={'cyan'} />
+    <View style={styles.containerWrapper}>
+      <StatusBar
+        translucent
+        barStyle={'dark-content'}
+        backgroundColor={'transparent'}
+        animated={true}
+      />
       <View style={styles.container}>
-        <Text>Hello</Text>
         <Button
           title="Open Player"
           onPress={() => {
@@ -28,7 +40,7 @@ const Hello = ({navigation}: Props) => {
           }}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -40,7 +52,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'cyan',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    // backgroundColor: 'cyan',
     justifyContent: 'center',
     alignItems: 'center',
   },

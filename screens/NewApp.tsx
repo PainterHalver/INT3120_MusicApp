@@ -26,6 +26,7 @@ function Section({children, title}: SectionProps): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <Text
         style={[
           styles.sectionTitle,
