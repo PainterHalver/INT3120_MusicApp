@@ -140,8 +140,12 @@ const Player = ({navigation}: Props) => {
             />
           </View>
           <View style={styles.metadataContainer}>
-            <Text style={{color: 'white', fontSize: 24}}>{trackTitle}</Text>
-            <Text style={{color: 'white', fontSize: 16}}>{trackArtist}</Text>
+            <Text style={{color: '#fff', fontSize: 24, fontWeight: '600'}}>
+              {trackTitle}
+            </Text>
+            <Text style={{color: '#ffffffaa', fontSize: 16}}>
+              {trackArtist}
+            </Text>
           </View>
           <View style={styles.progressContainer}>
             <Text style={{color: '#fff'}}>

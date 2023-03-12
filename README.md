@@ -13,7 +13,6 @@
 - [React Navigation](https://reactnavigation.org/docs/getting-started)
 - [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons)
 - [slider](https://www.npmjs.com/package/@react-native-community/slider)
-- [blurhash](https://github.com/mrousavy/react-native-blurhash)
 
 # Apk
 
