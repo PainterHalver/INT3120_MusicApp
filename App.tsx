@@ -75,7 +75,7 @@ function App(): JSX.Element {
       try {
         // If TrackPlayer is already initialized, skip
         if (!(await TrackPlayer.isServiceRunning())) {
-          await TrackPlayer.setupPlayer();
+          await TrackPlayer.setupPlayer({});
           await TrackPlayer.updateOptions({
             android: {
               appKilledPlaybackBehavior:
