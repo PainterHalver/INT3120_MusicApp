@@ -24,7 +24,10 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import TrackPlayer, {Capability} from 'react-native-track-player';
+import TrackPlayer, {
+  AppKilledPlaybackBehavior,
+  Capability,
+} from 'react-native-track-player';
 import type {Track} from 'react-native-track-player';
 
 import Hello from './screens/Hello';
@@ -74,12 +77,19 @@ function App(): JSX.Element {
         if (!(await TrackPlayer.isServiceRunning())) {
           await TrackPlayer.setupPlayer();
           await TrackPlayer.updateOptions({
+            android: {
+              appKilledPlaybackBehavior:
+                AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification,
+            },
             capabilities: [
               Capability.Play,
               Capability.Pause,
               Capability.SkipToNext,
               Capability.SkipToPrevious,
-              Capability.Stop,
+              // Capability.Stop,
+              Capability.SeekTo,
+              // Capability.JumpForward,
+              // Capability.JumpBackward,
             ],
             progressUpdateEventInterval: 1,
           });
