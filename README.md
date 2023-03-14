@@ -9,7 +9,7 @@
 
 # Tools
 
-- [Audio Player](https://react-native-track-player.js.org/docs/basics/platform-support)
+- [react-native-track-player nightly build](https://github.com/doublesymmetry/react-native-track-player)
 - [React Navigation](https://reactnavigation.org/docs/getting-started)
 - [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons)
 - [slider](https://www.npmjs.com/package/@react-native-community/slider)
@@ -18,3 +18,7 @@
 
 - Key alias: my-key-alias
 - Password: 123456
+
+## Note
+
+- react-native-track-player bản nightly mới chạy được RemoteSeek

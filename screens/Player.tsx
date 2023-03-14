@@ -37,9 +37,12 @@ const Player = ({navigation}: Props) => {
 
   // Chỉnh metadata state khi track thay đổi
   // FIXME: Hết track cuối có lỗi
-  useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
-    if (event.type === Event.PlaybackTrackChanged) {
-      const track = await TrackPlayer.getTrack(event.nextTrack);
+  useTrackPlayerEvents([Event.PlaybackActiveTrackChanged], async event => {
+    if (
+      event.type === Event.PlaybackActiveTrackChanged &&
+      event.index !== undefined
+    ) {
+      const track = await TrackPlayer.getTrack(event.index);
       if (track) {
         setTrackTitle(track.title || '');
         setTrackArtist(track.artist || '');
@@ -59,8 +62,8 @@ const Player = ({navigation}: Props) => {
   useEffect(() => {
     // Set metadata cho track hiện tại, lúc vào player có luôn tên track đầu
     (async () => {
-      const currentTrack = await TrackPlayer.getCurrentTrack();
-      if (currentTrack !== null) {
+      const currentTrack = await TrackPlayer.getActiveTrackIndex();
+      if (currentTrack !== null && currentTrack !== undefined) {
         const track = await TrackPlayer.getTrack(currentTrack);
         if (track) {
           setTrackTitle(track.title || '');
@@ -80,8 +83,8 @@ const Player = ({navigation}: Props) => {
   };
 
   const togglePlayback = async () => {
-    const state = await TrackPlayer.getState();
-    const currentTrack = await TrackPlayer.getCurrentTrack();
+    const state = (await TrackPlayer.getPlaybackState()).state;
+    const currentTrack = await TrackPlayer.getActiveTrackIndex();
     if (currentTrack !== null) {
       if (state === State.Playing) {
         pause();
@@ -167,7 +170,7 @@ const Player = ({navigation}: Props) => {
               maximumTrackTintColor="#ffffff"
               onSlidingComplete={async value => {
                 setSlidingSlider(false);
-                await TrackPlayer.seekTo(value);
+                await TrackPlayer.seekTo(value + 1); // +1 để để khớp với progress (đừng hỏi tại sao)
               }}
               onValueChange={value => {
                 setSliderValue(value);
@@ -191,7 +194,7 @@ const Player = ({navigation}: Props) => {
             <TouchableOpacity onPress={togglePlayback}>
               <AntDesignIcon
                 name={
-                  playbackState === State.Playing
+                  playbackState.state === State.Playing
                     ? 'pausecircleo'
                     : 'playcircleo'
                 }
