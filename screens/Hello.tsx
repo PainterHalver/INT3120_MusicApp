@@ -30,7 +30,7 @@ const Hello = ({navigation}: Props) => {
         translucent
         barStyle={'dark-content'}
         backgroundColor={'transparent'}
-        animated={true}
+        animated={false}
       />
       <View style={styles.container}>
         <Button

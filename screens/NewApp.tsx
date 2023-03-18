@@ -1,53 +1,19 @@
 import React from 'react';
-import type {PropsWithChildren} from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import {
   SafeAreaView,
   ScrollView,
   StatusBar,
-  StyleSheet,
-  Text,
   useColorScheme,
   View,
+  TextInput,
+  Text,
+  StyleSheet,
+  Image
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 const NewApp = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -55,6 +21,111 @@ const NewApp = () => {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  const BoxSearch = ()=> {
+    return (
+      <View style={{flexDirection:'row',alignItems:'center', gap:10, paddingVertical: 10}}>
+            <View style={{ borderWidth:1,borderRadius:50, justifyContent:'center',alignItems:'center', height: 30, width:30, }}>
+              <Icon name="user" size={20} color="black" style={{fontWeight: '200'}} />
+            </View>
+            <View style={{
+              paddingHorizontal: 5,borderWidth:1,
+              borderColor: 'black',borderRadius: 20,
+              flex:1, alignItems:'center',
+              flexDirection:'row'}}>
+              <Text style={{paddingRight:10}}><Icon name="search" size={20} color="black" style={{fontWeight: '200'}} /></Text>
+              <TextInput style={styles.inputSearch} placeholder="Tìm kiếm bài hát, nghệ sĩ" />
+              <Text style={{paddingRight:10}}><Icon name="microphone" size={20} color="blue" style={{fontWeight: '200'}} /></Text>
+            </View>
+            <View style={{ borderRadius:50, justifyContent:'center',alignItems:'center', height: 30, width:30, }}>
+              <Icon name="bell" size={20} color="black" style={{fontWeight: '200'}} />
+            </View>
+          </View>
+    )
+  }
+
+  const BannerHome = () => {
+    return (<View>
+      <View style={{justifyContent:'center', flexDirection:'row'}}>
+        <Image
+            source={require('./../assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.jpg')}
+            style={{justifyContent:'center', alignItems:'center'}}
+        />
+      </View>
+    </View>)
+  }
+
+  const ItemAlbum = () => {
+    return (
+        <View style={{flexDirection:'column'}}>
+                <Image
+                  source={require('./../assets/Gnarls-Barkley-Crazy.jpg')}
+                  style={{
+                    justifyContent:'center', alignItems:'center',
+                    height: 80, width:80, borderRadius:10}}
+                />
+                <Text>Ten Abulm</Text>
+        </View>
+    )
+  }
+
+  const ListenedRecently = () => {
+    return (
+      <View style={{flexDirection:'column', paddingTop: 15}}>
+            <View>
+              <Text style={{fontSize: 25, color: 'black'}}>Nghe gần đây</Text>
+            </View>
+            <View style={{flexDirection:'row', gap:20, paddingBottom: 10}}>
+              <ItemAlbum/>
+              <ItemAlbum/>
+              <ItemAlbum/>
+              <ItemAlbum/>
+            </View>
+      </View>
+    )
+  }
+
+  const SongBox = () => {
+    return (
+      <View style={{flexDirection: 'row', gap:10}}>
+        <View>
+          <Image
+              source={require('./../assets/Gnarls-Barkley-Crazy.jpg')}
+              style={{justifyContent:'center', alignItems:'center', height: 60,width:60}}
+          />
+        </View>
+        <View style={{flexDirection: 'column'}}>
+          <Text>Ten Bai Hat</Text>
+          <Text>Ca si</Text>
+          <Text>Ngay nao</Text>
+        </View>
+      </View>
+    )
+  }
+
+  const NewRelease = () => {
+    return (
+      <View style={{flexDirection:'column'}}>
+        <View>
+              <Text style={{fontSize: 25, color: 'black'}}>Moi pha hanh</Text>
+        </View>
+        <View style={{flexDirection:'row', gap: 10}}>
+          <Text style={[styles.chipButton,{backgroundColor: 'gray'}]}>
+              Tat ca
+          </Text>
+          <Text style={styles.chipButton}>Viet Nam</Text>
+          <Text style={styles.chipButton}>Quoc Te</Text>
+        </View>
+        <View style={{flexDirection: 'column', gap:10, paddingTop:10}}>
+          <SongBox/>
+          <SongBox/>
+          <SongBox/>
+          <SongBox/>
+
+        </View>
+      </View>
+    )
+  }
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -64,26 +135,15 @@ const NewApp = () => {
       />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
+        style={[backgroundStyle, {marginTop: 50}]}>
         <View
           style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
+            backgroundColor: isDarkMode ? Colors.black : Colors.white, paddingHorizontal:10,
           }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+          <BoxSearch/>
+          <BannerHome/>
+          <ListenedRecently/>
+          <NewRelease/>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -109,4 +169,14 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
+  inputSearch: {
+    flex:1,
+    lineHeight: 35,
+    textAlignVertical: 'center',
+    padding: 0
+  },
+  chipButton: {
+    borderRadius: 20, borderWidth:1,
+    paddingHorizontal:5, paddingVertical: 3
+  }
 });
