@@ -1,26 +1,50 @@
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, Button} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 type Props = {
-    description: string;
+    nameSong: string;
+    artistName:string;
+    date?:string;
     image: string;
     size:number;
+    select?:boolean;
 };
-const ItemSong = ({description,image, size}:Props) => {
+const ItemSong = (props:Props) => {
     return (
-      <View style={{flexDirection: 'column', width: size, marginHorizontal:5}}>
-        <Image
-        source={{uri:image}}
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: size,
-            width: size,
-            borderRadius: 10,
-          }}
-        />
-        <Text style={{overflow:'hidden'}}>{description}</Text>
+      <View style={{flexDirection: 'row', gap: 10,  justifyContent:'space-between',flex:1}}>
+        <View style={{flexDirection: 'row', gap: 10,  borderColor:'black'}}>
+            <View>
+                <Image
+                    source={{uri:props.image}}
+                    style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: props.size,
+                    width: props.size,
+                    borderRadius:10,
+                    borderColor: 'green',
+                    borderWidth:props.select?4:0,
+                    }}
+                />
+            </View>
+            <View style={{flexDirection: 'column'}}>
+                <Text>{props.nameSong}</Text>
+                <Text>{props.artistName}</Text>
+                {props.date?<Text>{props.date}</Text>:null}
+            </View>
+        </View>
+        <View style={{display:'flex',justifyContent:'center', paddingRight:10}}>
+            <Text>
+            <Icon
+            name="ellipsis-v"
+            size={20}
+            color="black"
+            style={{fontWeight: '200'}}
+          />
+          </Text>
+        </View>
       </View>
     );
   };
 
-
-export default ItemSong;
+  export default ItemSong;

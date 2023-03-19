@@ -1,4 +1,4 @@
-import ItemSong from './ItemSong';
+import ItemAlbum from './ItemAlbum';
 import {View, Text,ScrollView} from 'react-native';
 type Props = {
     name: string;
@@ -15,7 +15,7 @@ const ListItem = ({name,data}:Props) => {
         >
             {data&&data.length>0?data.map((item,index)=>{
                 return (
-                    <ItemSong description={item.description} image={item.image} size={120} key={index} />
+                    <ItemAlbum description={item.description} image={item.image} size={120} key={index} />
                 )
             }):null}
         </ScrollView>

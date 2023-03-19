@@ -1,6 +1,7 @@
 import React from 'react';
 import BoxSearch from '../src/Components/BoxSearch';
-import LineChart from '../src/Components/LineChart';
+import LineChartBox from '../src/Components/LineChartBox';
+import ItemSong from '../src/Components/ItemSong';
 import {
   SafeAreaView,
   ScrollView,
@@ -44,29 +45,6 @@ const NewApp = () => {
 
   ]
 
-  const SongBox = () => {
-    return (
-      <View style={{flexDirection: 'row', gap: 10}}>
-        <View>
-          <Image
-            source={require('./../assets/Gnarls-Barkley-Crazy.jpg')}
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: 60,
-              width: 60,
-            }}
-          />
-        </View>
-        <View style={{flexDirection: 'column'}}>
-          <Text>Ten Bai Hat</Text>
-          <Text>Ca si</Text>
-          <Text>Ngay nao</Text>
-        </View>
-      </View>
-    );
-  };
-
   const NewRelease = () => {
     return (
       <View style={{flexDirection: 'column'}}>
@@ -81,10 +59,10 @@ const NewApp = () => {
           <Text style={styles.chipButton}>Quoc Te</Text>
         </View>
         <View style={{flexDirection: 'column', gap: 10, paddingTop: 10}}>
-          <SongBox />
-          <SongBox />
-          <SongBox />
-          <SongBox />
+          <ItemSong nameSong='Ten bai hat' artistName='Ha Anh Tuan' image='https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0' size={60} date="Hom nay"/>
+          <ItemSong nameSong='Ten bai hat' artistName='Ha Anh Tuan' image='https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0' size={60} date="Hom nay"/>
+          <ItemSong nameSong='Ten bai hat' artistName='Ha Anh Tuan' image='https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0' size={60} date="Hom nay"/>
+          <ItemSong nameSong='Ten bai hat' artistName='Ha Anh Tuan' image='https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0' size={60} date="Hom nay"/>
         </View>
       </View>
     );
@@ -109,7 +87,7 @@ const NewApp = () => {
           <ListItem data={dataRelease} name={'Nghệ sĩ thịnh hành'}/>
           <NewRelease />
           <ListItem data={dataRelease} name={'Lựa chọn hôm nay'}/>
-          <LineChart/>
+          <LineChartBox/>
           <ListItem data={dataRelease} name={'Top 100'}/>
           <ListItem data={dataRelease} name={'Album hot >'}/>
         </View>
