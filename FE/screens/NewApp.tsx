@@ -1,6 +1,6 @@
 import React from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome';
-
+import BoxSearch from '../src/Components/BoxSearch';
+import LineChart from '../src/Components/LineChart';
 import {
   SafeAreaView,
   ScrollView,
@@ -14,87 +14,12 @@ import {
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import ListItem from '../src/Components/ListItem';
 
 const NewApp = () => {
   const isDarkMode = useColorScheme() === 'dark';
-
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  const BoxSearch = () => {
-    return (
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 10,
-          paddingVertical: 10,
-        }}>
-        <View
-          style={{
-            borderWidth: 1,
-            borderRadius: 50,
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: 30,
-            width: 30,
-          }}>
-          <Icon
-            name="user"
-            size={20}
-            color="black"
-            style={{fontWeight: '200'}}
-          />
-        </View>
-        <View
-          style={{
-            paddingHorizontal: 5,
-            borderWidth: 1,
-            borderColor: 'black',
-            borderRadius: 20,
-            flex: 1,
-            alignItems: 'center',
-            flexDirection: 'row',
-          }}>
-          <Text style={{paddingRight: 10}}>
-            <Icon
-              name="search"
-              size={20}
-              color="black"
-              style={{fontWeight: '200'}}
-            />
-          </Text>
-          <TextInput
-            style={styles.inputSearch}
-            placeholder="Tìm kiếm bài hát, nghệ sĩ"
-          />
-          <Text style={{paddingRight: 10}}>
-            <Icon
-              name="microphone"
-              size={20}
-              color="blue"
-              style={{fontWeight: '200'}}
-            />
-          </Text>
-        </View>
-        <View
-          style={{
-            borderRadius: 50,
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: 30,
-            width: 30,
-          }}>
-          <Icon
-            name="bell"
-            size={20}
-            color="black"
-            style={{fontWeight: '200'}}
-          />
-        </View>
-      </View>
-    );
   };
 
   const BannerHome = () => {
@@ -110,39 +35,14 @@ const NewApp = () => {
     );
   };
 
-  const ItemAlbum = () => {
-    return (
-      <View style={{flexDirection: 'column'}}>
-        <Image
-          source={require('./../assets/Gnarls-Barkley-Crazy.jpg')}
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: 80,
-            width: 80,
-            borderRadius: 10,
-          }}
-        />
-        <Text>Ten Abulm</Text>
-      </View>
-    );
-  };
+  const dataRelease = [
+    {description:'Ten album Hoa Minzy Duc Phuc Phuc du', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'},
+    {description:'Ten album', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'},
+    {description:'Ten album', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'},
+    {description:'Ten album', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'},
+    {description:'Ten album', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'}
 
-  const ListenedRecently = () => {
-    return (
-      <View style={{flexDirection: 'column', paddingTop: 15}}>
-        <View>
-          <Text style={{fontSize: 25, color: 'black'}}>Nghe gần đây</Text>
-        </View>
-        <View style={{flexDirection: 'row', gap: 20, paddingBottom: 10}}>
-          <ItemAlbum />
-          <ItemAlbum />
-          <ItemAlbum />
-          <ItemAlbum />
-        </View>
-      </View>
-    );
-  };
+  ]
 
   const SongBox = () => {
     return (
@@ -206,8 +106,12 @@ const NewApp = () => {
           }}>
           <BoxSearch />
           <BannerHome />
-          <ListenedRecently />
+          <ListItem data={dataRelease} name={'Nghệ sĩ thịnh hành'}/>
           <NewRelease />
+          <ListItem data={dataRelease} name={'Lựa chọn hôm nay'}/>
+          <LineChart/>
+          <ListItem data={dataRelease} name={'Top 100'}/>
+          <ListItem data={dataRelease} name={'Album hot >'}/>
         </View>
       </ScrollView>
     </SafeAreaView>
