@@ -16,4 +16,18 @@ router.get('/', async (req, res, next) => {
   })
 });
 
+router.get('/categories', async (req, res, next) => {
+  const data = await ZingMp3.getAllCategories();
+  res.json({
+    data: data,
+  })
+});
+
+router.get('/category/detail', async (req, res, next) => {
+  const data = await ZingMp3.getCategoryDetail('IWZ9Z0CA');
+  res.json({
+    data: data,
+  })
+});
+
 module.exports = router;

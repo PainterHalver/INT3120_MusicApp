@@ -36,6 +36,7 @@ import Player from './screens/Player';
 import {TransitionSpec} from '@react-navigation/stack/lib/typescript/src/types';
 import {Easing} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import PlaylistDetail from './screens/PlaylistDetail';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -49,6 +50,7 @@ export type BottomTabParamList = {
 export type RootStackParamList = {
   Home: NavigatorScreenParams<BottomTabParamList>;
   Player: undefined;
+  PlaylistDetail: undefined;
 };
 
 // Cần artwork để hiện trong thông báo hoặc lock screen
@@ -143,6 +145,15 @@ function App(): JSX.Element {
             name="Home"
             component={Home}
             options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="PlaylistDetail"
+            component={PlaylistDetail}
+            options={{
+              headerShown: false,
+              // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
+              ...TransitionPresets.ModalSlideFromBottomIOS,
+            }}
           />
           <Stack.Screen
             name="Player"

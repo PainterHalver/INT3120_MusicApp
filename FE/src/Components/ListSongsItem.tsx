@@ -1,24 +1,34 @@
-import React, {useEffect} from 'react';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {Text, View} from 'react-native';
-import {ZingMp3} from 'zingmp3-api-full-v2/dist';
+import {StyleSheet} from 'react-native';
 
 function ListSongsItem() {
-  const [data, setData] = useState();
-
-  useEffect(() => {
-    const getData = async () => {
-      const results = await ZingMp3.getDetailPlaylist('60B8U0OB');
-      setData(results);
-      console.log(results);
-    };
-    getData();
-  });
+  //const [data, setData] = useState();
   return (
-    <View>
-      <Text>{data}</Text>
+    <View style={styles.container}>
+      <Text>React Native</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    padding: 50,
+    backgroundColor: 'yellow',
+  },
+  title: {
+    marginTop: 16,
+    paddingVertical: 8,
+    borderWidth: 4,
+    borderColor: '#20232a',
+    borderRadius: 6,
+    backgroundColor: '#61dafb',
+    color: '#20232a',
+    textAlign: 'center',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+});
 
 export default ListSongsItem;
