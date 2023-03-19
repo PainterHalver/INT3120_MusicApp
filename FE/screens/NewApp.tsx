@@ -1,6 +1,6 @@
 import React from 'react';
 import BoxSearch from '../src/Components/BoxSearch';
-import LineChartBox from '../src/Components/LineChartBox';
+import LineChartBox from '../src/Screens/LineChartBox';
 import ItemSong from '../src/Components/ItemSong';
 import {
   SafeAreaView,
@@ -8,7 +8,6 @@ import {
   StatusBar,
   useColorScheme,
   View,
-  TextInput,
   Text,
   StyleSheet,
   Image,
@@ -37,13 +36,27 @@ const NewApp = () => {
   };
 
   const dataRelease = [
-    {description:'Ten album Hoa Minzy Duc Phuc Phuc du', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'},
-    {description:'Ten album', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'},
-    {description:'Ten album', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'},
-    {description:'Ten album', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'},
-    {description:'Ten album', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'}
-
-  ]
+    {
+      description: 'Ten album Hoa Minzy Duc Phuc Phuc du',
+      image: 'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg',
+    },
+    {
+      description: 'Ten album',
+      image: 'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg',
+    },
+    {
+      description: 'Ten album',
+      image: 'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg',
+    },
+    {
+      description: 'Ten album',
+      image: 'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg',
+    },
+    {
+      description: 'Ten album',
+      image: 'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg',
+    },
+  ];
 
   const NewRelease = () => {
     return (
@@ -59,10 +72,34 @@ const NewApp = () => {
           <Text style={styles.chipButton}>Quoc Te</Text>
         </View>
         <View style={{flexDirection: 'column', gap: 10, paddingTop: 10}}>
-          <ItemSong nameSong='Ten bai hat' artistName='Ha Anh Tuan' image='https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0' size={60} date="Hom nay"/>
-          <ItemSong nameSong='Ten bai hat' artistName='Ha Anh Tuan' image='https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0' size={60} date="Hom nay"/>
-          <ItemSong nameSong='Ten bai hat' artistName='Ha Anh Tuan' image='https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0' size={60} date="Hom nay"/>
-          <ItemSong nameSong='Ten bai hat' artistName='Ha Anh Tuan' image='https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0' size={60} date="Hom nay"/>
+          <ItemSong
+            nameSong="Ten bai hat"
+            artistName="Ha Anh Tuan"
+            image="https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0"
+            size={60}
+            date="Hom nay"
+          />
+          <ItemSong
+            nameSong="Ten bai hat"
+            artistName="Ha Anh Tuan"
+            image="https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0"
+            size={60}
+            date="Hom nay"
+          />
+          <ItemSong
+            nameSong="Ten bai hat"
+            artistName="Ha Anh Tuan"
+            image="https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0"
+            size={60}
+            date="Hom nay"
+          />
+          <ItemSong
+            nameSong="Ten bai hat"
+            artistName="Ha Anh Tuan"
+            image="https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0"
+            size={60}
+            date="Hom nay"
+          />
         </View>
       </View>
     );
@@ -84,12 +121,12 @@ const NewApp = () => {
           }}>
           <BoxSearch />
           <BannerHome />
-          <ListItem data={dataRelease} name={'Nghệ sĩ thịnh hành'}/>
+          <ListItem data={dataRelease} name={'Nghệ sĩ thịnh hành'} />
           <NewRelease />
-          <ListItem data={dataRelease} name={'Lựa chọn hôm nay'}/>
-          <LineChartBox/>
-          <ListItem data={dataRelease} name={'Top 100'}/>
-          <ListItem data={dataRelease} name={'Album hot >'}/>
+          <ListItem data={dataRelease} name={'Lựa chọn hôm nay'} />
+          <LineChartBox />
+          <ListItem data={dataRelease} name={'Top 100'} />
+          <ListItem data={dataRelease} name={'Album hot >'} />
         </View>
       </ScrollView>
     </SafeAreaView>
