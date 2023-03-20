@@ -42,7 +42,6 @@ import {RootStackParamList, tracks} from '../App';
 const {height, width} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
 
-// TODO: Tăng diện tích nút
 const Player = ({navigation}: Props) => {
   const playbackState = usePlaybackState();
   const isPlaying = playbackState.state === State.Playing;
@@ -216,6 +215,7 @@ const Player = ({navigation}: Props) => {
         <View style={styles.container}>
           <View style={[styles.heading]}>
             <TouchableOpacity
+              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
               onPress={() => {
                 navigation.goBack();
               }}>
@@ -225,7 +225,9 @@ const Player = ({navigation}: Props) => {
               <Text style={{color: '#ffffffaa', fontSize: 12}}>PHÁT TỪ</Text>
               <Text style={{color: '#fff', fontSize: 13}}>...</Text>
             </View>
-            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, 23)}>
+            <TouchableNativeFeedback
+              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+              background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, 23)}>
               <View>
                 <MaterialCommunityIcon name="dots-vertical" size={23} color="#fff" />
               </View>
@@ -241,6 +243,7 @@ const Player = ({navigation}: Props) => {
           </View>
           <View style={styles.metadataContainer}>
             <TouchableNativeFeedback
+              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}>
               <View>
                 <IonIcon name="share-social-outline" size={NORMAL_ICON_SIZE} color="#ffffffaa" />
@@ -255,6 +258,7 @@ const Player = ({navigation}: Props) => {
               </Text>
             </View>
             <TouchableNativeFeedback
+              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleFavorite}>
               <View>
@@ -309,6 +313,7 @@ const Player = ({navigation}: Props) => {
           </View>
           <View style={styles.controlContainer}>
             <TouchableNativeFeedback
+              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleShuffleMode}>
               <View>
@@ -321,6 +326,7 @@ const Player = ({navigation}: Props) => {
             </TouchableNativeFeedback>
             <View style={styles.playbackControl}>
               <TouchableNativeFeedback
+                hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
                 background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
                 onPress={skipToPrevious}>
                 <View>
@@ -328,6 +334,7 @@ const Player = ({navigation}: Props) => {
                 </View>
               </TouchableNativeFeedback>
               <TouchableNativeFeedback
+                hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
                 background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
                 onPress={togglePlayback}>
                 <View>
@@ -339,6 +346,7 @@ const Player = ({navigation}: Props) => {
                 </View>
               </TouchableNativeFeedback>
               <TouchableNativeFeedback
+                hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
                 background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
                 onPress={skipToNext}>
                 <View>
@@ -347,6 +355,7 @@ const Player = ({navigation}: Props) => {
               </TouchableNativeFeedback>
             </View>
             <TouchableNativeFeedback
+              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleRepeateMode}>
               <View>
