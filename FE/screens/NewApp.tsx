@@ -2,6 +2,7 @@ import React from 'react';
 import BoxSearch from '../src/Components/BoxSearch';
 import LineChartBox from '../src/Screens/LineChartBox';
 import ItemSong from '../src/Components/ItemSong';
+import Banner from '../src/Components/Banner';
 import {
   SafeAreaView,
   ScrollView,
@@ -20,19 +21,6 @@ const NewApp = () => {
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  const BannerHome = () => {
-    return (
-      <View>
-        <View style={{justifyContent: 'center', flexDirection: 'row'}}>
-          <Image
-            source={require('./../assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.jpg')}
-            style={{justifyContent: 'center', alignItems: 'center'}}
-          />
-        </View>
-      </View>
-    );
   };
 
   const dataRelease = [
@@ -55,6 +43,20 @@ const NewApp = () => {
     {
       description: 'Ten album',
       image: 'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg',
+    },
+  ];
+
+  const dataBanner = [
+    {
+      image: 'https://i.ytimg.com/vi/Sf9_daKZrnY/maxresdefault.jpg',
+    },
+    {
+      image:
+        'https://th.bing.com/th?id=OIF.kWsr%2bKuxY%2brRkg6tEeGWYQ&pid=ImgDet&rs=1',
+    },
+    {
+      image:
+        'https://th.bing.com/th/id/OIP.aif3Oh0GtBdSWyVzDYpC9AHaDt?w=321&h=175&c=7&r=0&o=5&pid=1.7',
     },
   ];
 
@@ -120,7 +122,7 @@ const NewApp = () => {
             paddingHorizontal: 10,
           }}>
           <BoxSearch />
-          <BannerHome />
+          <Banner data={dataBanner} />
           <ListItem data={dataRelease} name={'Nghệ sĩ thịnh hành'} />
           <NewRelease />
           <ListItem data={dataRelease} name={'Lựa chọn hôm nay'} />

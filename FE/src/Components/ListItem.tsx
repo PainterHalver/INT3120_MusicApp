@@ -10,7 +10,11 @@ const ListItem = ({name, data}: Props) => {
       <View>
         <Text style={{fontSize: 25, color: 'black'}}>{name}</Text>
       </View>
-      <ScrollView style={{paddingBottom: 10}} horizontal={true}>
+      <ScrollView
+        style={{paddingBottom: 10}}
+        horizontal={true}
+        disableScrollViewPanResponder={true}
+        showsHorizontalScrollIndicator={false}>
         {data && data.length > 0
           ? data.map((item, index) => {
               return (
