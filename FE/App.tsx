@@ -40,16 +40,23 @@ export type RootStackParamList = {
 };
 
 // Cần artwork để hiện trong thông báo hoặc lock screen
-const tracks: Track[] = [
+export const tracks: Track[] = [
   {
     id: 1,
+    url: require('./assets/Led_Zeppelin-Stairway_To_Heaven.mp3'),
+    title: 'Stairway To Heaven',
+    artist: 'Led Zeppelin',
+    artwork: require('./assets/Led_Zeppelin-Stairway_To_Heaven.png'),
+  },
+  {
+    id: 2,
     url: require('./assets/Gnarls-Barkley-Crazy.mp3'),
     title: 'Crazy',
     artist: 'Gnarls Barkley',
     artwork: require('./assets/Gnarls-Barkley-Crazy.jpg'),
   },
   {
-    id: 2,
+    id: 3,
     url: require('./assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.mp3'),
     title: 'Thang Tu La Loi Noi Doi Cua Em',
     artist: 'Ha Anh Tuan',

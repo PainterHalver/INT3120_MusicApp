@@ -14,6 +14,7 @@ import {
   TouchableNativeFeedback,
   Dimensions,
   Easing,
+  ToastAndroid,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {StatusBar, TouchableOpacity} from 'react-native';
@@ -25,6 +26,8 @@ import TrackPlayer, {
   usePlaybackState,
   useProgress,
   useTrackPlayerEvents,
+  RepeatMode,
+  Track,
 } from 'react-native-track-player';
 import Slider from '@react-native-community/slider';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -32,12 +35,14 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import {StackScreenProps} from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {RootStackParamList} from '../App';
+import {RootStackParamList, tracks} from '../App';
 
 const {height, width} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
 
+// TODO: Tăng diện tích nút
 const Player = ({navigation}: Props) => {
   const playbackState = usePlaybackState();
   const isPlaying = playbackState.state === State.Playing;
@@ -47,9 +52,11 @@ const Player = ({navigation}: Props) => {
   const [trackArtwork, setTrackArtwork] = useState<string | number>('');
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [slidingSlider, setSlidingSlider] = useState<boolean>(false);
+  const [repeatMode, setRepeatMode] = useState<RepeatMode>(RepeatMode.Off);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
 
   // Chỉnh metadata state khi track thay đổi
-  // FIXME: Hết track cuối có lỗi
   useTrackPlayerEvents([Event.PlaybackActiveTrackChanged], async event => {
     if (event.type === Event.PlaybackActiveTrackChanged && event.index !== undefined) {
       const track = await TrackPlayer.getTrack(event.index);
@@ -82,6 +89,17 @@ const Player = ({navigation}: Props) => {
         }
       }
     })();
+
+    // Set thông tin playback từ AsyncStorage
+    (async () => {
+      const isShuffleEnabled = await AsyncStorage.getItem('@shuffle_enabled');
+      setIsShuffleEnabled(isShuffleEnabled === 'true');
+      const repeatMode = await AsyncStorage.getItem('@repeat_mode');
+      if (repeatMode) {
+        setRepeatMode(parseInt(repeatMode));
+        await TrackPlayer.setRepeatMode(parseInt(repeatMode));
+      }
+    })();
   }, []);
 
   const play = async () => {
@@ -110,6 +128,26 @@ const Player = ({navigation}: Props) => {
 
   const skipToNext = async () => {
     await TrackPlayer.skipToNext();
+  };
+
+  const toggleRepeateMode = async () => {
+    const modes = [RepeatMode.Off, RepeatMode.Queue, RepeatMode.Track];
+    const index = modes.indexOf(repeatMode);
+    const nextMode = modes[(index + 1) % modes.length];
+    TrackPlayer.setRepeatMode(nextMode);
+    setRepeatMode(nextMode);
+    await AsyncStorage.setItem('@repeat_mode', nextMode.toString());
+  };
+
+  // TODO: Shuffle or Random
+  const toggleShuffleMode = async () => {
+    ToastAndroid.show('Shuffle chưa code!!!', ToastAndroid.SHORT);
+    setIsShuffleEnabled(!isShuffleEnabled);
+    await AsyncStorage.setItem('@shuffle_enabled', (!isShuffleEnabled).toString());
+  };
+
+  const toggleFavorite = () => {
+    setIsFavorite(!isFavorite);
   };
 
   // Animating image disc
@@ -217,9 +255,14 @@ const Player = ({navigation}: Props) => {
               </Text>
             </View>
             <TouchableNativeFeedback
-              background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}>
+              background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
+              onPress={toggleFavorite}>
               <View>
-                <IonIcon name="heart-outline" size={NORMAL_ICON_SIZE} color="#ffffffaa" />
+                <IonIcon
+                  name={isFavorite ? 'heart' : 'heart-outline'}
+                  size={NORMAL_ICON_SIZE}
+                  color={isFavorite ? ICON_ACTIVATED_COLOR : '#ffffffaa'}
+                />
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -254,11 +297,11 @@ const Player = ({navigation}: Props) => {
                     .padStart(2, '0')}
               </Text>
               <Text style={{color: '#ffffffcc'}}>
-                {Math.floor((progress.duration - sliderValue) / 60)
+                {Math.floor((progress.duration - sliderValue + 1) / 60)
                   .toString()
                   .padStart(2, '0') +
                   ':' +
-                  Math.floor((progress.duration - sliderValue) % 60)
+                  Math.floor((progress.duration - sliderValue + 1) % 60)
                     .toString()
                     .padStart(2, '0')}
               </Text>
@@ -267,9 +310,13 @@ const Player = ({navigation}: Props) => {
           <View style={styles.controlContainer}>
             <TouchableNativeFeedback
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
-              onPress={() => {}}>
+              onPress={toggleShuffleMode}>
               <View>
-                <FontAwesomeIcon name="random" size={23} color="#ffffffaa" />
+                <FontAwesomeIcon
+                  name="random"
+                  size={23}
+                  color={isShuffleEnabled ? ICON_ACTIVATED_COLOR : '#ffffffaa'}
+                />
               </View>
             </TouchableNativeFeedback>
             <View style={styles.playbackControl}>
@@ -301,9 +348,13 @@ const Player = ({navigation}: Props) => {
             </View>
             <TouchableNativeFeedback
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
-              onPress={() => {}}>
+              onPress={toggleRepeateMode}>
               <View>
-                <FeatherIcon name="repeat" size={25} color="#ffffffaa" />
+                <MaterialCommunityIcon
+                  name={repeatMode === RepeatMode.Track ? 'repeat-once' : 'repeat'}
+                  size={27}
+                  color={repeatMode === RepeatMode.Off ? '#ffffffaa' : ICON_ACTIVATED_COLOR}
+                />
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -316,6 +367,7 @@ const Player = ({navigation}: Props) => {
 const NORMAL_ICON_SIZE = 28;
 const RIPPLE_COLOR = '#ccc';
 const CONTROL_RIPPLE_RADIUS = 45;
+const ICON_ACTIVATED_COLOR = '#f43a5a';
 
 export default Player;
 
