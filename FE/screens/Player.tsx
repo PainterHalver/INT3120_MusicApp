@@ -1,3 +1,6 @@
+// Bắt remount lại component chứ không fast refresh
+// @refresh reset
+
 import {
   SafeAreaView,
   StyleSheet,
@@ -10,8 +13,9 @@ import {
   Pressable,
   TouchableNativeFeedback,
   Dimensions,
+  Easing,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {StatusBar, TouchableOpacity} from 'react-native';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
@@ -36,6 +40,7 @@ type Props = StackScreenProps<RootStackParamList, 'Player'>;
 
 const Player = ({navigation}: Props) => {
   const playbackState = usePlaybackState();
+  const isPlaying = playbackState.state === State.Playing;
   const progress = useProgress();
   const [trackTitle, setTrackTitle] = useState<string>('');
   const [trackArtist, setTrackArtist] = useState<string>('');
@@ -107,6 +112,56 @@ const Player = ({navigation}: Props) => {
     await TrackPlayer.skipToNext();
   };
 
+  // Animating image disc
+  const rotation = React.useRef(new Animated.Value(0)).current;
+  const [pausedRotationValue, setPausedRotationValue] = React.useState(0);
+  const DISC_DURATION = 20000; // 20 seconds
+
+  useEffect(() => {
+    const animation = Animated.loop(
+      Animated.timing(rotation, {
+        toValue: 360,
+        duration: DISC_DURATION,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+    );
+
+    if (isPlaying) {
+      if (pausedRotationValue === 0) {
+        animation.start();
+      } else {
+        // Resume the animation from the paused rotation value immediately
+        Animated.timing(rotation, {
+          toValue: 360.01, // để phòng edge cases
+          duration: ((360 - pausedRotationValue) / 360) * DISC_DURATION,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }).start(({finished}) => {
+          if (finished) {
+            // Set up the beginning loop again after the animation finishes
+            animation.start();
+          }
+        });
+      }
+    } else {
+      // Pause the animation and store the current rotation value in the state
+      animation.stop();
+      rotation.stopAnimation(value => {
+        setPausedRotationValue(value % 360);
+      });
+    }
+
+    return () => {
+      animation.stop();
+    };
+  }, [isPlaying, pausedRotationValue, rotation]);
+
+  const spin = rotation.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '360deg'],
+  });
+
   return (
     <View style={styles.containerWrapper}>
       <StatusBar
@@ -140,9 +195,9 @@ const Player = ({navigation}: Props) => {
           </View>
           <View style={styles.imageContainer}>
             <View style={styles.imageView}>
-              <Image
+              <Animated.Image
                 source={trackArtwork ? trackArtwork : require('./../assets/default.png')}
-                style={styles.image}
+                style={[styles.image, {transform: [{rotate: spin}, {perspective: 1000}]}]}
               />
             </View>
           </View>
@@ -150,7 +205,7 @@ const Player = ({navigation}: Props) => {
             <TouchableNativeFeedback
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}>
               <View>
-                <IonIcon name="share-social-outline" size={NORMAL_ICON_SIZE} color="#fff" />
+                <IonIcon name="share-social-outline" size={NORMAL_ICON_SIZE} color="#ffffffaa" />
               </View>
             </TouchableNativeFeedback>
             <View style={styles.metadata}>
@@ -164,7 +219,7 @@ const Player = ({navigation}: Props) => {
             <TouchableNativeFeedback
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}>
               <View>
-                <IonIcon name="heart-outline" size={NORMAL_ICON_SIZE} color="#fff" />
+                <IonIcon name="heart-outline" size={NORMAL_ICON_SIZE} color="#ffffffaa" />
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -214,7 +269,7 @@ const Player = ({navigation}: Props) => {
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
               onPress={() => {}}>
               <View>
-                <FontAwesomeIcon name="random" size={23} color="#fff" />
+                <FontAwesomeIcon name="random" size={23} color="#ffffffaa" />
               </View>
             </TouchableNativeFeedback>
             <View style={styles.playbackControl}>
@@ -230,7 +285,7 @@ const Player = ({navigation}: Props) => {
                 onPress={togglePlayback}>
                 <View>
                   <AntDesignIcon
-                    name={playbackState.state === State.Playing ? 'pausecircleo' : 'playcircleo'}
+                    name={isPlaying ? 'pausecircleo' : 'playcircleo'}
                     size={60}
                     color="#fff"
                   />
@@ -248,7 +303,7 @@ const Player = ({navigation}: Props) => {
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
               onPress={() => {}}>
               <View>
-                <FeatherIcon name="repeat" size={25} color="#fff" />
+                <FeatherIcon name="repeat" size={25} color="#ffffffaa" />
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -296,8 +351,8 @@ const styles = StyleSheet.create({
     elevation: 20,
   },
   image: {
-    height: width * 0.8,
-    width: width * 0.8,
+    height: width * 0.77,
+    width: width * 0.77,
     borderRadius: 1000,
   },
   metadataContainer: {
