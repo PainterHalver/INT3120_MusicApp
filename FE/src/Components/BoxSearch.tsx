@@ -31,24 +31,11 @@ const BoxSearch = () => {
           flexDirection: 'row',
         }}>
         <Text style={{paddingRight: 10}}>
-          <Icon
-            name="search"
-            size={20}
-            color="black"
-            style={{fontWeight: '200'}}
-          />
+          <Icon name="search" size={20} color="black" style={{fontWeight: '200'}} />
         </Text>
-        <TextInput
-          style={styles.inputSearch}
-          placeholder="Tìm kiếm bài hát, nghệ sĩ"
-        />
+        <TextInput style={styles.inputSearch} placeholder="Tìm kiếm bài hát, nghệ sĩ" />
         <Text style={{paddingRight: 10}}>
-          <Icon
-            name="microphone"
-            size={20}
-            color="blue"
-            style={{fontWeight: '200'}}
-          />
+          <Icon name="microphone" size={20} color="blue" style={{fontWeight: '200'}} />
         </Text>
       </View>
       <View

@@ -7,6 +7,9 @@ import {
   Platform,
   ImageBackground,
   Animated,
+  Pressable,
+  TouchableNativeFeedback,
+  Dimensions,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {StatusBar, TouchableOpacity} from 'react-native';
@@ -20,10 +23,15 @@ import TrackPlayer, {
   useTrackPlayerEvents,
 } from 'react-native-track-player';
 import Slider from '@react-native-community/slider';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import IonIcon from 'react-native-vector-icons/Ionicons';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 import {StackScreenProps} from '@react-navigation/stack';
- 
+
 import {RootStackParamList} from '../App';
 
+const {height, width} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
 
 const Player = ({navigation}: Props) => {
@@ -38,10 +46,7 @@ const Player = ({navigation}: Props) => {
   // Chỉnh metadata state khi track thay đổi
   // FIXME: Hết track cuối có lỗi
   useTrackPlayerEvents([Event.PlaybackActiveTrackChanged], async event => {
-    if (
-      event.type === Event.PlaybackActiveTrackChanged &&
-      event.index !== undefined
-    ) {
+    if (event.type === Event.PlaybackActiveTrackChanged && event.index !== undefined) {
       const track = await TrackPlayer.getTrack(event.index);
       if (track) {
         setTrackTitle(track.title || '');
@@ -111,106 +116,151 @@ const Player = ({navigation}: Props) => {
         animated={true}
       />
       <ImageBackground
-        source={
-          trackArtwork ? trackArtwork : require('./../assets/default.png')
-        }
+        source={trackArtwork ? trackArtwork : require('./../assets/default.png')}
         resizeMode="cover"
-        onLoad={() => {
-          console.log('loaded player background image');
-        }}
         style={{width: '100%', height: '100%'}}
-        blurRadius={4}>
+        blurRadius={20}>
         <View style={styles.container}>
-          <View style={styles.heading}>
+          <View style={[styles.heading]}>
             <TouchableOpacity
               onPress={() => {
                 navigation.goBack();
               }}>
-              <AntDesignIcon
-                name="down"
-                size={26}
-                color="#ddd"
-                style={styles.downIcon}
-              />
+              <AntDesignIcon name="down" size={23} color="#fff" />
             </TouchableOpacity>
+            <View style={{alignItems: 'center'}}>
+              <Text style={{color: '#ffffffaa', fontSize: 12}}>PHÁT TỪ</Text>
+              <Text style={{color: '#fff', fontSize: 13}}>...</Text>
+            </View>
+            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, 23)}>
+              <View>
+                <MaterialCommunityIcon name="dots-vertical" size={23} color="#fff" />
+              </View>
+            </TouchableNativeFeedback>
           </View>
           <View style={styles.imageContainer}>
-            <Image
-              source={
-                trackArtwork ? trackArtwork : require('./../assets/default.png')
-              }
-              style={styles.image}
-            />
+            <View style={styles.imageView}>
+              <Image
+                source={trackArtwork ? trackArtwork : require('./../assets/default.png')}
+                style={styles.image}
+              />
+            </View>
           </View>
           <View style={styles.metadataContainer}>
-            <Text style={{color: '#fff', fontSize: 24, fontWeight: '600'}}>
-              {trackTitle}
-            </Text>
-            <Text style={{color: '#ffffffaa', fontSize: 16}}>
-              {trackArtist}
-            </Text>
+            <TouchableNativeFeedback
+              background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}>
+              <View>
+                <IonIcon name="share-social-outline" size={NORMAL_ICON_SIZE} color="#fff" />
+              </View>
+            </TouchableNativeFeedback>
+            <View style={styles.metadata}>
+              <Text style={{color: '#fff', fontSize: 18, fontWeight: '600'}}>
+                {trackTitle.length > 25 ? trackTitle.substring(0, 25) + '...' : trackTitle}
+              </Text>
+              <Text style={{color: '#ffffffbb', fontSize: 16}}>
+                {trackArtist.length > 30 ? trackArtist.substring(0, 30) + '...' : trackArtist}
+              </Text>
+            </View>
+            <TouchableNativeFeedback
+              background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}>
+              <View>
+                <IonIcon name="heart-outline" size={NORMAL_ICON_SIZE} color="#fff" />
+              </View>
+            </TouchableNativeFeedback>
           </View>
           <View style={styles.progressContainer}>
-            <Text style={{color: '#fff'}}>
-              {Math.floor(sliderValue / 60)
-                .toString()
-                .padStart(2, '0') +
-                ':' +
-                Math.floor(sliderValue % 60)
+            <View style={{marginHorizontal: -15}}>
+              <Slider
+                style={styles.slider}
+                minimumValue={0}
+                maximumValue={progress.duration}
+                value={sliderValue}
+                thumbTintColor="#fff"
+                minimumTrackTintColor="#fff"
+                maximumTrackTintColor="#ffffff"
+                onSlidingComplete={async value => {
+                  setSlidingSlider(false);
+                  await TrackPlayer.seekTo(value + 1); // +1 để để khớp với progress (đừng hỏi tại sao)
+                }}
+                onValueChange={value => {
+                  setSliderValue(value);
+                }}
+                onSlidingStart={() => setSlidingSlider(true)}
+              />
+            </View>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text style={{color: '#ffffffcc'}}>
+                {Math.floor(sliderValue / 60)
                   .toString()
-                  .padStart(2, '0')}
-            </Text>
-            <Slider
-              style={styles.slider}
-              minimumValue={0}
-              maximumValue={progress.duration}
-              value={sliderValue}
-              thumbTintColor="#fff"
-              minimumTrackTintColor="#fff"
-              maximumTrackTintColor="#ffffff"
-              onSlidingComplete={async value => {
-                setSlidingSlider(false);
-                await TrackPlayer.seekTo(value + 1); // +1 để để khớp với progress (đừng hỏi tại sao)
-              }}
-              onValueChange={value => {
-                setSliderValue(value);
-              }}
-              onSlidingStart={() => setSlidingSlider(true)}
-            />
-            <Text style={{color: '#fff'}}>
-              {Math.floor((progress.duration - sliderValue) / 60)
-                .toString()
-                .padStart(2, '0') +
-                ':' +
-                Math.floor((progress.duration - sliderValue) % 60)
+                  .padStart(2, '0') +
+                  ':' +
+                  Math.floor(sliderValue % 60)
+                    .toString()
+                    .padStart(2, '0')}
+              </Text>
+              <Text style={{color: '#ffffffcc'}}>
+                {Math.floor((progress.duration - sliderValue) / 60)
                   .toString()
-                  .padStart(2, '0')}
-            </Text>
+                  .padStart(2, '0') +
+                  ':' +
+                  Math.floor((progress.duration - sliderValue) % 60)
+                    .toString()
+                    .padStart(2, '0')}
+              </Text>
+            </View>
           </View>
           <View style={styles.controlContainer}>
-            <TouchableOpacity onPress={skipToPrevious}>
-              <MaterialIcon name="skip-previous" size={45} color="#ddd" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={togglePlayback}>
-              <AntDesignIcon
-                name={
-                  playbackState.state === State.Playing
-                    ? 'pausecircleo'
-                    : 'playcircleo'
-                }
-                size={55}
-                color="#ddd"
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={skipToNext}>
-              <MaterialIcon name="skip-next" size={45} color="#ddd" />
-            </TouchableOpacity>
+            <TouchableNativeFeedback
+              background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
+              onPress={() => {}}>
+              <View>
+                <FontAwesomeIcon name="random" size={23} color="#fff" />
+              </View>
+            </TouchableNativeFeedback>
+            <View style={styles.playbackControl}>
+              <TouchableNativeFeedback
+                background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
+                onPress={skipToPrevious}>
+                <View>
+                  <MaterialIcon name="skip-previous" size={55} color="#fff" />
+                </View>
+              </TouchableNativeFeedback>
+              <TouchableNativeFeedback
+                background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
+                onPress={togglePlayback}>
+                <View>
+                  <AntDesignIcon
+                    name={playbackState.state === State.Playing ? 'pausecircleo' : 'playcircleo'}
+                    size={60}
+                    color="#fff"
+                  />
+                </View>
+              </TouchableNativeFeedback>
+              <TouchableNativeFeedback
+                background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
+                onPress={skipToNext}>
+                <View>
+                  <MaterialIcon name="skip-next" size={55} color="#fff" />
+                </View>
+              </TouchableNativeFeedback>
+            </View>
+            <TouchableNativeFeedback
+              background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
+              onPress={() => {}}>
+              <View>
+                <FeatherIcon name="repeat" size={25} color="#fff" />
+              </View>
+            </TouchableNativeFeedback>
           </View>
         </View>
       </ImageBackground>
     </View>
   );
 };
+
+const NORMAL_ICON_SIZE = 28;
+const RIPPLE_COLOR = '#ccc';
+const CONTROL_RIPPLE_RADIUS = 45;
 
 export default Player;
 
@@ -222,48 +272,67 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     // backgroundColor: 'purple',
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'rgba(0,0,0,0.3)',
   },
   heading: {
-    height: 50,
-    justifyContent: 'center',
-  },
-  downIcon: {
-    marginLeft: 20,
+    height: 60,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
   },
   imageContainer: {
-    flex: 3,
+    flex: 7,
     // backgroundColor: '#a2a222',
     justifyContent: 'center',
     alignItems: 'center',
   },
+  imageView: {
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0.7,
+    shadowRadius: 2,
+    borderRadius: 1000,
+    elevation: 20,
+  },
   image: {
-    height: '80%',
-    aspectRatio: 1,
-    borderRadius: 15,
+    height: width * 0.8,
+    width: width * 0.8,
+    borderRadius: 1000,
   },
   metadataContainer: {
     flex: 3,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 30,
+  },
+  metadata: {
     // backgroundColor: 'green',
     justifyContent: 'center',
     alignItems: 'center',
   },
   progressContainer: {
-    flex: 1,
+    flex: 2,
     // backgroundColor: '#712722',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: 25,
   },
   slider: {
     height: 40,
-    width: '70%',
+    width: '100%',
   },
   controlContainer: {
-    flex: 1,
+    flex: 3,
     // backgroundColor: 'gray',
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 30,
+  },
+  playbackControl: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 15,
   },
 });

@@ -62,12 +62,10 @@ const NewApp = () => {
     return (
       <View style={{flexDirection: 'column'}}>
         <View>
-          <Text style={{fontSize: 25, color: 'black'}}>Moi pha hanh</Text>
+          <Text style={{fontSize: 25, color: 'black'}}>Moi phat hanh</Text>
         </View>
         <View style={{flexDirection: 'row', gap: 10}}>
-          <Text style={[styles.chipButton, {backgroundColor: 'gray'}]}>
-            Tat ca
-          </Text>
+          <Text style={[styles.chipButton, {backgroundColor: 'gray'}]}>Tat ca</Text>
           <Text style={styles.chipButton}>Viet Nam</Text>
           <Text style={styles.chipButton}>Quoc Te</Text>
         </View>
@@ -111,9 +109,7 @@ const NewApp = () => {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={[backgroundStyle, {marginTop: 50}]}>
+      <ScrollView contentInsetAdjustmentBehavior="automatic" style={[backgroundStyle, {marginTop: 50}]}>
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
