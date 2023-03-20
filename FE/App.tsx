@@ -7,27 +7,13 @@
 
 import React, {useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-import {
-  NavigationContainer,
-  NavigatorScreenParams,
-} from '@react-navigation/native';
+import {SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View} from 'react-native';
+import {NavigationContainer, NavigatorScreenParams} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import TrackPlayer, {
-  AppKilledPlaybackBehavior,
-  Capability,
-} from 'react-native-track-player';
+import TrackPlayer, {AppKilledPlaybackBehavior, Capability} from 'react-native-track-player';
 import type {Track} from 'react-native-track-player';
 
 import Hello from './screens/Hello';
@@ -36,6 +22,7 @@ import Player from './screens/Player';
 import {TransitionSpec} from '@react-navigation/stack/lib/typescript/src/types';
 import {Easing} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import Search from './screens/Search';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -43,6 +30,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 // https://reactnavigation.org/docs/typescript/#type-checking-screens
 export type BottomTabParamList = {
   Hello: undefined;
+  Search: undefined;
   Welcome: undefined;
 };
 
@@ -52,16 +40,23 @@ export type RootStackParamList = {
 };
 
 // Cần artwork để hiện trong thông báo hoặc lock screen
-const tracks: Track[] = [
+export const tracks: Track[] = [
   {
     id: 1,
+    url: require('./assets/Led_Zeppelin-Stairway_To_Heaven.mp3'),
+    title: 'Stairway To Heaven',
+    artist: 'Led Zeppelin',
+    artwork: require('./assets/Led_Zeppelin-Stairway_To_Heaven.png'),
+  },
+  {
+    id: 2,
     url: require('./assets/Gnarls-Barkley-Crazy.mp3'),
     title: 'Crazy',
     artist: 'Gnarls Barkley',
     artwork: require('./assets/Gnarls-Barkley-Crazy.jpg'),
   },
   {
-    id: 2,
+    id: 3,
     url: require('./assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.mp3'),
     title: 'Thang Tu La Loi Noi Doi Cua Em',
     artist: 'Ha Anh Tuan',
@@ -78,8 +73,7 @@ function App(): JSX.Element {
           await TrackPlayer.setupPlayer({});
           await TrackPlayer.updateOptions({
             android: {
-              appKilledPlaybackBehavior:
-                AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification,
+              appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification,
             },
             capabilities: [
               Capability.Play,
@@ -121,6 +115,17 @@ function App(): JSX.Element {
           }}
         />
         <BottomTab.Screen
+          name="Search"
+          component={Search}
+          options={{
+            title: 'Search',
+            headerShown: false,
+            tabBarIcon: ({focused, color, size}) => (
+              <FontAwesomeIcon name="search" size={size} color={color} />
+            ),
+          }}
+        />
+        <BottomTab.Screen
           name="Welcome"
           component={NewApp}
           options={{
@@ -139,11 +144,7 @@ function App(): JSX.Element {
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{headerShown: false}}
-          />
+          <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
           <Stack.Screen
             name="Player"
             component={Player}

@@ -18,12 +18,7 @@ const ListItem = ({name, data}: Props) => {
         {data && data.length > 0
           ? data.map((item, index) => {
               return (
-                <ItemAlbum
-                  description={item.description}
-                  image={item.image}
-                  size={120}
-                  key={index}
-                />
+                <ItemAlbum description={item.description} image={item.image} size={120} key={index} />
               );
             })
           : null}

@@ -39,15 +39,9 @@ const ItemSong = (props: Props) => {
           {props.date ? <Text>{props.date}</Text> : null}
         </View>
       </View>
-      <View
-        style={{display: 'flex', justifyContent: 'center', paddingRight: 10}}>
+      <View style={{display: 'flex', justifyContent: 'center', paddingRight: 10}}>
         <Text>
-          <Icon
-            name="ellipsis-v"
-            size={20}
-            color="black"
-            style={{fontWeight: '200'}}
-          />
+          <Icon name="ellipsis-v" size={20} color="black" style={{fontWeight: '200'}} />
         </Text>
       </View>
     </View>
