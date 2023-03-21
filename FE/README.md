@@ -13,6 +13,7 @@
 - [React Navigation](https://reactnavigation.org/docs/getting-started)
 - [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons)
 - [slider](https://www.npmjs.com/package/@react-native-community/slider)
+- [Async Storage](https://react-native-async-storage.github.io/async-storage/docs/install/) (thay cho localStorage)
 
 # Apk
 

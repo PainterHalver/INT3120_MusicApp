@@ -1,14 +1,14 @@
 import React from 'react';
 import BoxSearch from '../src/Components/BoxSearch';
-import LineChartBox from '../src/Components/LineChartBox';
+import LineChartBox from '../src/Screens/LineChartBox';
 import ItemSong from '../src/Components/ItemSong';
+import Banner from '../src/Components/Banner';
 import {
   SafeAreaView,
   ScrollView,
   StatusBar,
   useColorScheme,
   View,
-  TextInput,
   Text,
   StyleSheet,
   Image,
@@ -23,46 +23,83 @@ const NewApp = () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const BannerHome = () => {
-    return (
-      <View>
-        <View style={{justifyContent: 'center', flexDirection: 'row'}}>
-          <Image
-            source={require('./../assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.jpg')}
-            style={{justifyContent: 'center', alignItems: 'center'}}
-          />
-        </View>
-      </View>
-    );
-  };
-
   const dataRelease = [
-    {description:'Ten album Hoa Minzy Duc Phuc Phuc du', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'},
-    {description:'Ten album', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'},
-    {description:'Ten album', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'},
-    {description:'Ten album', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'},
-    {description:'Ten album', image:'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg'}
+    {
+      description: 'Ten album Hoa Minzy Duc Phuc Phuc du',
+      image: 'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg',
+    },
+    {
+      description: 'Ten album',
+      image: 'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg',
+    },
+    {
+      description: 'Ten album',
+      image: 'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg',
+    },
+    {
+      description: 'Ten album',
+      image: 'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg',
+    },
+    {
+      description: 'Ten album',
+      image: 'https://i.ytimg.com/vi/5e7e_KZINA4/maxresdefault.jpg',
+    },
+  ];
 
-  ]
+  const dataBanner = [
+    {
+      image: 'https://i.ytimg.com/vi/Sf9_daKZrnY/maxresdefault.jpg',
+    },
+    {
+      image:
+        'https://th.bing.com/th?id=OIF.kWsr%2bKuxY%2brRkg6tEeGWYQ&pid=ImgDet&rs=1',
+    },
+    {
+      image:
+        'https://th.bing.com/th/id/OIP.aif3Oh0GtBdSWyVzDYpC9AHaDt?w=321&h=175&c=7&r=0&o=5&pid=1.7',
+    },
+  ];
 
   const NewRelease = () => {
     return (
       <View style={{flexDirection: 'column'}}>
         <View>
-          <Text style={{fontSize: 25, color: 'black'}}>Moi pha hanh</Text>
+          <Text style={{fontSize: 25, color: 'black'}}>Moi phat hanh</Text>
         </View>
         <View style={{flexDirection: 'row', gap: 10}}>
-          <Text style={[styles.chipButton, {backgroundColor: 'gray'}]}>
-            Tat ca
-          </Text>
+          <Text style={[styles.chipButton, {backgroundColor: 'gray'}]}>Tat ca</Text>
           <Text style={styles.chipButton}>Viet Nam</Text>
           <Text style={styles.chipButton}>Quoc Te</Text>
         </View>
         <View style={{flexDirection: 'column', gap: 10, paddingTop: 10}}>
-          <ItemSong nameSong='Ten bai hat' artistName='Ha Anh Tuan' image='https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0' size={60} date="Hom nay"/>
-          <ItemSong nameSong='Ten bai hat' artistName='Ha Anh Tuan' image='https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0' size={60} date="Hom nay"/>
-          <ItemSong nameSong='Ten bai hat' artistName='Ha Anh Tuan' image='https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0' size={60} date="Hom nay"/>
-          <ItemSong nameSong='Ten bai hat' artistName='Ha Anh Tuan' image='https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0' size={60} date="Hom nay"/>
+          <ItemSong
+            nameSong="Ten bai hat"
+            artistName="Ha Anh Tuan"
+            image="https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0"
+            size={60}
+            date="Hom nay"
+          />
+          <ItemSong
+            nameSong="Ten bai hat"
+            artistName="Ha Anh Tuan"
+            image="https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0"
+            size={60}
+            date="Hom nay"
+          />
+          <ItemSong
+            nameSong="Ten bai hat"
+            artistName="Ha Anh Tuan"
+            image="https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0"
+            size={60}
+            date="Hom nay"
+          />
+          <ItemSong
+            nameSong="Ten bai hat"
+            artistName="Ha Anh Tuan"
+            image="https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0"
+            size={60}
+            date="Hom nay"
+          />
         </View>
       </View>
     );
@@ -74,22 +111,20 @@ const NewApp = () => {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={[backgroundStyle, {marginTop: 50}]}>
+      <ScrollView contentInsetAdjustmentBehavior="automatic" style={[backgroundStyle, {marginTop: 50}]}>
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
             paddingHorizontal: 10,
           }}>
           <BoxSearch />
-          <BannerHome />
-          <ListItem data={dataRelease} name={'Nghệ sĩ thịnh hành'}/>
+          <Banner data={dataBanner} />
+          <ListItem data={dataRelease} name={'Nghệ sĩ thịnh hành'} />
           <NewRelease />
-          <ListItem data={dataRelease} name={'Lựa chọn hôm nay'}/>
-          <LineChartBox/>
-          <ListItem data={dataRelease} name={'Top 100'}/>
-          <ListItem data={dataRelease} name={'Album hot >'}/>
+          <ListItem data={dataRelease} name={'Lựa chọn hôm nay'} />
+          <LineChartBox />
+          <ListItem data={dataRelease} name={'Top 100'} />
+          <ListItem data={dataRelease} name={'Album hot >'} />
         </View>
       </ScrollView>
     </SafeAreaView>

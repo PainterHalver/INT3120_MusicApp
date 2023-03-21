@@ -6,6 +6,7 @@ import {
   View,
   ImageBackground,
   Platform,
+  useColorScheme,
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -24,11 +25,13 @@ type Props = CompositeScreenProps<
 >;
 
 const Hello = ({navigation}: Props) => {
+  const isDarkMode = useColorScheme() === 'dark';
+
   return (
     <View style={styles.containerWrapper}>
       <StatusBar
         translucent
-        barStyle={'dark-content'}
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={'transparent'}
         animated={false}
       />
