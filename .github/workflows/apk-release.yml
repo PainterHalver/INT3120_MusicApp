@@ -36,7 +36,9 @@ jobs:
           keyPassword: 123456
           buildToolsVersion: 33.0.0
       - name: Rename to app-release.apk
-        run: mv ${{steps.sign_apk.outputs.signedFile}} app_release_${{github.ref_name}}.apk
+        run: |
+          pwd
+          mv ${{steps.sign_apk.outputs.signedFile}} ./FE/app_release_${{github.ref_name}}.apk
       - name: Publish release APK
         uses: "marvinpinto/action-automatic-releases@latest"
         with:

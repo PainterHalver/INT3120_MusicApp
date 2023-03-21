@@ -51,12 +51,10 @@ const NewApp = () => {
       image: 'https://i.ytimg.com/vi/Sf9_daKZrnY/maxresdefault.jpg',
     },
     {
-      image:
-        'https://th.bing.com/th?id=OIF.kWsr%2bKuxY%2brRkg6tEeGWYQ&pid=ImgDet&rs=1',
+      image: 'https://th.bing.com/th?id=OIF.kWsr%2bKuxY%2brRkg6tEeGWYQ&pid=ImgDet&rs=1',
     },
     {
-      image:
-        'https://th.bing.com/th/id/OIP.aif3Oh0GtBdSWyVzDYpC9AHaDt?w=321&h=175&c=7&r=0&o=5&pid=1.7',
+      image: 'https://th.bing.com/th/id/OIP.aif3Oh0GtBdSWyVzDYpC9AHaDt?w=321&h=175&c=7&r=0&o=5&pid=1.7',
     },
   ];
 

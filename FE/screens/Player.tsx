@@ -145,6 +145,7 @@ const Player = ({navigation}: Props) => {
     await AsyncStorage.setItem('@shuffle_enabled', (!isShuffleEnabled).toString());
   };
 
+  // TODO: Implement this
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
   };

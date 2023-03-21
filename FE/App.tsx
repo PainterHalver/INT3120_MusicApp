@@ -7,9 +7,29 @@
 
 import React, {useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
-import {SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View} from 'react-native';
-import {NavigationContainer, NavigatorScreenParams} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+  TouchableNativeFeedback,
+  TouchableOpacity,
+  Button,
+} from 'react-native';
+import {
+  NavigationContainer,
+  NavigationProp,
+  NavigatorScreenParams,
+  useNavigation,
+} from '@react-navigation/native';
+import {
+  useBottomTabBarHeight,
+  createBottomTabNavigator,
+  BottomTabBar,
+} from '@react-navigation/bottom-tabs';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -22,8 +42,9 @@ import Player from './screens/Player';
 import {TransitionSpec} from '@react-navigation/stack/lib/typescript/src/types';
 import {Easing} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import PlaylistDetail from './screens/PlaylistDetail';
+// import PlaylistDetail from './screens/PlaylistDetail';
 import Search from './screens/Search';
+import MiniPlayer from './src/Components/MiniPlayer';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -98,19 +119,40 @@ function App(): JSX.Element {
         console.log(e);
       }
     };
-
     setUpTrackPlayer();
   }, []);
 
   const Home = () => {
     return (
-      <BottomTab.Navigator>
+      <BottomTab.Navigator
+        tabBar={props => {
+          return (
+            <>
+              {/* Đây là Mini Player */}
+              <MiniPlayer />
+              {/* đặt ngay trên BottomTab */}
+              <BottomTabBar {...props} />
+            </>
+          );
+        }}
+        screenOptions={{
+          tabBarActiveTintColor: '#f43a5a',
+          headerShown: false,
+          tabBarButton: ({children, style, ...props}) => (
+            <TouchableNativeFeedback
+              hitSlop={{top: 0, bottom: 10, left: 10, right: 10}}
+              background={TouchableNativeFeedback.Ripple('#00000011', false, 50)}
+              {...props}
+              useForeground>
+              <View style={[style, {backgroundColor: '#ffffffcc'}]}>{children}</View>
+            </TouchableNativeFeedback>
+          ),
+        }}>
         <BottomTab.Screen
           name="Hello"
           component={Hello}
           options={{
             title: 'Hello',
-            headerShown: false,
             tabBarIcon: ({focused, color, size}) => (
               <FontAwesomeIcon name="sun-o" size={size} color={color} />
             ),
@@ -121,7 +163,6 @@ function App(): JSX.Element {
           component={Search}
           options={{
             title: 'Search',
-            headerShown: false,
             tabBarIcon: ({focused, color, size}) => (
               <FontAwesomeIcon name="search" size={size} color={color} />
             ),
@@ -132,7 +173,6 @@ function App(): JSX.Element {
           component={NewApp}
           options={{
             title: 'Welcome',
-            headerShown: false,
             tabBarIcon: ({focused, color, size}) => (
               <MaterialCommunityIcon name="new-box" size={size} color={color} />
             ),
@@ -147,7 +187,7 @@ function App(): JSX.Element {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
-          <Stack.Screen
+          {/* <Stack.Screen
             name="PlaylistDetail"
             component={PlaylistDetail}
             options={{
@@ -155,7 +195,7 @@ function App(): JSX.Element {
               // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
               ...TransitionPresets.ModalSlideFromBottomIOS,
             }}
-          />
+          /> */}
           <Stack.Screen
             name="Player"
             component={Player}
