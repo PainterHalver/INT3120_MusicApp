@@ -20,6 +20,8 @@ declare class ZingMp3Api {
     private requestZingMp3;
     private hashCategories;
     private hashCategoryDetail;
+    private hashBottomSection;
+    getBottomSection(id: string): Promise<any>;
     getCategoryDetail(id: string): Promise<any>;
     getAllCategories(): Promise<any>;
     getSong(songId: string): Promise<any>;

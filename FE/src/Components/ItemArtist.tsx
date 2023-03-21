@@ -4,7 +4,7 @@ type Props = {
   image: string;
   size: number;
 };
-const ItemAlbum = ({description, image, size}: Props) => {
+const ItemArtist = ({description, image, size}: Props) => {
   return (
     <View
       style={{
@@ -19,7 +19,7 @@ const ItemAlbum = ({description, image, size}: Props) => {
         style={{
           height: size,
           width: size,
-          borderRadius: 10,
+          borderRadius: size,
         }}
       />
       <Text style={{overflow: 'hidden', color: '#ddd'}}>{description}</Text>
@@ -27,4 +27,4 @@ const ItemAlbum = ({description, image, size}: Props) => {
   );
 };
 
-export default ItemAlbum;
+export default ItemArtist;
