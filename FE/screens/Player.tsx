@@ -21,7 +21,7 @@ import TrackPlayer, {
 } from 'react-native-track-player';
 import Slider from '@react-native-community/slider';
 import {StackScreenProps} from '@react-navigation/stack';
-
+ 
 import {RootStackParamList} from '../App';
 
 type Props = StackScreenProps<RootStackParamList, 'Player'>;

@@ -62,6 +62,9 @@ class ZingMp3Api {
     hashCategoryDetail(path, id) {
         return this.getHmac512(path + this.getHash256(`ctime=${this.CTIME}id=${id}version=${this.VERSION}`), this.SECRET_KEY);
     }
+    hashBottomSection(path, id) {
+        return this.getHmac512(path + this.getHash256(`ctime=${this.CTIME}id=${id}version=${this.VERSION}`), this.SECRET_KEY);
+    }
     getCookie() {
         return new Promise((resolve, rejects) => {
             axios_1.default.get(`${this.URL}`)
@@ -303,6 +306,20 @@ class ZingMp3Api {
         });
     }
 
+    getBottomSection(id) {
+        return new Promise((resolve, rejects) => {
+            this.requestZingMp3("/api/v2/playlist/get/section-bottom", {
+                id: id,
+                sig: this.hashBottomSection("/api/v2/playlist/get/section-bottom", id),
+            })
+                .then((res) => {
+                resolve(res);
+            })
+                .catch((err) => {
+                rejects(err);
+            });
+        });
+    }
 
     searchAllPlaylist(name, page, count) {
         return new Promise((resolve, rejects) => {
