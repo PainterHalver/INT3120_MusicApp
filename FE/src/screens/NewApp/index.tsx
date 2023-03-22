@@ -1,9 +1,9 @@
 import React from 'react';
 import {SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View} from 'react-native';
-import Banner from '../../components/Banner';
-import BoxSearch from '../../components/BoxSearch';
-import ItemSong from '../../components/ItemSong';
-import ListItem from '../../components/ListItem';
+import Banner from '../../componentss/Banner';
+import BoxSearch from '../../componentss/BoxSearch';
+import ItemSong from '../../componentss/ItemSong';
+import ListItem from '../../componentss/ListItem';
 import LineChartBox from './LineChartBox';
 
 const NewApp = () => {

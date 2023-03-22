@@ -6,6 +6,7 @@ type Props = {
   size?: number;
   children: JSX.Element;
 };
+
 const TopBox = (props: Props) => {
   return (
     <View style={{display: 'flex', flexDirection: 'row', paddingVertical: 5}}>
