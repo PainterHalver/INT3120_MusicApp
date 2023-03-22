@@ -20,7 +20,7 @@ import Hello from './src/screens/Hello';
 import NewApp from './src/screens/NewApp';
 import Player from './src/screens/Player';
 // import PlaylistDetail from './src/screens/PlaylistDetail';
-import MiniPlayer from './src/componentss/MiniPlayer';
+import MiniPlayer from './src/components/MiniPlayer';
 import Search from './src/screens/Search';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
