@@ -37,7 +37,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import {StackScreenProps} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {RootStackParamList, tracks} from '../App';
+import {RootStackParamList, tracks} from '../../../App';
 
 const {height, width} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
@@ -209,7 +209,7 @@ const Player = ({navigation}: Props) => {
         animated={true}
       />
       <ImageBackground
-        source={trackArtwork ? trackArtwork : require('./../assets/default.png')}
+        source={trackArtwork ? trackArtwork : require('./../../../assets/default.png')}
         resizeMode="cover"
         style={{width: '100%', height: '100%'}}
         blurRadius={20}>
@@ -237,7 +237,7 @@ const Player = ({navigation}: Props) => {
           <View style={styles.imageContainer}>
             <View style={styles.imageView}>
               <Animated.Image
-                source={trackArtwork ? trackArtwork : require('./../assets/default.png')}
+                source={trackArtwork ? trackArtwork : require('./../../../assets/default.png')}
                 style={[styles.image, {transform: [{rotate: spin}, {perspective: 1000}]}]}
               />
             </View>
@@ -318,14 +318,11 @@ const Player = ({navigation}: Props) => {
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleShuffleMode}>
               <View>
-                <Text style={{fontWeight:'200'}}>
-
                 <FontAwesomeIcon
                   name="random"
                   size={23}
                   color={isShuffleEnabled ? ICON_ACTIVATED_COLOR : '#ffffffaa'}
                 />
-                </Text>
               </View>
             </TouchableNativeFeedback>
             <View style={styles.playbackControl}>

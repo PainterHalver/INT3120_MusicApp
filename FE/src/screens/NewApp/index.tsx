@@ -1,23 +1,12 @@
 import React from 'react';
-import BoxSearch from '../src/Components/BoxSearch';
-import LineChartBox from '../src/Screens/LineChartBox';
-import ItemSong from '../src/Components/ItemSong';
-import Banner from '../src/Components/Banner';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  useColorScheme,
-  View,
-  Text,
-  StyleSheet,
-  Image,
-} from 'react-native';
-
-import ListItem from '../src/Components/ListItem';
+import {SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View} from 'react-native';
+import Banner from '../../components/Banner';
+import BoxSearch from '../../components/BoxSearch';
+import ItemSong from '../../components/ItemSong';
+import ListItem from '../../components/ListItem';
+import LineChartBox from './LineChartBox';
 
 const NewApp = () => {
-
   const dataRelease = [
     {
       description: 'Ten album Hoa Minzy Duc Phuc Phuc du',
@@ -103,9 +92,9 @@ const NewApp = () => {
 
   return (
     <SafeAreaView>
-      <ScrollView contentInsetAdjustmentBehavior="automatic" >
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View style={{backgroundColor: 'transparent'}}>
-          <Banner data={dataBanner} >
+          <Banner data={dataBanner}>
             <View>
               <StatusBar
                 barStyle={'light-content'}
@@ -113,12 +102,13 @@ const NewApp = () => {
                 backgroundColor={'transparent'}
                 animated={true}
               />
-              <BoxSearch /> 
+              <BoxSearch />
             </View>
           </Banner>
-          <View style={{
-            paddingHorizontal: 10,
-          }}>
+          <View
+            style={{
+              paddingHorizontal: 10,
+            }}>
             <ListItem data={dataRelease} name={'Nghệ sĩ thịnh hành'} />
             <NewRelease />
             <ListItem data={dataRelease} name={'Lựa chọn hôm nay'} />
@@ -126,7 +116,6 @@ const NewApp = () => {
             <ListItem data={dataRelease} name={'Top 100'} />
             <ListItem data={dataRelease} name={'Album hot >'} />
           </View>
-          
         </View>
       </ScrollView>
     </SafeAreaView>

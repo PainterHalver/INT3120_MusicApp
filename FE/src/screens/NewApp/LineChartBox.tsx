@@ -1,7 +1,7 @@
 import {View, Text, StyleSheet} from 'react-native';
-import TopBox from '../Components/TopBox';
-import ItemSong from '../Components/ItemSong';
-import Chart from '../Components/Chart';
+import TopBox from '../../components/TopBox';
+import ItemSong from '../../components/ItemSong';
+import Chart from '../../components/Chart';
 const data = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June'],
   datasets: [

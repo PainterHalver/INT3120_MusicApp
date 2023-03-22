@@ -5,46 +5,23 @@
  * @format
  */
 
-import React, {useEffect} from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-  Button,
-} from 'react-native';
-import {
-  NavigationContainer,
-  NavigationProp,
-  NavigatorScreenParams,
-  useNavigation,
-} from '@react-navigation/native';
-import {
-  useBottomTabBarHeight,
-  createBottomTabNavigator,
-  BottomTabBar,
-} from '@react-navigation/bottom-tabs';
+import {BottomTabBar, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {NavigationContainer, NavigatorScreenParams} from '@react-navigation/native';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
+import React, {useEffect} from 'react';
+import {TouchableNativeFeedback, View} from 'react-native';
+import type {Track} from 'react-native-track-player';
+import TrackPlayer, {AppKilledPlaybackBehavior, Capability} from 'react-native-track-player';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import TrackPlayer, {AppKilledPlaybackBehavior, Capability} from 'react-native-track-player';
-import type {Track} from 'react-native-track-player';
 
-import Hello from './screens/Hello';
-import NewApp from './screens/NewApp';
-import Player from './screens/Player';
-import {TransitionSpec} from '@react-navigation/stack/lib/typescript/src/types';
-import {Easing} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-// import PlaylistDetail from './screens/PlaylistDetail';
-import Search from './screens/Search';
-import MiniPlayer from './src/Components/MiniPlayer';
+import Hello from './src/screens/Hello';
+import NewApp from './src/screens/NewApp';
+import Player from './src/screens/Player';
+// import PlaylistDetail from './src/screens/PlaylistDetail';
+import MiniPlayer from './src/components/MiniPlayer';
+import Search from './src/screens/Search';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
