@@ -1,44 +1,36 @@
 // Bắt remount lại component chứ không fast refresh
 // @refresh reset
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Slider from '@react-native-community/slider';
+import {StackScreenProps} from '@react-navigation/stack';
+import React, {useEffect, useState} from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Platform,
-  ImageBackground,
   Animated,
-  Pressable,
-  TouchableNativeFeedback,
   Dimensions,
   Easing,
+  ImageBackground,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
   ToastAndroid,
+  TouchableNativeFeedback,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {StatusBar, TouchableOpacity} from 'react-native';
+import TrackPlayer, {RepeatMode, State, usePlaybackState} from 'react-native-track-player';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import TrackPlayer, {
-  Event,
-  State,
-  usePlaybackState,
-  useProgress,
-  useTrackPlayerEvents,
-  RepeatMode,
-  Track,
-} from 'react-native-track-player';
-import Slider from '@react-native-community/slider';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import IonIcon from 'react-native-vector-icons/Ionicons';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import FeatherIcon from 'react-native-vector-icons/Feather';
-import {StackScreenProps} from '@react-navigation/stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
-import {RootStackParamList, tracks} from '../../../App';
+import {RootStackParamList} from '../../../App';
 import {usePlayer} from '../../contexts/PlayerContext';
+import {HeartIcon} from '../../icons/HeartIcon';
+import {RepeatIcon} from '../../icons/RepeatIcon';
+import {RepeatOnceIcon} from '../../icons/RepeatOnceIcon';
+import {ShareIcon} from '../../icons/ShareIcon';
+import {ShuffleIcon} from '../../icons/ShuffleIcon';
 
 const {height, width} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
@@ -219,7 +211,7 @@ const Player = ({navigation}: Props) => {
               hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}>
               <View>
-                <IonIcon name="share-social-outline" size={NORMAL_ICON_SIZE} color="#ffffffaa" />
+                <ShareIcon size={21} color="#ffffffaa" />
               </View>
             </TouchableNativeFeedback>
             <View style={styles.metadata}>
@@ -239,11 +231,11 @@ const Player = ({navigation}: Props) => {
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleFavorite}>
               <View>
-                <IonIcon
-                  name={isFavorite ? 'heart' : 'heart-outline'}
-                  size={NORMAL_ICON_SIZE}
-                  color={isFavorite ? ICON_ACTIVATED_COLOR : '#ffffffaa'}
-                />
+                {isFavorite ? (
+                  <HeartIcon size={25} color={ICON_ACTIVATED_COLOR} fill={ICON_ACTIVATED_COLOR} />
+                ) : (
+                  <HeartIcon size={25} color="#ffffffaa" />
+                )}
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -294,11 +286,7 @@ const Player = ({navigation}: Props) => {
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleShuffleMode}>
               <View>
-                <FontAwesomeIcon
-                  name="random"
-                  size={23}
-                  color={isShuffleEnabled ? ICON_ACTIVATED_COLOR : '#ffffffaa'}
-                />
+                <ShuffleIcon size={25} color={isShuffleEnabled ? ICON_ACTIVATED_COLOR : '#ffffffaa'} />
               </View>
             </TouchableNativeFeedback>
             <View style={styles.playbackControl}>
@@ -336,11 +324,17 @@ const Player = ({navigation}: Props) => {
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleRepeateMode}>
               <View>
-                <MaterialCommunityIcon
-                  name={repeatMode === RepeatMode.Track ? 'repeat-once' : 'repeat'}
-                  size={27}
-                  color={repeatMode === RepeatMode.Off ? '#ffffffaa' : ICON_ACTIVATED_COLOR}
-                />
+                {repeatMode == RepeatMode.Track ? (
+                  <RepeatOnceIcon
+                    size={25}
+                    color={repeatMode === RepeatMode.Off ? '#ffffffaa' : ICON_ACTIVATED_COLOR}
+                  />
+                ) : (
+                  <RepeatIcon
+                    size={25}
+                    color={repeatMode === RepeatMode.Off ? '#ffffffaa' : ICON_ACTIVATED_COLOR}
+                  />
+                )}
               </View>
             </TouchableNativeFeedback>
           </View>

@@ -11,6 +11,7 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 
 import {RootStackParamList} from '../../App';
 import {usePlayer} from '../contexts/PlayerContext';
+import {HeartIcon} from '../icons/HeartIcon';
 
 const MiniPlayer = () => {
   const playbackState = usePlaybackState();
@@ -47,7 +48,7 @@ const MiniPlayer = () => {
           style={{
             backgroundColor: PRIMARY_COLOR,
             height: '100%',
-            width: `${(progress.position / progress.duration) * 100}%`,
+            width: `${progress.duration !== 0 ? (progress.position / progress.duration) * 100 : 0}%`,
           }}
         />
       </View>
@@ -87,11 +88,11 @@ const MiniPlayer = () => {
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, 35)}
               onPress={toggleFavorite}>
               <View>
-                <IonIcon
-                  name={isFavorite ? 'heart' : 'heart-outline'}
-                  size={23}
-                  color={isFavorite ? PRIMARY_COLOR : '#000'}
-                />
+                {isFavorite ? (
+                  <HeartIcon size={25} color={PRIMARY_COLOR} fill={PRIMARY_COLOR} />
+                ) : (
+                  <HeartIcon size={25} color="#000" />
+                )}
               </View>
             </TouchableNativeFeedback>
             <TouchableNativeFeedback
