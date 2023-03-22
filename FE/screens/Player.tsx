@@ -318,11 +318,14 @@ const Player = ({navigation}: Props) => {
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleShuffleMode}>
               <View>
+                <Text style={{fontWeight:'200'}}>
+
                 <FontAwesomeIcon
                   name="random"
                   size={23}
                   color={isShuffleEnabled ? ICON_ACTIVATED_COLOR : '#ffffffaa'}
                 />
+                </Text>
               </View>
             </TouchableNativeFeedback>
             <View style={styles.playbackControl}>
@@ -388,7 +391,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    // backgroundColor: 'purple',
     backgroundColor: 'rgba(0,0,0,0.3)',
   },
   heading: {

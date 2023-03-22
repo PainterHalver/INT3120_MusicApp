@@ -8,6 +8,7 @@ const BoxSearch = () => {
         alignItems: 'center',
         gap: 10,
         paddingVertical: 10,
+        marginTop:40
       }}>
       <View
         style={{
@@ -23,9 +24,8 @@ const BoxSearch = () => {
       <View
         style={{
           paddingHorizontal: 5,
-          borderWidth: 1,
-          borderColor: 'black',
           borderRadius: 20,
+          backgroundColor:'white',
           flex: 1,
           alignItems: 'center',
           flexDirection: 'row',
