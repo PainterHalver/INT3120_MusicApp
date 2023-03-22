@@ -31,7 +31,7 @@ import {RepeatIcon} from '../../icons/RepeatIcon';
 import {RepeatOnceIcon} from '../../icons/RepeatOnceIcon';
 import {ShareIcon} from '../../icons/ShareIcon';
 import {ShuffleIcon} from '../../icons/ShuffleIcon';
-import SpinningDisc from './SpinningDisc';
+import SpinningDisc from '../../components/SpinningDisc';
 
 const {height, width} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;

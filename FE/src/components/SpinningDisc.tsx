@@ -1,18 +1,26 @@
 import React, {useEffect} from 'react';
 import {Animated, Easing} from 'react-native';
 
-import {usePlayer} from '../../contexts/PlayerContext';
+import {usePlayer} from '../contexts/PlayerContext';
 
 interface Props {
   size: number;
 }
 
 const SpinningDisc = ({size}: Props) => {
-  const {currentTrack, isPlaying} = usePlayer();
+  const {
+    currentTrack,
+    isPlaying,
+    rotation,
+    pausedRotationValue,
+    setPausedRotationValue,
+    isRotating,
+    setIsRotating,
+  } = usePlayer();
 
-  const rotation = React.useRef(new Animated.Value(0)).current;
-  const [pausedRotationValue, setPausedRotationValue] = React.useState(0);
   const DISC_DURATION = 20000; // 20 seconds
+  // const rotation = React.useRef(new Animated.Value(0)).current;
+  // const [pausedRotationValue, setPausedRotationValue] = React.useState(0);
 
   useEffect(() => {
     const animation = Animated.loop(
@@ -24,7 +32,7 @@ const SpinningDisc = ({size}: Props) => {
       }),
     );
 
-    if (isPlaying) {
+    if (isPlaying && !isRotating) {
       if (pausedRotationValue === 0) {
         animation.start();
       } else {
@@ -42,18 +50,20 @@ const SpinningDisc = ({size}: Props) => {
           }
         });
       }
-    } else {
+      setIsRotating(true);
+    } else if (!isPlaying && isRotating) {
       // Pause the animation and store the current rotation value in the state
       animation.stop();
       rotation.stopAnimation(value => {
         setPausedRotationValue(value % 360);
       });
+      setIsRotating(false);
     }
 
-    return () => {
-      animation.stop();
-    };
-  }, [isPlaying]);
+    // return () => {
+    //   animation.stop();
+    // };
+  }, [isPlaying, isRotating]);
 
   const spin = rotation.interpolate({
     inputRange: [0, 360],
@@ -62,10 +72,10 @@ const SpinningDisc = ({size}: Props) => {
 
   return (
     <Animated.Image
-      source={currentTrack.artwork || require('./../../../assets/default.png')}
+      source={currentTrack.artwork || require('./../../assets/default.png')}
       style={[
         {borderRadius: 1000, height: size, width: size},
-        {transform: [{rotate: spin}, {perspective: 1000}]},
+        {transform: [{rotateZ: spin}, {perspective: 1000}]},
       ]}
     />
   );

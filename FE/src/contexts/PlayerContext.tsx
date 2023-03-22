@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useEffect} from 'react';
-import {AppState} from 'react-native';
+import {Animated, AppState} from 'react-native';
 import TrackPlayer, {
   AppKilledPlaybackBehavior,
   Capability,
@@ -19,8 +19,13 @@ export type PlayerContextType = {
   isReady: boolean;
   isPlaying: boolean;
   progress: Progress;
+  rotation: Animated.Value;
+  pausedRotationValue: number;
+  isRotating: boolean;
 
   setIsPlaying: (isPlaying: boolean) => void;
+  setPausedRotationValue: (pausedRotationValue: number) => void;
+  setIsRotating: (isRotating: boolean) => void;
 };
 
 const defaultTrack: Track = {
@@ -37,7 +42,12 @@ const PlayerContext = createContext<PlayerContextType>({
   isReady: false,
   isPlaying: false,
   progress: {buffered: 0, position: 0, duration: 0},
+  rotation: new Animated.Value(0),
+  pausedRotationValue: 0,
+  isRotating: false,
   setIsPlaying: () => {},
+  setPausedRotationValue: () => {},
+  setIsRotating: () => {},
 });
 
 export const PlayerProvider = ({children}: any) => {
@@ -45,6 +55,9 @@ export const PlayerProvider = ({children}: any) => {
   const [isReady, setIsReady] = React.useState<boolean>(false);
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
   const progress = useProgress(250);
+  const rotation = React.useRef(new Animated.Value(0)).current;
+  const [pausedRotationValue, setPausedRotationValue] = React.useState(0);
+  const [isRotating, setIsRotating] = React.useState(false);
 
   useTrackPlayerEvents([Event.PlaybackState], (event: any) => {
     if (event.type === Event.PlaybackState) {
@@ -121,7 +134,12 @@ export const PlayerProvider = ({children}: any) => {
         isReady,
         isPlaying,
         progress,
+        rotation,
+        pausedRotationValue,
+        isRotating,
         setIsPlaying,
+        setPausedRotationValue,
+        setIsRotating,
       }}>
       {children}
     </PlayerContext.Provider>

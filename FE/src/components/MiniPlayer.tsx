@@ -1,17 +1,13 @@
-import {Text, View, Button, StyleSheet, TouchableNativeFeedback, Animated} from 'react-native';
-import React, {useState} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import TrackPlayer, {
-  Event,
-  State,
-  usePlaybackState,
-  useTrackPlayerEvents,
-} from 'react-native-track-player';
+import React, {useState} from 'react';
+import {StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
+import TrackPlayer, {State, usePlaybackState} from 'react-native-track-player';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 
 import {RootStackParamList} from '../../App';
 import {usePlayer} from '../contexts/PlayerContext';
 import {HeartIcon} from '../icons/HeartIcon';
+import SpinningDisc from './SpinningDisc';
 
 const MiniPlayer = () => {
   const playbackState = usePlaybackState();
@@ -58,17 +54,7 @@ const MiniPlayer = () => {
           navigation.navigate('Player');
         }}>
         <View style={styles.container}>
-          <Animated.Image
-            source={
-              currentTrack.artwork
-                ? currentTrack.artwork
-                : require('./../../assets/Led_Zeppelin-Stairway_To_Heaven.png')
-            }
-            style={[
-              styles.image,
-              // {transform: [{rotate: spin}, {perspective: 1000}]}
-            ]}
-          />
+          <SpinningDisc size={40} />
           <View style={styles.metadata}>
             <Text style={{fontSize: 13, color: '#000'}}>
               {currentTrack.title && currentTrack.title.length > 30
@@ -131,11 +117,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     alignItems: 'center',
     gap: 10,
-  },
-  image: {
-    height: 40,
-    width: 40,
-    borderRadius: 1000,
   },
   metadata: {
     marginRight: 'auto',
