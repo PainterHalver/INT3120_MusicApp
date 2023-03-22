@@ -54,16 +54,10 @@ const Player = ({navigation}: Props) => {
   const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
 
   useEffect(() => {
-    console.log(progress.position);
-  }, [progress]);
-
-  useTrackPlayerEvents([Event.PlaybackProgressUpdated], async event => {
-    if (event.type === Event.PlaybackProgressUpdated) {
-      if (!slidingSlider) {
-        setSliderValue(event.position);
-      }
+    if (!slidingSlider) {
+      setSliderValue(progress.position);
     }
-  });
+  }, [progress]);
 
   useEffect(() => {
     // Set thông tin playback từ AsyncStorage

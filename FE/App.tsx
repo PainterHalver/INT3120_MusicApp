@@ -82,13 +82,14 @@ function App(): JSX.Element {
         screenOptions={{
           tabBarActiveTintColor: '#f43a5a',
           headerShown: false,
+          tabBarStyle: {backgroundColor: 'rgb(245,245,245)'},
           tabBarButton: ({children, style, ...props}) => (
             <TouchableNativeFeedback
               hitSlop={{top: 0, bottom: 10, left: 10, right: 10}}
               background={TouchableNativeFeedback.Ripple('#00000011', false, 50)}
               {...props}
               useForeground>
-              <View style={[style, {backgroundColor: '#ffffffcc'}]}>{children}</View>
+              <View style={[style]}>{children}</View>
             </TouchableNativeFeedback>
           ),
         }}>
