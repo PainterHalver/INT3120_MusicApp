@@ -31,6 +31,7 @@ import {RepeatIcon} from '../../icons/RepeatIcon';
 import {RepeatOnceIcon} from '../../icons/RepeatOnceIcon';
 import {ShareIcon} from '../../icons/ShareIcon';
 import {ShuffleIcon} from '../../icons/ShuffleIcon';
+import SpinningDisc from './SpinningDisc';
 
 const {height, width} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
@@ -113,57 +114,6 @@ const Player = ({navigation}: Props) => {
     setIsFavorite(!isFavorite);
   };
 
-  // Animating image disc
-  const rotation = React.useRef(new Animated.Value(0)).current;
-  const [pausedRotationValue, setPausedRotationValue] = React.useState(0);
-  const DISC_DURATION = 20000; // 20 seconds
-
-  useEffect(() => {
-    const animation = Animated.loop(
-      Animated.timing(rotation, {
-        toValue: 360,
-        duration: DISC_DURATION,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }),
-    );
-
-    if (isPlaying) {
-      if (pausedRotationValue === 0) {
-        animation.start();
-      } else {
-        // Resume the animation from the paused rotation value immediately
-        Animated.timing(rotation, {
-          toValue: 359.99, // để phòng edge cases
-          duration: ((360 - pausedRotationValue) / 360) * DISC_DURATION,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }).start(({finished}) => {
-          if (finished) {
-            // Set up the beginning loop again after the animation finishes
-            rotation.resetAnimation();
-            animation.start();
-          }
-        });
-      }
-    } else {
-      // Pause the animation and store the current rotation value in the state
-      animation.stop();
-      rotation.stopAnimation(value => {
-        setPausedRotationValue(value % 360);
-      });
-    }
-
-    return () => {
-      animation.stop();
-    };
-  }, [isPlaying, pausedRotationValue, rotation]);
-
-  const spin = rotation.interpolate({
-    inputRange: [0, 360],
-    outputRange: ['0deg', '360deg'],
-  });
-
   return (
     <View style={styles.containerWrapper}>
       <StatusBar
@@ -200,10 +150,7 @@ const Player = ({navigation}: Props) => {
           </View>
           <View style={styles.imageContainer}>
             <View style={styles.imageView}>
-              <Animated.Image
-                source={currentTrack.artwork || require('./../../../assets/default.png')}
-                style={[styles.image, {transform: [{rotate: spin}, {perspective: 1000}]}]}
-              />
+              <SpinningDisc size={width * 0.77} />
             </View>
           </View>
           <View style={styles.metadataContainer}>
@@ -380,11 +327,6 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     borderRadius: 1000,
     elevation: 20,
-  },
-  image: {
-    height: width * 0.77,
-    width: width * 0.77,
-    borderRadius: 1000,
   },
   metadataContainer: {
     flex: 3,
