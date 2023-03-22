@@ -38,6 +38,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {RootStackParamList, tracks} from '../../../App';
+import {usePlayer} from '../../contexts/PlayerContext';
 
 const {height, width} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
@@ -45,27 +46,16 @@ type Props = StackScreenProps<RootStackParamList, 'Player'>;
 const Player = ({navigation}: Props) => {
   const playbackState = usePlaybackState();
   const isPlaying = playbackState.state === State.Playing;
-  const progress = useProgress();
-  const [trackTitle, setTrackTitle] = useState<string>('');
-  const [trackArtist, setTrackArtist] = useState<string>('');
-  const [trackArtwork, setTrackArtwork] = useState<string | number>('');
+  const {currentTrack, progress} = usePlayer();
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [slidingSlider, setSlidingSlider] = useState<boolean>(false);
   const [repeatMode, setRepeatMode] = useState<RepeatMode>(RepeatMode.Off);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
 
-  // Chỉnh metadata state khi track thay đổi
-  useTrackPlayerEvents([Event.PlaybackActiveTrackChanged], async event => {
-    if (event.type === Event.PlaybackActiveTrackChanged && event.index !== undefined) {
-      const track = await TrackPlayer.getTrack(event.index);
-      if (track) {
-        setTrackTitle(track.title || '');
-        setTrackArtist(track.artist || '');
-        setTrackArtwork(track.artwork || '');
-      }
-    }
-  });
+  useEffect(() => {
+    console.log(progress.position);
+  }, [progress]);
 
   useTrackPlayerEvents([Event.PlaybackProgressUpdated], async event => {
     if (event.type === Event.PlaybackProgressUpdated) {
@@ -76,19 +66,6 @@ const Player = ({navigation}: Props) => {
   });
 
   useEffect(() => {
-    // Set metadata cho track hiện tại, lúc vào player có luôn tên track đầu
-    (async () => {
-      const currentTrack = await TrackPlayer.getActiveTrackIndex();
-      if (currentTrack !== null && currentTrack !== undefined) {
-        const track = await TrackPlayer.getTrack(currentTrack);
-        if (track) {
-          setTrackTitle(track.title || '');
-          setTrackArtist(track.artist || '');
-          setTrackArtwork(track.artwork || '');
-        }
-      }
-    })();
-
     // Set thông tin playback từ AsyncStorage
     (async () => {
       const isShuffleEnabled = await AsyncStorage.getItem('@shuffle_enabled');
@@ -171,13 +148,14 @@ const Player = ({navigation}: Props) => {
       } else {
         // Resume the animation from the paused rotation value immediately
         Animated.timing(rotation, {
-          toValue: 360.01, // để phòng edge cases
+          toValue: 359.99, // để phòng edge cases
           duration: ((360 - pausedRotationValue) / 360) * DISC_DURATION,
           easing: Easing.linear,
           useNativeDriver: true,
         }).start(({finished}) => {
           if (finished) {
             // Set up the beginning loop again after the animation finishes
+            rotation.resetAnimation();
             animation.start();
           }
         });
@@ -209,7 +187,7 @@ const Player = ({navigation}: Props) => {
         animated={true}
       />
       <ImageBackground
-        source={trackArtwork ? trackArtwork : require('./../../../assets/default.png')}
+        source={currentTrack.artwork || require('./../../../assets/default.png')}
         resizeMode="cover"
         style={{width: '100%', height: '100%'}}
         blurRadius={20}>
@@ -237,7 +215,7 @@ const Player = ({navigation}: Props) => {
           <View style={styles.imageContainer}>
             <View style={styles.imageView}>
               <Animated.Image
-                source={trackArtwork ? trackArtwork : require('./../../../assets/default.png')}
+                source={currentTrack.artwork || require('./../../../assets/default.png')}
                 style={[styles.image, {transform: [{rotate: spin}, {perspective: 1000}]}]}
               />
             </View>
@@ -252,10 +230,14 @@ const Player = ({navigation}: Props) => {
             </TouchableNativeFeedback>
             <View style={styles.metadata}>
               <Text style={{color: '#fff', fontSize: 18, fontWeight: '600'}}>
-                {trackTitle.length > 25 ? trackTitle.substring(0, 25) + '...' : trackTitle}
+                {currentTrack.title && currentTrack.title.length > 25
+                  ? currentTrack.title.substring(0, 25) + '...'
+                  : currentTrack.title}
               </Text>
               <Text style={{color: '#ffffffbb', fontSize: 16}}>
-                {trackArtist.length > 30 ? trackArtist.substring(0, 30) + '...' : trackArtist}
+                {currentTrack.artist && currentTrack.artist.length > 30
+                  ? currentTrack.artist.substring(0, 30) + '...'
+                  : currentTrack.artist}
               </Text>
             </View>
             <TouchableNativeFeedback

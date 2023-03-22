@@ -22,6 +22,7 @@ import Player from './src/screens/Player';
 // import PlaylistDetail from './src/screens/PlaylistDetail';
 import MiniPlayer from './src/components/MiniPlayer';
 import Search from './src/screens/Search';
+import {PlayerProvider} from './src/contexts/PlayerContext';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -65,40 +66,6 @@ export const tracks: Track[] = [
 ];
 
 function App(): JSX.Element {
-  useEffect(() => {
-    const setUpTrackPlayer = async () => {
-      try {
-        // If TrackPlayer is already initialized, skip
-        if (!(await TrackPlayer.isServiceRunning())) {
-          await TrackPlayer.setupPlayer({});
-          await TrackPlayer.updateOptions({
-            android: {
-              appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification,
-            },
-            capabilities: [
-              Capability.Play,
-              Capability.Pause,
-              Capability.SkipToNext,
-              Capability.SkipToPrevious,
-              // Capability.Stop,
-              Capability.SeekTo,
-              // Capability.JumpForward,
-              // Capability.JumpBackward,
-            ],
-            progressUpdateEventInterval: 1,
-          });
-          console.log('TrackPlayer is initialized');
-        }
-        await TrackPlayer.reset();
-        await TrackPlayer.add(tracks);
-        console.log(`Added ${tracks.length} tracks`);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    setUpTrackPlayer();
-  }, []);
-
   const Home = () => {
     return (
       <BottomTab.Navigator
@@ -161,10 +128,11 @@ function App(): JSX.Element {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
-          {/* <Stack.Screen
+      <PlayerProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
+            {/* <Stack.Screen
             name="PlaylistDetail"
             component={PlaylistDetail}
             options={{
@@ -173,17 +141,18 @@ function App(): JSX.Element {
               ...TransitionPresets.ModalSlideFromBottomIOS,
             }}
           /> */}
-          <Stack.Screen
-            name="Player"
-            component={Player}
-            options={{
-              headerShown: false,
-              // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
-              ...TransitionPresets.ModalSlideFromBottomIOS,
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+            <Stack.Screen
+              name="Player"
+              component={Player}
+              options={{
+                headerShown: false,
+                // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
+                ...TransitionPresets.ModalSlideFromBottomIOS,
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PlayerProvider>
     </SafeAreaProvider>
   );
 }
