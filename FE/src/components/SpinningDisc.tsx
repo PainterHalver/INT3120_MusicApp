@@ -9,7 +9,7 @@ interface Props {
 
 const SpinningDisc = ({size}: Props) => {
   const {
-    currentTrack,
+    currentTrack: {artwork},
     isPlaying,
     rotation,
     pausedRotationValue,
@@ -17,8 +17,8 @@ const SpinningDisc = ({size}: Props) => {
     isRotating,
     setIsRotating,
   } = usePlayer();
-  const [currentArtwork, setCurrentArtwork] = React.useState<any>(
-    currentTrack.artwork || require('./../../assets/default.png'),
+  const [currentArtwork, setCurrentArtwork] = React.useState<string | number>(
+    (typeof artwork === 'string' ? {uri: artwork} : artwork) || require('./../../assets/default.png'),
   );
 
   const DISC_DURATION = 20000; // 20 seconds
@@ -78,7 +78,10 @@ const SpinningDisc = ({size}: Props) => {
       useNativeDriver: true,
     }).start(({finished}) => {
       if (finished) {
-        setCurrentArtwork(currentTrack.artwork || require('./../../assets/default.png'));
+        setCurrentArtwork(
+          (typeof artwork === 'string' ? {uri: artwork} : artwork) ||
+            require('./../../assets/default.png'),
+        );
         fadeAnim.setValue(1);
       }
     });
@@ -88,14 +91,17 @@ const SpinningDisc = ({size}: Props) => {
     <Animated.View
       style={[{height: size, width: size}, {transform: [{rotate: spin}, {perspective: 1000}]}]}>
       <Image
-        source={currentTrack.artwork || require('./../../assets/default.png')}
+        source={
+          (typeof artwork === 'string' ? {uri: artwork} : artwork) ||
+          require('./../../assets/default.png')
+        }
         style={[styles.image, {height: size, width: size}]}
         onLoadEnd={() => {
           imageTransition();
         }}
       />
       <Animated.Image
-        source={currentArtwork}
+        source={typeof currentArtwork === 'string' ? {uri: currentArtwork} : currentArtwork}
         style={[styles.image, {height: size, width: size}, {opacity: fadeAnim}]}
       />
     </Animated.View>

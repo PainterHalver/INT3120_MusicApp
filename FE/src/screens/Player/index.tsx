@@ -289,7 +289,7 @@ const Player = ({navigation}: Props) => {
 };
 
 const NORMAL_ICON_SIZE = 28;
-const RIPPLE_COLOR = '#ccc';
+const RIPPLE_COLOR = '#cccccc55';
 const CONTROL_RIPPLE_RADIUS = 45;
 const ICON_ACTIVATED_COLOR = '#f43a5a';
 
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   heading: {
     height: 60,

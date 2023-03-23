@@ -10,12 +10,14 @@ interface Props {
 }
 
 const PlayerBackground = ({children}: Props) => {
-  const {currentTrack} = usePlayer();
+  const {
+    currentTrack: {artwork},
+  } = usePlayer();
 
   // Fade animation
   const [fadeAnim] = React.useState(new Animated.Value(0));
   const [currentArtwork, setCurrentArtwork] = React.useState<any>(
-    currentTrack.artwork || require('./../../../assets/default.png'),
+    (typeof artwork === 'string' ? {uri: artwork} : artwork) || require('./../../../assets/default.png'),
   );
 
   const imageTransition = () => {
@@ -25,7 +27,10 @@ const PlayerBackground = ({children}: Props) => {
       useNativeDriver: true,
     }).start(({finished}) => {
       if (finished) {
-        setCurrentArtwork(currentTrack.artwork || require('./../../../assets/default.png'));
+        setCurrentArtwork(
+          (typeof artwork === 'string' ? {uri: artwork} : artwork) ||
+            require('./../../../assets/default.png'),
+        );
         fadeAnim.setValue(1);
       }
     });
@@ -36,10 +41,13 @@ const PlayerBackground = ({children}: Props) => {
   return (
     <View accessibilityIgnoresInvertColors={true} style={styles.container}>
       <Image
-        source={currentTrack.artwork || require('./../../../assets/default.png')}
+        source={
+          (typeof artwork === 'string' ? {uri: artwork} : artwork) ||
+          require('./../../../assets/default.png')
+        }
         resizeMode="cover"
         style={[StyleSheet.absoluteFill, {width: flattenedStyle?.width, height: flattenedStyle?.height}]}
-        blurRadius={30}
+        blurRadius={20}
         onLoadEnd={() => {
           imageTransition();
         }}
@@ -52,7 +60,7 @@ const PlayerBackground = ({children}: Props) => {
           {width: flattenedStyle?.width, height: flattenedStyle?.height},
           {opacity: fadeAnim},
         ]}
-        blurRadius={30}
+        blurRadius={20}
       />
       {children}
     </View>
