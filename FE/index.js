@@ -10,7 +10,7 @@ import {name as appName} from './app.json';
 import ChartDetail from './src/screens/ChartDetail';
 import NewApp from './src/screens/NewApp';
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => ChartDetail);
 
 // Register playback services
 TrackPlayer.registerPlaybackService(() => require('./service.js'));

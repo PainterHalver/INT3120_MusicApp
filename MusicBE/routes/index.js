@@ -56,10 +56,15 @@ router.get("/chart", async (req, res, next) => {
       }),
     });
   });
+  i = 0;
+  const titles = ['V-POP', 'US-UK', 'KPOP']
 
   Object.keys(weekChart).forEach((element) => {
-    weekChart[element].items = [];
+    weekChart[element].items = weekChart[element].items.slice(0, 3);
+    weekChart[element].title = titles[i];
+    i++;
   });
+  i = null;
 
   res.json({
     chart,
