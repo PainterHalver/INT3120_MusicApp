@@ -32,6 +32,7 @@ import {RepeatOnceIcon} from '../../icons/RepeatOnceIcon';
 import {ShareIcon} from '../../icons/ShareIcon';
 import {ShuffleIcon} from '../../icons/ShuffleIcon';
 import SpinningDisc from '../../components/SpinningDisc';
+import PlayerBackground from './PlayerBackground';
 
 const {height, width} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
@@ -122,11 +123,7 @@ const Player = ({navigation}: Props) => {
         backgroundColor={'transparent'}
         animated={true}
       />
-      <ImageBackground
-        source={currentTrack.artwork || require('./../../../assets/default.png')}
-        resizeMode="cover"
-        style={{width: '100%', height: '100%'}}
-        blurRadius={20}>
+      <PlayerBackground>
         <View style={styles.container}>
           <View style={[styles.heading]}>
             <TouchableOpacity
@@ -286,7 +283,7 @@ const Player = ({navigation}: Props) => {
             </TouchableNativeFeedback>
           </View>
         </View>
-      </ImageBackground>
+      </PlayerBackground>
     </View>
   );
 };
