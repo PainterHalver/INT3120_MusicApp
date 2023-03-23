@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Animated, Easing} from 'react-native';
+import {Animated, Easing, Image, StyleSheet} from 'react-native';
 
 import {usePlayer} from '../contexts/PlayerContext';
 
@@ -17,10 +17,11 @@ const SpinningDisc = ({size}: Props) => {
     isRotating,
     setIsRotating,
   } = usePlayer();
+  const [currentArtwork, setCurrentArtwork] = React.useState<any>(
+    currentTrack.artwork || require('./../../assets/default.png'),
+  );
 
   const DISC_DURATION = 20000; // 20 seconds
-  // const rotation = React.useRef(new Animated.Value(0)).current;
-  // const [pausedRotationValue, setPausedRotationValue] = React.useState(0);
 
   useEffect(() => {
     const animation = Animated.loop(
@@ -33,6 +34,7 @@ const SpinningDisc = ({size}: Props) => {
     );
 
     if (isPlaying && !isRotating) {
+      rotation.stopAnimation();
       if (pausedRotationValue === 0) {
         animation.start();
       } else {
@@ -59,10 +61,6 @@ const SpinningDisc = ({size}: Props) => {
       });
       setIsRotating(false);
     }
-
-    // return () => {
-    //   animation.stop();
-    // };
   }, [isPlaying, isRotating]);
 
   const spin = rotation.interpolate({
@@ -70,15 +68,46 @@ const SpinningDisc = ({size}: Props) => {
     outputRange: ['0deg', '360deg'],
   });
 
+  // Fade animation
+  const [fadeAnim] = React.useState(new Animated.Value(0));
+
+  const imageTransition = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true,
+    }).start(({finished}) => {
+      if (finished) {
+        setCurrentArtwork(currentTrack.artwork || require('./../../assets/default.png'));
+        fadeAnim.setValue(1);
+      }
+    });
+  };
+
   return (
-    <Animated.Image
-      source={currentTrack.artwork || require('./../../assets/default.png')}
-      style={[
-        {borderRadius: 1000, height: size, width: size},
-        {transform: [{rotateZ: spin}, {perspective: 1000}]},
-      ]}
-    />
+    <Animated.View
+      style={[{height: size, width: size}, {transform: [{rotate: spin}, {perspective: 1000}]}]}>
+      <Image
+        source={currentTrack.artwork || require('./../../assets/default.png')}
+        style={[styles.image, {height: size, width: size}]}
+        onLoadEnd={() => {
+          imageTransition();
+        }}
+      />
+      <Animated.Image
+        source={currentArtwork}
+        style={[styles.image, {height: size, width: size}, {opacity: fadeAnim}]}
+      />
+    </Animated.View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {},
+  image: {
+    borderRadius: 1000,
+    position: 'absolute',
+  },
+});
 
 export default SpinningDisc;
