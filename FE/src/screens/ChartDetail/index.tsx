@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {View, ScrollView} from 'react-native';
+import {View, ScrollView, Text} from 'react-native';
 import Chart from '../../components/Chart';
 import axios from 'axios';
 import {ImageBackground} from 'react-native';
 import VerticalItemSong from '../../components/VerticalItemSong';
+import WeekChartItem from './WeekChartItem';
 
 const ChartDetail = () => {
   const [chartData, setChartData] = useState();
   const [songs, setSongs] = useState([]);
-  const [weekCharts, setWeekCharts] = useState([]);
+  const [weekCharts, setWeekCharts] = useState({});
   useEffect(() => {
     const getData = async () => {
       const data = await axios.get('http://10.0.2.2:5000/chart', {
@@ -27,19 +28,29 @@ const ChartDetail = () => {
       data.data.chart.datasets[2].color = (opacity = 5) => `rgba(227, 80, 80, ${opacity})`;
       setChartData(data.data.chart);
       setSongs(data.data.songs);
-      setWeekCharts(data.data.weekCharts);
+      setWeekCharts(data.data.weekChart);
     };
     getData();
   }, []);
   return (
     <ScrollView style={{backgroundColor: 'rgba(32,19,53,0.9)'}}>
-      {chartData && <Chart data={chartData} />}
+      <Text
+        style={{
+          fontSize: 30,
+          fontWeight: '900',
+          marginBottom: 20,
+          marginTop: 10,
+          color: '#ddd',
+          marginLeft: '5%',
+        }}>#Top</Text>
+      {chartData && <Chart data={chartData}/>}
       {songs.length != 0 && (
         <View
           style={{
             backgroundColor: 'rgba(32,19,53,0.9)',
             borderTopStartRadius: 15,
             borderTopEndRadius: 15,
+            height: '100%',
           }}>
           {songs.map((song, index) => (
             <VerticalItemSong
@@ -54,11 +65,31 @@ const ChartDetail = () => {
           {weekCharts && (
             <View
               style={{
-                backgroundColor: 'rgba(32,19,53,0.9)',
                 borderTopStartRadius: 15,
                 borderTopEndRadius: 15,
-                opacity: 0.6,
-              }}></View>
+                backgroundColor: 'hsla(0,0%,100%,0.05)',
+                paddingBottom: 15,
+              }}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: '900',
+                  marginBottom: 5,
+                  marginTop: 20,
+                  color: '#ddd',
+                  marginLeft: '5%',
+                }}>
+                Weekly ranking
+              </Text>
+              {Object.keys(weekCharts).map((element, index) => (
+                <WeekChartItem
+                  key={index}
+                  data={weekCharts[element].items}
+                  image={weekCharts[element].items[0].thumbnail}
+                  size={100}
+                />
+              ))}
+            </View>
           )}
         </View>
       )}

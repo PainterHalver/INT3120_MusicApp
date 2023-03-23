@@ -10,7 +10,7 @@ const Chart = (props: Props) => {
   const screenWidth = Dimensions.get('window').width - 20;
 
   const chartConfig = {
-    backgroundColor: 'rgba(32,19,53,0.9)',
+    backgroundColor: 'rgba(41,21,71,0.8)',
     backgroundGradientFrom: 'rgba(32,19,53,0.9)',
     backgroundGradientTo: 'rgba(32,19,53,0.9)',
     backgroundGradientFromOpacity: 0,
@@ -24,9 +24,10 @@ const Chart = (props: Props) => {
     <LineChart
       style={{
         backgroundColor: 'rgba(32,19,53,0)',
-        paddingBottom: 20,
+        paddingBottom: 5,
         borderBottomEndRadius: 20,
         borderBottomStartRadius: 20,
+        marginHorizontal: 10,
       }}
       data={props.data}
       width={screenWidth}
@@ -36,7 +37,7 @@ const Chart = (props: Props) => {
       withVerticalLines={false}
       fromZero={true}
       withShadow={false}
-      withHorizontalLabels={false}
+      withHorizontalLabels={true}
       bezier
     />
   );
