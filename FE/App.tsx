@@ -9,7 +9,7 @@ import {BottomTabBar, createBottomTabNavigator} from '@react-navigation/bottom-t
 import {NavigationContainer, NavigatorScreenParams} from '@react-navigation/native';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import React, {useEffect} from 'react';
-import {TouchableNativeFeedback, View} from 'react-native';
+import {Text, TouchableNativeFeedback, View} from 'react-native';
 import type {Track} from 'react-native-track-player';
 import TrackPlayer, {AppKilledPlaybackBehavior, Capability} from 'react-native-track-player';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
@@ -23,6 +23,7 @@ import Player from './src/screens/Player';
 import MiniPlayer from './src/components/MiniPlayer';
 import Search from './src/screens/Search';
 import {PlayerProvider} from './src/contexts/PlayerContext';
+import {DoubleCircleIcon} from './src/icons/DoubleCircleIcon';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -116,6 +117,18 @@ function App(): JSX.Element {
               <View style={[style]}>{children}</View>
             </TouchableNativeFeedback>
           ),
+          tabBarLabel: ({focused, color, children}) => (
+            <Text
+              style={{
+                color: color,
+                fontSize: 10,
+                marginBottom: 5,
+                marginTop: -5,
+                fontWeight: `${focused ? 'bold' : 'normal'}`,
+              }}>
+              {children}
+            </Text>
+          ),
         }}>
         <BottomTab.Screen
           name="Hello"
@@ -141,10 +154,8 @@ function App(): JSX.Element {
           name="Welcome"
           component={NewApp}
           options={{
-            title: 'Welcome',
-            tabBarIcon: ({focused, color, size}) => (
-              <MaterialCommunityIcon name="new-box" size={size} color={color} />
-            ),
+            title: 'Khám phá',
+            tabBarIcon: ({focused, color, size}) => <DoubleCircleIcon size={size - 5} color={color} />,
           }}
         />
       </BottomTab.Navigator>

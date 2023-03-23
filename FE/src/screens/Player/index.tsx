@@ -22,6 +22,7 @@ import {
 import TrackPlayer, {RepeatMode, State, usePlaybackState} from 'react-native-track-player';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 import {RootStackParamList} from '../../../App';
@@ -141,7 +142,7 @@ const Player = ({navigation}: Props) => {
               hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, 23)}>
               <View>
-                <MaterialCommunityIcon name="dots-vertical" size={23} color="#fff" />
+                <IonIcon name="ios-ellipsis-vertical" size={23} color="#fff" />
               </View>
             </TouchableNativeFeedback>
           </View>

@@ -62,7 +62,6 @@ const MiniPlayer = () => {
                 : currentTrack.title}
             </Text>
             <Text style={{fontSize: 13}}>
-              {' '}
               {currentTrack.artist && currentTrack.artist.length > 30
                 ? currentTrack.artist.substring(0, 30) + '...'
                 : currentTrack.artist}
