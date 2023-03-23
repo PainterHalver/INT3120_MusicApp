@@ -1,30 +1,43 @@
 import {Dimensions} from 'react-native';
 import {LineChart} from 'react-native-chart-kit';
 import {LineChartData} from 'react-native-chart-kit/dist/line-chart/LineChart';
+import {View} from 'react-native';
 
 type Props = {
   data: LineChartData;
 };
 const Chart = (props: Props) => {
-  const screenWidth = Dimensions.get('window').width - 22;
+  const screenWidth = Dimensions.get('window').width - 20;
 
   const chartConfig = {
-    backgroundGradientFrom: 'white',
-    backgroundGradientTo: 'white',
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    backgroundColor: 'rgba(32,19,53,0.9)',
+    backgroundGradientFrom: 'rgba(32,19,53,0.9)',
+    backgroundGradientTo: 'rgba(32,19,53,0.9)',
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientToOpacity: 0,
+    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
     strokeWidth: 100,
   };
 
   return (
     <LineChart
+      style={{
+        backgroundColor: 'rgba(32,19,53,0)',
+        paddingBottom: 20,
+        borderBottomEndRadius: 20,
+        borderBottomStartRadius: 20,
+      }}
       data={props.data}
       width={screenWidth}
-      height={220}
+      height={210}
       chartConfig={chartConfig}
-      withInnerLines={false}
+      withInnerLines={true}
       withVerticalLines={false}
       fromZero={true}
       withShadow={false}
+      withHorizontalLabels={false}
+      bezier
     />
   );
 };
