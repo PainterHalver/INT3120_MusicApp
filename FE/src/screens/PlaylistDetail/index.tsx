@@ -3,9 +3,9 @@ import {Text, View, Image, StyleSheet, ImageBackground} from 'react-native';
 import axios from 'axios';
 import {useState, useEffect} from 'react';
 import {ScrollView} from 'react-native-gesture-handler';
-import ItemAlbum from '../src/Components/ItemAlbum';
-import ItemArtist from '../src/Components/ItemArtist';
-import VerticalItemSong from '../src/Components/VerticalItemSong';
+import ItemAlbum from '../../components/ItemAlbum';
+import ItemArtist from '../../components/ItemArtist';
+import VerticalItemSong from '../../components/VerticalItemSong';
 //type Props = StackScreenProps<RootStackParamList, 'PlaylistDetail'>;
 
 const PlaylistDetail = () => {

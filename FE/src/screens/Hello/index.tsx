@@ -15,8 +15,8 @@ import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {StackScreenProps} from '@react-navigation/stack';
 import {CompositeScreenProps} from '@react-navigation/native';
 
-import {BottomTabParamList} from '../App';
-import {RootStackParamList} from '../App';
+import {BottomTabParamList} from '../../../App';
+import {RootStackParamList} from '../../../App';
 
 // Prop 1 là prop gần nhất, 2 là của parent
 type Props = CompositeScreenProps<

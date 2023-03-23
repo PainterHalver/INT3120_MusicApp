@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {View, ScrollView} from 'react-native';
-import LineChartBox from '../src/Screens/LineChartBox';
-import Chart from '../src/Components/Chart';
+import Chart from '../../components/Chart';
 import axios from 'axios';
 import {ImageBackground} from 'react-native';
-import VerticalItemSong from '../src/Components/VerticalItemSong';
+import VerticalItemSong from '../../components/VerticalItemSong';
 
 const ChartDetail = () => {
   const [chartData, setChartData] = useState();
@@ -59,9 +58,7 @@ const ChartDetail = () => {
                 borderTopStartRadius: 15,
                 borderTopEndRadius: 15,
                 opacity: 0.6,
-              }}>
-                
-              </View>
+              }}></View>
           )}
         </View>
       )}

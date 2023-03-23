@@ -12,7 +12,7 @@ import React from 'react';
 import {CompositeScreenProps} from '@react-navigation/native';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {StackScreenProps} from '@react-navigation/stack';
-import {BottomTabParamList, RootStackParamList} from '../App';
+import {BottomTabParamList, RootStackParamList} from '../../../App';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import {Pressable} from 'react-native';
 

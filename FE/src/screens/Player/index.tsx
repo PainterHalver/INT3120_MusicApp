@@ -1,43 +1,37 @@
 // Bắt remount lại component chứ không fast refresh
 // @refresh reset
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Slider from '@react-native-community/slider';
+import {StackScreenProps} from '@react-navigation/stack';
+import React, {useEffect, useState} from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Platform,
-  ImageBackground,
   Animated,
-  Pressable,
-  TouchableNativeFeedback,
   Dimensions,
   Easing,
+  ImageBackground,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
   ToastAndroid,
+  TouchableNativeFeedback,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {StatusBar, TouchableOpacity} from 'react-native';
+import TrackPlayer, {RepeatMode, State, usePlaybackState} from 'react-native-track-player';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import TrackPlayer, {
-  Event,
-  State,
-  usePlaybackState,
-  useProgress,
-  useTrackPlayerEvents,
-  RepeatMode,
-  Track,
-} from 'react-native-track-player';
-import Slider from '@react-native-community/slider';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import IonIcon from 'react-native-vector-icons/Ionicons';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import FeatherIcon from 'react-native-vector-icons/Feather';
-import {StackScreenProps} from '@react-navigation/stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
-import {RootStackParamList, tracks} from '../App';
+import {RootStackParamList} from '../../../App';
+import {usePlayer} from '../../contexts/PlayerContext';
+import {HeartIcon} from '../../icons/HeartIcon';
+import {RepeatIcon} from '../../icons/RepeatIcon';
+import {RepeatOnceIcon} from '../../icons/RepeatOnceIcon';
+import {ShareIcon} from '../../icons/ShareIcon';
+import {ShuffleIcon} from '../../icons/ShuffleIcon';
+import SpinningDisc from '../../components/SpinningDisc';
 
 const {height, width} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
@@ -45,50 +39,20 @@ type Props = StackScreenProps<RootStackParamList, 'Player'>;
 const Player = ({navigation}: Props) => {
   const playbackState = usePlaybackState();
   const isPlaying = playbackState.state === State.Playing;
-  const progress = useProgress();
-  const [trackTitle, setTrackTitle] = useState<string>('');
-  const [trackArtist, setTrackArtist] = useState<string>('');
-  const [trackArtwork, setTrackArtwork] = useState<string | number>('');
+  const {currentTrack, progress} = usePlayer();
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [slidingSlider, setSlidingSlider] = useState<boolean>(false);
   const [repeatMode, setRepeatMode] = useState<RepeatMode>(RepeatMode.Off);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
 
-  // Chỉnh metadata state khi track thay đổi
-  useTrackPlayerEvents([Event.PlaybackActiveTrackChanged], async event => {
-    if (event.type === Event.PlaybackActiveTrackChanged && event.index !== undefined) {
-      const track = await TrackPlayer.getTrack(event.index);
-      if (track) {
-        setTrackTitle(track.title || '');
-        setTrackArtist(track.artist || '');
-        setTrackArtwork(track.artwork || '');
-      }
+  useEffect(() => {
+    if (!slidingSlider) {
+      setSliderValue(progress.position);
     }
-  });
-
-  useTrackPlayerEvents([Event.PlaybackProgressUpdated], async event => {
-    if (event.type === Event.PlaybackProgressUpdated) {
-      if (!slidingSlider) {
-        setSliderValue(event.position);
-      }
-    }
-  });
+  }, [progress]);
 
   useEffect(() => {
-    // Set metadata cho track hiện tại, lúc vào player có luôn tên track đầu
-    (async () => {
-      const currentTrack = await TrackPlayer.getActiveTrackIndex();
-      if (currentTrack !== null && currentTrack !== undefined) {
-        const track = await TrackPlayer.getTrack(currentTrack);
-        if (track) {
-          setTrackTitle(track.title || '');
-          setTrackArtist(track.artist || '');
-          setTrackArtwork(track.artwork || '');
-        }
-      }
-    })();
-
     // Set thông tin playback từ AsyncStorage
     (async () => {
       const isShuffleEnabled = await AsyncStorage.getItem('@shuffle_enabled');
@@ -145,59 +109,10 @@ const Player = ({navigation}: Props) => {
     await AsyncStorage.setItem('@shuffle_enabled', (!isShuffleEnabled).toString());
   };
 
+  // TODO: Implement this
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
   };
-
-  // Animating image disc
-  const rotation = React.useRef(new Animated.Value(0)).current;
-  const [pausedRotationValue, setPausedRotationValue] = React.useState(0);
-  const DISC_DURATION = 20000; // 20 seconds
-
-  useEffect(() => {
-    const animation = Animated.loop(
-      Animated.timing(rotation, {
-        toValue: 360,
-        duration: DISC_DURATION,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }),
-    );
-
-    if (isPlaying) {
-      if (pausedRotationValue === 0) {
-        animation.start();
-      } else {
-        // Resume the animation from the paused rotation value immediately
-        Animated.timing(rotation, {
-          toValue: 360.01, // để phòng edge cases
-          duration: ((360 - pausedRotationValue) / 360) * DISC_DURATION,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }).start(({finished}) => {
-          if (finished) {
-            // Set up the beginning loop again after the animation finishes
-            animation.start();
-          }
-        });
-      }
-    } else {
-      // Pause the animation and store the current rotation value in the state
-      animation.stop();
-      rotation.stopAnimation(value => {
-        setPausedRotationValue(value % 360);
-      });
-    }
-
-    return () => {
-      animation.stop();
-    };
-  }, [isPlaying, pausedRotationValue, rotation]);
-
-  const spin = rotation.interpolate({
-    inputRange: [0, 360],
-    outputRange: ['0deg', '360deg'],
-  });
 
   return (
     <View style={styles.containerWrapper}>
@@ -208,7 +123,7 @@ const Player = ({navigation}: Props) => {
         animated={true}
       />
       <ImageBackground
-        source={trackArtwork ? trackArtwork : require('./../assets/default.png')}
+        source={currentTrack.artwork || require('./../../../assets/default.png')}
         resizeMode="cover"
         style={{width: '100%', height: '100%'}}
         blurRadius={20}>
@@ -235,10 +150,7 @@ const Player = ({navigation}: Props) => {
           </View>
           <View style={styles.imageContainer}>
             <View style={styles.imageView}>
-              <Animated.Image
-                source={trackArtwork ? trackArtwork : require('./../assets/default.png')}
-                style={[styles.image, {transform: [{rotate: spin}, {perspective: 1000}]}]}
-              />
+              <SpinningDisc size={width * 0.77} />
             </View>
           </View>
           <View style={styles.metadataContainer}>
@@ -246,15 +158,19 @@ const Player = ({navigation}: Props) => {
               hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}>
               <View>
-                <IonIcon name="share-social-outline" size={NORMAL_ICON_SIZE} color="#ffffffaa" />
+                <ShareIcon size={21} color="#ffffffaa" />
               </View>
             </TouchableNativeFeedback>
             <View style={styles.metadata}>
               <Text style={{color: '#fff', fontSize: 18, fontWeight: '600'}}>
-                {trackTitle.length > 25 ? trackTitle.substring(0, 25) + '...' : trackTitle}
+                {currentTrack.title && currentTrack.title.length > 25
+                  ? currentTrack.title.substring(0, 25) + '...'
+                  : currentTrack.title}
               </Text>
               <Text style={{color: '#ffffffbb', fontSize: 16}}>
-                {trackArtist.length > 30 ? trackArtist.substring(0, 30) + '...' : trackArtist}
+                {currentTrack.artist && currentTrack.artist.length > 30
+                  ? currentTrack.artist.substring(0, 30) + '...'
+                  : currentTrack.artist}
               </Text>
             </View>
             <TouchableNativeFeedback
@@ -262,11 +178,11 @@ const Player = ({navigation}: Props) => {
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleFavorite}>
               <View>
-                <IonIcon
-                  name={isFavorite ? 'heart' : 'heart-outline'}
-                  size={NORMAL_ICON_SIZE}
-                  color={isFavorite ? ICON_ACTIVATED_COLOR : '#ffffffaa'}
-                />
+                {isFavorite ? (
+                  <HeartIcon size={25} color={ICON_ACTIVATED_COLOR} fill={ICON_ACTIVATED_COLOR} />
+                ) : (
+                  <HeartIcon size={25} color="#ffffffaa" />
+                )}
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -317,11 +233,7 @@ const Player = ({navigation}: Props) => {
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleShuffleMode}>
               <View>
-                <FontAwesomeIcon
-                  name="random"
-                  size={23}
-                  color={isShuffleEnabled ? ICON_ACTIVATED_COLOR : '#ffffffaa'}
-                />
+                <ShuffleIcon size={25} color={isShuffleEnabled ? ICON_ACTIVATED_COLOR : '#ffffffaa'} />
               </View>
             </TouchableNativeFeedback>
             <View style={styles.playbackControl}>
@@ -359,11 +271,17 @@ const Player = ({navigation}: Props) => {
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleRepeateMode}>
               <View>
-                <MaterialCommunityIcon
-                  name={repeatMode === RepeatMode.Track ? 'repeat-once' : 'repeat'}
-                  size={27}
-                  color={repeatMode === RepeatMode.Off ? '#ffffffaa' : ICON_ACTIVATED_COLOR}
-                />
+                {repeatMode == RepeatMode.Track ? (
+                  <RepeatOnceIcon
+                    size={25}
+                    color={repeatMode === RepeatMode.Off ? '#ffffffaa' : ICON_ACTIVATED_COLOR}
+                  />
+                ) : (
+                  <RepeatIcon
+                    size={25}
+                    color={repeatMode === RepeatMode.Off ? '#ffffffaa' : ICON_ACTIVATED_COLOR}
+                  />
+                )}
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -387,7 +305,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    // backgroundColor: 'purple',
     backgroundColor: 'rgba(0,0,0,0.3)',
   },
   heading: {
@@ -410,11 +327,6 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     borderRadius: 1000,
     elevation: 20,
-  },
-  image: {
-    height: width * 0.77,
-    width: width * 0.77,
-    borderRadius: 1000,
   },
   metadataContainer: {
     flex: 3,

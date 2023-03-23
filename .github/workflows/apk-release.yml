@@ -5,9 +5,9 @@ on:
     tags:
       - "v*"
 
-defaults:
-  run:
-    working-directory: ./FE
+# defaults:
+#   run:
+#     working-directory: ./FE
 
 jobs:
   build-and-publish-apk:
@@ -20,11 +20,11 @@ jobs:
           distribution: "temurin"
           java-version: "17.x"
       - name: Install npm dependencies
-        run: npm install
+        run: cd ./FE && npm install
       - name: Make gradlew executable
-        run: chmod +x ./android/gradlew
+        run: chmod +x ./FE/android/gradlew
       - name: Build APK
-        run: cd ./android && ./gradlew assembleRelease
+        run: cd ./FE/android && ./gradlew assembleRelease
       - name: Sign APK
         uses: ilharp/sign-android-release@v1
         id: sign_apk
@@ -36,7 +36,9 @@ jobs:
           keyPassword: 123456
           buildToolsVersion: 33.0.0
       - name: Rename to app-release.apk
-        run: mv ${{steps.sign_apk.outputs.signedFile}} app_release_${{github.ref_name}}.apk
+        run: |
+          mv ${{steps.sign_apk.outputs.signedFile}} app_release_${{github.ref_name}}.apk
+          ls -la
       - name: Publish release APK
         uses: "marvinpinto/action-automatic-releases@latest"
         with:

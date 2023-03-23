@@ -1,28 +1,12 @@
 import React from 'react';
-import BoxSearch from '../src/Components/BoxSearch';
-import LineChartBox from '../src/Screens/LineChartBox';
-import ItemSong from '../src/Components/ItemSong';
-import Banner from '../src/Components/Banner';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  useColorScheme,
-  View,
-  Text,
-  StyleSheet,
-  Image,
-} from 'react-native';
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import ListItem from '../src/Components/ListItem';
+import {SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View} from 'react-native';
+import Banner from '../../components/Banner';
+import BoxSearch from '../../components/BoxSearch';
+import ItemSong from '../../components/ItemSong';
+import ListItem from '../../components/ListItem';
+import LineChartBox from './LineChartBox';
 
 const NewApp = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   const dataRelease = [
     {
       description: 'Ten album Hoa Minzy Duc Phuc Phuc du',
@@ -51,12 +35,13 @@ const NewApp = () => {
       image: 'https://i.ytimg.com/vi/Sf9_daKZrnY/maxresdefault.jpg',
     },
     {
-      image:
-        'https://th.bing.com/th?id=OIF.kWsr%2bKuxY%2brRkg6tEeGWYQ&pid=ImgDet&rs=1',
+      image: 'https://th.bing.com/th?id=OIF.kWsr%2bKuxY%2brRkg6tEeGWYQ&pid=ImgDet&rs=1',
     },
     {
-      image:
-        'https://th.bing.com/th/id/OIP.aif3Oh0GtBdSWyVzDYpC9AHaDt?w=321&h=175&c=7&r=0&o=5&pid=1.7',
+      image: 'https://th.bing.com/th/id/OIP.aif3Oh0GtBdSWyVzDYpC9AHaDt?w=321&h=175&c=7&r=0&o=5&pid=1.7',
+    },
+    {
+      image: 'https://th.bing.com/th/id/OIP.6FnRrun73kVMGhfQ6r2RdAAAAA?pid=ImgDet&rs=1',
     },
   ];
 
@@ -106,25 +91,31 @@ const NewApp = () => {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView contentInsetAdjustmentBehavior="automatic" style={[backgroundStyle, {marginTop: 50}]}>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            paddingHorizontal: 10,
-          }}>
-          <BoxSearch />
-          <Banner data={dataBanner} />
-          <ListItem data={dataRelease} name={'Nghệ sĩ thịnh hành'} />
-          <NewRelease />
-          <ListItem data={dataRelease} name={'Lựa chọn hôm nay'} />
-          <LineChartBox />
-          <ListItem data={dataRelease} name={'Top 100'} />
-          <ListItem data={dataRelease} name={'Album hot >'} />
+    <SafeAreaView>
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
+        <View style={{backgroundColor: 'transparent'}}>
+          <Banner data={dataBanner}>
+            <View>
+              <StatusBar
+                barStyle={'light-content'}
+                translucent
+                backgroundColor={'transparent'}
+                animated={true}
+              />
+              <BoxSearch />
+            </View>
+          </Banner>
+          <View
+            style={{
+              paddingHorizontal: 10,
+            }}>
+            <ListItem data={dataRelease} name={'Nghệ sĩ thịnh hành'} />
+            <NewRelease />
+            <ListItem data={dataRelease} name={'Lựa chọn hôm nay'} />
+            <LineChartBox />
+            <ListItem data={dataRelease} name={'Top 100'} />
+            <ListItem data={dataRelease} name={'Album hot >'} />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
