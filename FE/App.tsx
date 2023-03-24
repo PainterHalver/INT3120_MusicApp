@@ -6,7 +6,7 @@
  */
 
 import {BottomTabBar, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer, NavigatorScreenParams} from '@react-navigation/native';
+import {DefaultTheme, NavigationContainer, NavigatorScreenParams} from '@react-navigation/native';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import React, {useEffect} from 'react';
 import {Text, TouchableNativeFeedback, View} from 'react-native';
@@ -24,6 +24,8 @@ import MiniPlayer from './src/components/MiniPlayer';
 import Search from './src/screens/Search';
 import {PlayerProvider} from './src/contexts/PlayerContext';
 import {DoubleCircleIcon} from './src/icons/DoubleCircleIcon';
+import {SearchIcon} from './src/icons/SearchIcon';
+import {COLORS} from './src/constants/Colors';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -107,7 +109,12 @@ function App(): JSX.Element {
         screenOptions={{
           tabBarActiveTintColor: '#f43a5a',
           headerShown: false,
-          tabBarStyle: {backgroundColor: 'rgb(245,245,245)'},
+          tabBarStyle: {
+            backgroundColor: COLORS.BOTTOM_BAR,
+            borderTopWidth: 0.5,
+            shadowOffset: {width: 0, height: 0},
+            elevation: 0,
+          },
           tabBarButton: ({children, style, ...props}) => (
             <TouchableNativeFeedback
               hitSlop={{top: 0, bottom: 10, left: 10, right: 10}}
@@ -144,10 +151,8 @@ function App(): JSX.Element {
           name="Search"
           component={Search}
           options={{
-            title: 'Search',
-            tabBarIcon: ({focused, color, size}) => (
-              <FontAwesomeIcon name="search" size={size} color={color} />
-            ),
+            title: 'Tìm kiếm',
+            tabBarIcon: ({focused, color, size}) => <SearchIcon size={size - 5} color={color} />,
           }}
         />
         <BottomTab.Screen
@@ -165,7 +170,18 @@ function App(): JSX.Element {
   return (
     <SafeAreaProvider>
       <PlayerProvider>
-        <NavigationContainer>
+        <NavigationContainer
+          theme={{
+            dark: false,
+            colors: {
+              primary: 'rgb(0, 122, 255)',
+              background: COLORS.BACKGROUND_PRIMARY,
+              card: 'rgb(255, 255, 255)',
+              text: COLORS.TEXT_PRIMARY,
+              border: 'rgb(216, 216, 216)',
+              notification: 'rgb(255, 59, 48)',
+            },
+          }}>
           <Stack.Navigator>
             <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
             {/* <Stack.Screen

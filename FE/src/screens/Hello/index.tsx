@@ -13,7 +13,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {StackScreenProps} from '@react-navigation/stack';
-import {CompositeScreenProps} from '@react-navigation/native';
+import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
 
 import {BottomTabParamList} from '../../../App';
 import {RootStackParamList} from '../../../App';
@@ -25,16 +25,17 @@ type Props = CompositeScreenProps<
 >;
 
 const Hello = ({navigation}: Props) => {
-  const isDarkMode = useColorScheme() === 'dark';
+  useFocusEffect(
+    React.useCallback(() => {
+      StatusBar.setBarStyle('dark-content');
+      StatusBar.setBackgroundColor('transparent');
+      StatusBar.setTranslucent(true);
+    }, []),
+  );
 
   return (
     <View style={styles.containerWrapper}>
-      <StatusBar
-        translucent
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={'transparent'}
-        animated={false}
-      />
+      <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
       <View style={styles.container}>
         <Button
           title="Open Player"

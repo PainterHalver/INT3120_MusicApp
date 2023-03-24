@@ -5,6 +5,7 @@ import TrackPlayer, {State, usePlaybackState} from 'react-native-track-player';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 
 import {RootStackParamList} from '../../App';
+import {COLORS} from '../constants/Colors';
 import {usePlayer} from '../contexts/PlayerContext';
 import {HeartIcon} from '../icons/HeartIcon';
 import SpinningDisc from './SpinningDisc';
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     height: 55,
-    backgroundColor: 'rgb(245,245,245)',
+    backgroundColor: COLORS.BOTTOM_BAR,
     paddingHorizontal: 15,
     alignItems: 'center',
     gap: 10,

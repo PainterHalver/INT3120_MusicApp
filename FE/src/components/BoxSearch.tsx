@@ -1,5 +1,7 @@
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {View, TextInput, Text, StyleSheet} from 'react-native';
+import {SearchIcon} from '../icons/SearchIcon';
+import {COLORS} from '../constants/Colors';
 const BoxSearch = () => {
   return (
     <View
@@ -8,7 +10,7 @@ const BoxSearch = () => {
         alignItems: 'center',
         gap: 10,
         paddingVertical: 10,
-        marginTop:40
+        marginTop: 40,
       }}>
       <View
         style={{
@@ -25,18 +27,15 @@ const BoxSearch = () => {
         style={{
           paddingHorizontal: 5,
           borderRadius: 20,
-          backgroundColor:'white',
+          backgroundColor: 'white',
           flex: 1,
           alignItems: 'center',
           flexDirection: 'row',
         }}>
-        <Text style={{paddingRight: 10}}>
-          <Icon name="search" size={20} color="black" style={{fontWeight: '200'}} />
+        <Text style={{paddingHorizontal: 5}}>
+          <SearchIcon size={15} color={COLORS.TEXT_GRAY} />
         </Text>
         <TextInput style={styles.inputSearch} placeholder="Tìm kiếm bài hát, nghệ sĩ" />
-        <Text style={{paddingRight: 10}}>
-          <Icon name="microphone" size={20} color="blue" style={{fontWeight: '200'}} />
-        </Text>
       </View>
       <View
         style={{

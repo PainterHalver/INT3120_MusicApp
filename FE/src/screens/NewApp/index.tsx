@@ -1,3 +1,4 @@
+import {useFocusEffect} from '@react-navigation/native';
 import React from 'react';
 import {SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View} from 'react-native';
 import Banner from '../../components/Banner';
@@ -7,6 +8,14 @@ import ListItem from '../../components/ListItem';
 import LineChartBox from './LineChartBox';
 
 const NewApp = () => {
+  useFocusEffect(
+    React.useCallback(() => {
+      StatusBar.setBarStyle('light-content');
+      StatusBar.setBackgroundColor('transparent');
+      StatusBar.setTranslucent(true);
+    }, []),
+  );
+
   const dataRelease = [
     {
       description: 'Ten album Hoa Minzy Duc Phuc Phuc du',
