@@ -82,13 +82,9 @@ const SearchView = ({searchValue}: Props) => {
       };
 
       // Hiện player trước rồi mới load bài hát
-      await TrackPlayer.load(track);
-
-      // FIXME: Sửa cho transition từ artwork trước sang không bị flicker
-      // @ts-ignore
-      await new Promise(resolve => setTimeout(resolve, 300));
       navigation.navigate('Player');
 
+      await TrackPlayer.load(track);
       await TrackPlayer.play();
     } catch (error) {
       console.log(error);
@@ -107,11 +103,16 @@ const SearchView = ({searchValue}: Props) => {
                   background={TouchableNativeFeedback.Ripple('#00000011', false)}
                   onPress={() => playSong(song)}>
                   <View style={styles.songResult}>
-                    <Image
-                      source={{uri: song.thumbnail}}
-                      defaultSource={require('../../../assets/default_song_thumbnail.png')}
-                      style={{width: 45, height: 45, borderRadius: 7}}
-                    />
+                    <View style={{position: 'relative', width: 45, height: 45}}>
+                      <Image
+                        source={require('../../../assets/default_song_thumbnail.png')}
+                        style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
+                      />
+                      <Image
+                        source={{uri: song.thumbnail}}
+                        style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
+                      />
+                    </View>
                     <View style={{marginRight: 'auto'}}>
                       <Text style={{fontSize: 13, color: COLORS.TEXT_PRIMARY}}>
                         {song.title && song.title.length > 40

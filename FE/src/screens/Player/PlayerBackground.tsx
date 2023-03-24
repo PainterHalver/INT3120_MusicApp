@@ -17,7 +17,7 @@ const PlayerBackground = ({children}: Props) => {
   } = usePlayer();
 
   // Fade animation
-  const [fadeAnim] = React.useState(new Animated.Value(0));
+  const [fadeAnim] = React.useState(new Animated.Value(1));
 
   const imageTransition = () => {
     Animated.timing(fadeAnim, {
@@ -46,7 +46,6 @@ const PlayerBackground = ({children}: Props) => {
         blurRadius={20}
         onLoadEnd={() => {
           if (lastArtwork !== artwork) {
-            console.log('ANIMATION: background');
             imageTransition();
           }
         }}

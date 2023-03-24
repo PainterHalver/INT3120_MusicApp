@@ -68,7 +68,7 @@ const SpinningDisc = ({size}: Props) => {
   });
 
   // Fade animation
-  const [fadeAnim] = React.useState(new Animated.Value(0));
+  const [fadeAnim] = React.useState(new Animated.Value(1));
 
   const imageTransition = () => {
     Animated.timing(fadeAnim, {
@@ -94,7 +94,6 @@ const SpinningDisc = ({size}: Props) => {
         style={[styles.image, {height: size, width: size}]}
         onLoadEnd={() => {
           if (lastArtwork !== artwork) {
-            console.log('ANIMATION: disc');
             imageTransition();
           }
         }}
