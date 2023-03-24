@@ -43,27 +43,27 @@ export type RootStackParamList = {
 
 // Cần artwork để hiện trong thông báo hoặc lock screen
 export const tracks: Track[] = [
-  {
-    id: 1,
-    url: require('./assets/Led_Zeppelin-Stairway_To_Heaven.mp3'),
-    title: 'Stairway To Heaven',
-    artist: 'Led Zeppelin',
-    artwork: require('./assets/Led_Zeppelin-Stairway_To_Heaven.png'),
-  },
-  {
-    id: 2,
-    url: require('./assets/Gnarls-Barkley-Crazy.mp3'),
-    title: 'Crazy',
-    artist: 'Gnarls Barkley',
-    artwork: require('./assets/Gnarls-Barkley-Crazy.jpg'),
-  },
-  {
-    id: 3,
-    url: require('./assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.mp3'),
-    title: 'Thang Tu La Loi Noi Doi Cua Em',
-    artist: 'Ha Anh Tuan',
-    artwork: require('./assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.jpg'),
-  },
+  // {
+  //   id: 1,
+  //   url: require('./assets/Led_Zeppelin-Stairway_To_Heaven.mp3'),
+  //   title: 'Stairway To Heaven',
+  //   artist: 'Led Zeppelin',
+  //   artwork: require('./assets/Led_Zeppelin-Stairway_To_Heaven.png'),
+  // },
+  // {
+  //   id: 2,
+  //   url: require('./assets/Gnarls-Barkley-Crazy.mp3'),
+  //   title: 'Crazy',
+  //   artist: 'Gnarls Barkley',
+  //   artwork: require('./assets/Gnarls-Barkley-Crazy.jpg'),
+  // },
+  // {
+  //   id: 3,
+  //   url: require('./assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.mp3'),
+  //   title: 'Thang Tu La Loi Noi Doi Cua Em',
+  //   artist: 'Ha Anh Tuan',
+  //   artwork: require('./assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.jpg'),
+  // },
   {
     id: 4,
     url: 'https://mp3-s1-zmp3.zmdcdn.me/0fb7961a885a6104384b/3744477689111912134?authen=exp=1679728791~acl=/0fb7961a885a6104384b/*~hmac=95837cb86af9d8415288d1b2cfcce4f5&fs=MTY3OTU1NTk5MTQxNXx3ZWJWNnwxMDAxMzAzNzIyfDE0LjIzMi4yMDgdUngMTM3',
@@ -182,6 +182,8 @@ function App(): JSX.Element {
               component={Player}
               options={{
                 headerShown: false,
+                gestureEnabled: true,
+                gestureResponseDistance: 100,
                 // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
                 ...TransitionPresets.ModalSlideFromBottomIOS,
               }}

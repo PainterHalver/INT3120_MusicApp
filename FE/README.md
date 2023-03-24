@@ -23,3 +23,10 @@
 ## Note
 
 - react-native-track-player bản nightly mới chạy được RemoteSeek
+
+## Todos:
+
+- [ ] Tìm kiếm, thêm nhạc vào queue hoặc sửa queue khi đang phát
+- [ ] Thêm option vào ellipsis trong player (Download nhạc, Favorite, Share)
+- [ ] Shuffle
+- [ ] Lyrics và Recommend screen trong player
