@@ -26,6 +26,7 @@
 
 ## Todos:
 
+- [ ] Default src cho img khi không có src
 - [ ] Tìm kiếm, thêm nhạc vào queue hoặc sửa queue khi đang phát
 - [ ] Thêm option vào ellipsis trong player (Download nhạc, Favorite, Share)
 - [ ] Shuffle

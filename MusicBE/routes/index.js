@@ -73,4 +73,15 @@ router.get("/chart", async (req, res, next) => {
   });
 });
 
+router.get("/search", async (req, res, next) => {
+  try {
+    const { q } = req.query;
+    const data = await ZingMp3.search(q);
+    res.json({ data: data })
+  } catch (error) {
+    console.log(error)
+    res.send(error)
+  }
+})
+
 module.exports = router;

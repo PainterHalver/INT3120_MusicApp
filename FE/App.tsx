@@ -25,7 +25,7 @@ import Search from './src/screens/Search';
 import {PlayerProvider} from './src/contexts/PlayerContext';
 import {DoubleCircleIcon} from './src/icons/DoubleCircleIcon';
 import {SearchIcon} from './src/icons/SearchIcon';
-import {COLORS} from './src/constants/Colors';
+import {COLORS} from './src/constants';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -138,13 +138,11 @@ function App(): JSX.Element {
           ),
         }}>
         <BottomTab.Screen
-          name="Hello"
-          component={Hello}
+          name="Welcome"
+          component={NewApp}
           options={{
-            title: 'Hello',
-            tabBarIcon: ({focused, color, size}) => (
-              <FontAwesomeIcon name="sun-o" size={size} color={color} />
-            ),
+            title: 'Khám phá',
+            tabBarIcon: ({focused, color, size}) => <DoubleCircleIcon size={size - 5} color={color} />,
           }}
         />
         <BottomTab.Screen
@@ -156,11 +154,13 @@ function App(): JSX.Element {
           }}
         />
         <BottomTab.Screen
-          name="Welcome"
-          component={NewApp}
+          name="Hello"
+          component={Hello}
           options={{
-            title: 'Khám phá',
-            tabBarIcon: ({focused, color, size}) => <DoubleCircleIcon size={size - 5} color={color} />,
+            title: 'Hello',
+            tabBarIcon: ({focused, color, size}) => (
+              <FontAwesomeIcon name="sun-o" size={size} color={color} />
+            ),
           }}
         />
       </BottomTab.Navigator>

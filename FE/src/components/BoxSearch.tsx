@@ -1,7 +1,7 @@
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {View, TextInput, Text, StyleSheet} from 'react-native';
 import {SearchIcon} from '../icons/SearchIcon';
-import {COLORS} from '../constants/Colors';
+import {COLORS} from '../constants';
 const BoxSearch = () => {
   return (
     <View
@@ -35,7 +35,7 @@ const BoxSearch = () => {
         <Text style={{paddingHorizontal: 5}}>
           <SearchIcon size={15} color={COLORS.TEXT_GRAY} />
         </Text>
-        <TextInput style={styles.inputSearch} placeholder="Tìm kiếm bài hát, nghệ sĩ" />
+        <TextInput style={styles.inputSearch} placeholder="Tìm kiếm bài hát, nghệ sĩ..." />
       </View>
       <View
         style={{

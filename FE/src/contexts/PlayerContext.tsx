@@ -22,10 +22,12 @@ export type PlayerContextType = {
   rotation: Animated.Value;
   pausedRotationValue: number;
   isRotating: boolean;
+  lastArtwork: string;
 
   setIsPlaying: (isPlaying: boolean) => void;
   setPausedRotationValue: (pausedRotationValue: number) => void;
   setIsRotating: (isRotating: boolean) => void;
+  setLastArtwork: (currentArtwork: string) => void;
 };
 
 const defaultTrack: Track = {
@@ -45,9 +47,11 @@ const PlayerContext = createContext<PlayerContextType>({
   rotation: new Animated.Value(0),
   pausedRotationValue: 0,
   isRotating: false,
+  lastArtwork: require('./../../assets/default.png'),
   setIsPlaying: () => {},
   setPausedRotationValue: () => {},
   setIsRotating: () => {},
+  setLastArtwork: () => {},
 });
 
 export const PlayerProvider = ({children}: any) => {
@@ -58,6 +62,9 @@ export const PlayerProvider = ({children}: any) => {
   const rotation = React.useRef(new Animated.Value(0)).current;
   const [pausedRotationValue, setPausedRotationValue] = React.useState(0);
   const [isRotating, setIsRotating] = React.useState(false);
+  const [lastArtwork, setLastArtwork] = React.useState<string>(
+    track.artwork || require('./../../assets/default.png'),
+  );
 
   useTrackPlayerEvents([Event.PlaybackState], (event: any) => {
     if (event.type === Event.PlaybackState) {
@@ -137,9 +144,11 @@ export const PlayerProvider = ({children}: any) => {
         rotation,
         pausedRotationValue,
         isRotating,
+        lastArtwork,
         setIsPlaying,
         setPausedRotationValue,
         setIsRotating,
+        setLastArtwork,
       }}>
       {children}
     </PlayerContext.Provider>

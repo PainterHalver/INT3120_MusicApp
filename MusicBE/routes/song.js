@@ -3,7 +3,8 @@ var router = express.Router();
 const { ZingMp3 } = require("zingmp3-api-full-v2");
 
 router.get("/detail", async (req, res, next) => {
-  const data = await ZingMp3.getSong("ZZDA7U9Z");
+  const id = req.query.id;
+  const data = await ZingMp3.getSong(id);
   res.json({
     data: data,
   });

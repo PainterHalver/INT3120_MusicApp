@@ -9,7 +9,7 @@ import {
   TouchableHighlight,
   TextInput,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {StackScreenProps} from '@react-navigation/stack';
@@ -17,8 +17,9 @@ import {BottomTabParamList, RootStackParamList} from '../../../App';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import {Pressable} from 'react-native';
 import {SearchIcon} from '../../icons/SearchIcon';
-import {COLORS} from '../../constants/Colors';
+import {COLORS} from '../../constants';
 import {Shadow} from 'react-native-shadow-2';
+import SearchView from './SearchView';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'Search'>,
@@ -36,6 +37,8 @@ const Search = ({}: Props) => {
     }, []),
   );
 
+  const [searchValue, setSearchValue] = useState<string>('');
+
   return (
     <View style={styles.containerWrapper}>
       <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
@@ -47,13 +50,21 @@ const Search = ({}: Props) => {
           distance={2.5}>
           <View>
             <View style={styles.searchbar}>
-              <View style={{paddingHorizontal: 5}}>
-                <SearchIcon size={15} color={COLORS.TEXT_GRAY} />
+              <View style={{paddingHorizontal: 10}}>
+                <SearchIcon size={14} color={COLORS.TEXT_GRAY} />
               </View>
-              <TextInput style={styles.inputSearch} placeholder="Tìm kiếm bài hát, nghệ sĩ" />
+              <TextInput
+                style={styles.inputSearch}
+                value={searchValue}
+                onChangeText={newText => setSearchValue(newText)}
+                placeholder="Tìm kiếm bài hát, nghệ sĩ..."
+              />
             </View>
           </View>
         </Shadow>
+        <View style={styles.viewsContainer}>
+          {searchValue.length > 0 ? <SearchView searchValue={searchValue} /> : <Text>Default View</Text>}
+        </View>
       </View>
     </View>
   );
@@ -83,8 +94,11 @@ const styles = StyleSheet.create({
   },
   inputSearch: {
     flex: 1,
-    lineHeight: 35,
     textAlignVertical: 'center',
     padding: 0,
+  },
+  viewsContainer: {
+    flex: 1,
+    // backgroundColor: 'cyan',
   },
 });

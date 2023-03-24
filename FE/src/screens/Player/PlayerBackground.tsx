@@ -1,7 +1,7 @@
 // @ts-ignore
 import flattenStyle from 'react-native/Libraries/StyleSheet/flattenStyle';
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Animated, Image, StyleSheet, View} from 'react-native';
 import {usePlayer} from '../../contexts/PlayerContext';
 
@@ -12,13 +12,12 @@ interface Props {
 const PlayerBackground = ({children}: Props) => {
   const {
     currentTrack: {artwork},
+    lastArtwork,
+    setLastArtwork,
   } = usePlayer();
 
   // Fade animation
   const [fadeAnim] = React.useState(new Animated.Value(0));
-  const [currentArtwork, setCurrentArtwork] = React.useState<any>(
-    (typeof artwork === 'string' ? {uri: artwork} : artwork) || require('./../../../assets/default.png'),
-  );
 
   const imageTransition = () => {
     Animated.timing(fadeAnim, {
@@ -27,10 +26,7 @@ const PlayerBackground = ({children}: Props) => {
       useNativeDriver: true,
     }).start(({finished}) => {
       if (finished) {
-        setCurrentArtwork(
-          (typeof artwork === 'string' ? {uri: artwork} : artwork) ||
-            require('./../../../assets/default.png'),
-        );
+        setLastArtwork(artwork as string);
         fadeAnim.setValue(1);
       }
     });
@@ -49,11 +45,17 @@ const PlayerBackground = ({children}: Props) => {
         style={[StyleSheet.absoluteFill, {width: flattenedStyle?.width, height: flattenedStyle?.height}]}
         blurRadius={20}
         onLoadEnd={() => {
-          imageTransition();
+          if (lastArtwork !== artwork) {
+            console.log('ANIMATION: background');
+            imageTransition();
+          }
         }}
       />
       <Animated.Image
-        source={currentArtwork}
+        source={
+          (typeof lastArtwork === 'string' ? {uri: lastArtwork} : lastArtwork) ||
+          require('./../../../assets/default.png')
+        }
         resizeMode="cover"
         style={[
           StyleSheet.absoluteFill,

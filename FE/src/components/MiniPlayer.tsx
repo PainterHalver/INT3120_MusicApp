@@ -5,7 +5,7 @@ import TrackPlayer, {State, usePlaybackState} from 'react-native-track-player';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 
 import {RootStackParamList} from '../../App';
-import {COLORS} from '../constants/Colors';
+import {COLORS} from '../constants';
 import {usePlayer} from '../contexts/PlayerContext';
 import {HeartIcon} from '../icons/HeartIcon';
 import SpinningDisc from './SpinningDisc';

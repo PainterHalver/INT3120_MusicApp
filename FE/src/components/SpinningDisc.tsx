@@ -16,10 +16,9 @@ const SpinningDisc = ({size}: Props) => {
     setPausedRotationValue,
     isRotating,
     setIsRotating,
+    lastArtwork,
+    setLastArtwork,
   } = usePlayer();
-  const [currentArtwork, setCurrentArtwork] = React.useState<string | number>(
-    (typeof artwork === 'string' ? {uri: artwork} : artwork) || require('./../../assets/default.png'),
-  );
 
   const DISC_DURATION = 20000; // 20 seconds
 
@@ -78,10 +77,7 @@ const SpinningDisc = ({size}: Props) => {
       useNativeDriver: true,
     }).start(({finished}) => {
       if (finished) {
-        setCurrentArtwork(
-          (typeof artwork === 'string' ? {uri: artwork} : artwork) ||
-            require('./../../assets/default.png'),
-        );
+        setLastArtwork(artwork as string);
         fadeAnim.setValue(1);
       }
     });
@@ -97,11 +93,17 @@ const SpinningDisc = ({size}: Props) => {
         }
         style={[styles.image, {height: size, width: size}]}
         onLoadEnd={() => {
-          imageTransition();
+          if (lastArtwork !== artwork) {
+            console.log('ANIMATION: disc');
+            imageTransition();
+          }
         }}
       />
       <Animated.Image
-        source={typeof currentArtwork === 'string' ? {uri: currentArtwork} : currentArtwork}
+        source={
+          (typeof lastArtwork === 'string' ? {uri: lastArtwork} : lastArtwork) ||
+          require('./../../assets/default.png')
+        }
         style={[styles.image, {height: size, width: size}, {opacity: fadeAnim}]}
       />
     </Animated.View>
