@@ -1,6 +1,11 @@
 import React, {useEffect} from 'react';
 import {Animated, Easing, Image, StyleSheet} from 'react-native';
-import Reanimated from 'react-native-reanimated';
+import Reanimated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 import {usePlayer} from '../contexts/PlayerContext';
 
@@ -69,18 +74,20 @@ const SpinningDisc = ({size}: Props) => {
   });
 
   // Fade animation
-  const [fadeAnim] = React.useState(new Animated.Value(1));
+  const fadeAnim = useSharedValue(1);
+
+  const rFade = useAnimatedStyle(() => {
+    'worklet';
+    return {
+      opacity: fadeAnim.value,
+    };
+  });
 
   const imageTransition = () => {
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 500,
-      useNativeDriver: true,
-    }).start(({finished}) => {
-      if (finished) {
-        setLastArtwork(artwork as string);
-        fadeAnim.setValue(1);
-      }
+    'worklet';
+    fadeAnim.value = withTiming(0, {duration: 500}, () => {
+      runOnJS(setLastArtwork)(artwork as string);
+      // fadeAnim.value = withTiming(1, {duration: 500});
     });
   };
 
@@ -99,12 +106,17 @@ const SpinningDisc = ({size}: Props) => {
           }
         }}
       />
-      <Animated.Image
+      <Reanimated.Image
         source={
           (typeof lastArtwork === 'string' ? {uri: lastArtwork} : lastArtwork) ||
           require('./../../assets/default.png')
         }
-        style={[styles.image, {height: size, width: size}, {opacity: fadeAnim}]}
+        style={[styles.image, {height: size, width: size}, rFade]}
+        onLoadEnd={() => {
+          if (lastArtwork === artwork) {
+            fadeAnim.value = 1;
+          }
+        }}
       />
     </Animated.View>
   );

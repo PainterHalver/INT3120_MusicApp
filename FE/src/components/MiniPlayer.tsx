@@ -1,5 +1,5 @@
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
 import TrackPlayer, {State, usePlaybackState} from 'react-native-track-player';
 import IonIcon from 'react-native-vector-icons/Ionicons';
@@ -29,9 +29,14 @@ const MiniPlayer = () => {
     }
   };
 
-  const skipToNext = async () => {
-    await TrackPlayer.skipToNext();
-  };
+  const lastSkipToNext = useRef(0);
+  const skipToNext = useCallback(async () => {
+    const now = Date.now();
+    if (now - lastSkipToNext.current > 1000) {
+      await TrackPlayer.skipToNext();
+      lastSkipToNext.current = now;
+    }
+  }, []);
 
   // TODO: Implement this
   const toggleFavorite = () => {

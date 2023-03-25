@@ -4,7 +4,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {
   Animated,
   Dimensions,
@@ -93,13 +93,23 @@ const Player = ({navigation}: Props) => {
     }
   };
 
-  const skipToPrevious = async () => {
-    await TrackPlayer.skipToPrevious();
-  };
+  const lastSkipToPrevious = useRef(0);
+  const skipToPrevious = useCallback(async () => {
+    const now = Date.now();
+    if (now - lastSkipToPrevious.current > 1000) {
+      await TrackPlayer.skipToPrevious();
+      lastSkipToPrevious.current = now;
+    }
+  }, []);
 
-  const skipToNext = async () => {
-    await TrackPlayer.skipToNext();
-  };
+  const lastSkipToNext = useRef(0);
+  const skipToNext = useCallback(async () => {
+    const now = Date.now();
+    if (now - lastSkipToNext.current > 1000) {
+      await TrackPlayer.skipToNext();
+      lastSkipToNext.current = now;
+    }
+  }, []);
 
   const toggleRepeateMode = async () => {
     const modes = [RepeatMode.Off, RepeatMode.Queue, RepeatMode.Track];
