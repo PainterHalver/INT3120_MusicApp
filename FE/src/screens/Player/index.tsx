@@ -4,7 +4,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   Animated,
   Dimensions,
@@ -36,6 +36,7 @@ import SpinningDisc from '../../components/SpinningDisc';
 import PlayerBackground from './PlayerBackground';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import PlayingSongBottomSheet from './PlayingSongBottomSheet';
+import AnimatedLottieView from 'lottie-react-native';
 
 const {height, width} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
@@ -50,6 +51,7 @@ const Player = ({navigation}: Props) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
   const playingSongBottonSheetRef = React.useRef<BottomSheetModal>(null);
+  const playButtonRef = useRef<AnimatedLottieView>(null);
 
   useEffect(() => {
     if (!slidingSlider) {
@@ -252,12 +254,21 @@ const Player = ({navigation}: Props) => {
               <TouchableNativeFeedback
                 hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
                 background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
-                onPress={togglePlayback}>
+                onPress={() => {
+                  if (isPlaying) {
+                    playButtonRef.current?.play(33, 67);
+                  } else {
+                    playButtonRef.current?.play(0, 33);
+                  }
+                  togglePlayback();
+                }}>
                 <View>
-                  <AntDesignIcon
-                    name={isPlaying ? 'pausecircleo' : 'playcircleo'}
-                    size={60}
-                    color="#fff"
+                  <AnimatedLottieView
+                    ref={playButtonRef}
+                    style={{height: 80, width: 80}}
+                    source={require('./../../icons/play_pause.json')}
+                    loop={false}
+                    speed={2}
                   />
                 </View>
               </TouchableNativeFeedback>

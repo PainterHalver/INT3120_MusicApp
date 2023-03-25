@@ -1,23 +1,14 @@
-import {
-  Button,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-  ImageBackground,
-  Platform,
-  useColorScheme,
-} from 'react-native';
-import React, {useCallback, useEffect, useMemo, useRef} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
+// @refresh reset
+
+import React from 'react';
+import {Button, Platform, StatusBar, StyleSheet, TouchableNativeFeedback, View} from 'react-native';
 
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
-import {StackScreenProps} from '@react-navigation/stack';
 import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
-import BottomSheet, {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
+import {StackScreenProps} from '@react-navigation/stack';
+import LotteView from 'lottie-react-native';
 
-import {BottomTabParamList} from '../../../App';
-import {RootStackParamList} from '../../../App';
+import {BottomTabParamList, RootStackParamList} from '../../../App';
 
 // Prop 1 là prop gần nhất, 2 là của parent
 type Props = CompositeScreenProps<
@@ -34,38 +25,44 @@ const Hello = ({navigation}: Props) => {
     }, []),
   );
 
-  // ref
-  const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
-
-  // variables
-  const snapPoints = React.useMemo(() => ['50%', '90%'], []);
-
-  // callbacks
-  const handleSheetChanges = React.useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
-  }, []);
+  const buttonRef = React.useRef<LotteView>(null);
 
   return (
     <View style={styles.containerWrapper}>
       <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
       <View style={styles.container}>
-        <Button title="Bottom Sheet" onPress={() => bottomSheetModalRef.current?.present()} />
+        <Button
+          title="Bottom Sheet"
+          onPress={() => {
+            buttonRef.current?.play(33, 67);
+          }}
+        />
       </View>
-      <BottomSheetModal
-        enablePanDownToClose
-        ref={bottomSheetModalRef}
-        index={0}
-        snapPoints={snapPoints}
-        onChange={handleSheetChanges}
-        backgroundStyle={{backgroundColor: 'cyan'}}
-        style={{}}
-        backdropComponent={props => (
-          <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
-        )}>
-        <View>
-          <Text>Awesome 🎉</Text>
+      <TouchableNativeFeedback
+        background={TouchableNativeFeedback.Ripple('#000', true, 500)}
+        useForeground
+        onPress={() => {
+          buttonRef.current?.play(0, 33);
+        }}>
+        <View style={{flex: 1, backgroundColor: 'red'}}>
+          <LotteView
+            colorFilters={[
+              {
+                keypath: 'play',
+                color: '#fff',
+              },
+              {
+                keypath: 'pause',
+                color: '#fff',
+              },
+            ]}
+            ref={buttonRef}
+            source={require('./../../icons/play_pause.json')}
+            loop={false}
+            speed={2}
+          />
         </View>
-      </BottomSheetModal>
+      </TouchableNativeFeedback>
     </View>
   );
 };
