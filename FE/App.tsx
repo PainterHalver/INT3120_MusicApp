@@ -10,6 +10,7 @@ import {DefaultTheme, NavigationContainer, NavigatorScreenParams} from '@react-n
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import React, {useEffect} from 'react';
 import {Text, TouchableNativeFeedback, View} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import type {Track} from 'react-native-track-player';
 import TrackPlayer, {AppKilledPlaybackBehavior, Capability} from 'react-native-track-player';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
@@ -26,6 +27,7 @@ import {PlayerProvider} from './src/contexts/PlayerContext';
 import {DoubleCircleIcon} from './src/icons/DoubleCircleIcon';
 import {SearchIcon} from './src/icons/SearchIcon';
 import {COLORS} from './src/constants';
+import BottomSheet, {BottomSheetBackdrop, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -93,6 +95,23 @@ export const tracks: Track[] = [
 ];
 
 function App(): JSX.Element {
+  // ref
+  // const bottomSheetRef = React.useRef<BottomSheet>(null);
+
+  // // variables
+  // const snapPoints = React.useMemo(() => ['50%', '90%'], []);
+
+  // // callbacks
+  // const handleSheetChanges = React.useCallback((index: number) => {
+  //   console.log('handleSheetChanges', index);
+  // }, []);
+
+  // React.useEffect(() => {
+  //   setInterval(() => {
+  //     bottomSheetRef.current?.snapToIndex(0);
+  //   }, 3000);
+  // }, []);
+
   const Home = () => {
     return (
       <BottomTab.Navigator
@@ -170,21 +189,23 @@ function App(): JSX.Element {
   return (
     <SafeAreaProvider>
       <PlayerProvider>
-        <NavigationContainer
-          theme={{
-            dark: false,
-            colors: {
-              primary: 'rgb(0, 122, 255)',
-              background: COLORS.BACKGROUND_PRIMARY,
-              card: 'rgb(255, 255, 255)',
-              text: COLORS.TEXT_PRIMARY,
-              border: 'rgb(216, 216, 216)',
-              notification: 'rgb(255, 59, 48)',
-            },
-          }}>
-          <Stack.Navigator>
-            <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
-            {/* <Stack.Screen
+        <GestureHandlerRootView style={{flex: 1}}>
+          <BottomSheetModalProvider>
+            <NavigationContainer
+              theme={{
+                dark: false,
+                colors: {
+                  primary: 'rgb(0, 122, 255)',
+                  background: COLORS.BACKGROUND_PRIMARY,
+                  card: 'rgb(255, 255, 255)',
+                  text: COLORS.TEXT_PRIMARY,
+                  border: 'rgb(216, 216, 216)',
+                  notification: 'rgb(255, 59, 48)',
+                },
+              }}>
+              <Stack.Navigator>
+                <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
+                {/* <Stack.Screen
             name="PlaylistDetail"
             component={PlaylistDetail}
             options={{
@@ -193,19 +214,35 @@ function App(): JSX.Element {
               ...TransitionPresets.ModalSlideFromBottomIOS,
             }}
           /> */}
-            <Stack.Screen
-              name="Player"
-              component={Player}
-              options={{
-                headerShown: false,
-                gestureEnabled: true,
-                gestureResponseDistance: 100,
-                // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
-                ...TransitionPresets.ModalSlideFromBottomIOS,
-              }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
+                <Stack.Screen
+                  name="Player"
+                  component={Player}
+                  options={{
+                    headerShown: false,
+                    gestureEnabled: true,
+                    gestureResponseDistance: 100,
+                    // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
+                    ...TransitionPresets.ModalSlideFromBottomIOS,
+                  }}
+                />
+              </Stack.Navigator>
+            </NavigationContainer>
+            {/* <BottomSheet
+            enablePanDownToClose
+            ref={bottomSheetRef}
+            index={1}
+            snapPoints={snapPoints}
+            onChange={handleSheetChanges}
+            backgroundStyle={{backgroundColor: 'cyan'}}
+            backdropComponent={props => (
+              <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
+            )}>
+            <View>
+              <Text>Awesome 🎉</Text>
+            </View>
+          </BottomSheet> */}
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
       </PlayerProvider>
     </SafeAreaProvider>
   );
