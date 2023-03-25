@@ -13,6 +13,7 @@ import TrackPlayer, {
 import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
 
 import {tracks} from '../../App';
+import {Song} from '../types';
 
 export type PlayerContextType = {
   currentTrack: Track;
@@ -23,11 +24,13 @@ export type PlayerContextType = {
   pausedRotationValue: number;
   isRotating: boolean;
   lastArtwork: string;
+  selectedSong: Song;
 
   setIsPlaying: (isPlaying: boolean) => void;
   setPausedRotationValue: (pausedRotationValue: number) => void;
   setIsRotating: (isRotating: boolean) => void;
   setLastArtwork: (currentArtwork: string) => void;
+  setSelectedSong: (selectedSong: Song) => void;
 };
 
 const defaultTrack: Track = {
@@ -39,6 +42,14 @@ const defaultTrack: Track = {
   artwork: require('./../../assets/default.png'),
 };
 
+const defaultSong: Song = {
+  encodeId: '',
+  title: 'Default Song Title',
+  artistsNames: 'Default Song Artist',
+  thumbnailM: require('./../../assets/default_song_thumbnail.png'),
+  thumbnail: require('./../../assets/default_song_thumbnail.png'),
+};
+
 const PlayerContext = createContext<PlayerContextType>({
   currentTrack: defaultTrack,
   isReady: false,
@@ -48,10 +59,12 @@ const PlayerContext = createContext<PlayerContextType>({
   pausedRotationValue: 0,
   isRotating: false,
   lastArtwork: require('./../../assets/default.png'),
+  selectedSong: {} as Song,
   setIsPlaying: () => {},
   setPausedRotationValue: () => {},
   setIsRotating: () => {},
   setLastArtwork: () => {},
+  setSelectedSong: () => {},
 });
 
 export const PlayerProvider = ({children}: any) => {
@@ -65,6 +78,7 @@ export const PlayerProvider = ({children}: any) => {
   const [lastArtwork, setLastArtwork] = React.useState<string>(
     track.artwork || require('./../../assets/default.png'),
   );
+  const [selectedSong, setSelectedSong] = React.useState<Song>(defaultSong);
 
   useTrackPlayerEvents([Event.PlaybackState], (event: any) => {
     if (event.type === Event.PlaybackState) {
@@ -145,10 +159,12 @@ export const PlayerProvider = ({children}: any) => {
         pausedRotationValue,
         isRotating,
         lastArtwork,
+        selectedSong,
         setIsPlaying,
         setPausedRotationValue,
         setIsRotating,
         setLastArtwork,
+        setSelectedSong,
       }}>
       {children}
     </PlayerContext.Provider>

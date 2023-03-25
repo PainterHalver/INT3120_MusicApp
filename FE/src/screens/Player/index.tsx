@@ -34,6 +34,8 @@ import {ShareIcon} from '../../icons/ShareIcon';
 import {ShuffleIcon} from '../../icons/ShuffleIcon';
 import SpinningDisc from '../../components/SpinningDisc';
 import PlayerBackground from './PlayerBackground';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import PlayingSongBottomSheet from './PlayingSongBottomSheet';
 
 const {height, width} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
@@ -47,6 +49,7 @@ const Player = ({navigation}: Props) => {
   const [repeatMode, setRepeatMode] = useState<RepeatMode>(RepeatMode.Off);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
+  const playingSongBottonSheetRef = React.useRef<BottomSheetModal>(null);
 
   useEffect(() => {
     if (!slidingSlider) {
@@ -140,7 +143,10 @@ const Player = ({navigation}: Props) => {
             </View>
             <TouchableNativeFeedback
               hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-              background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, 23)}>
+              background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, 23)}
+              onPress={() => {
+                playingSongBottonSheetRef.current?.present();
+              }}>
               <View>
                 <IonIcon name="ios-ellipsis-vertical" size={23} color="#fff" />
               </View>
@@ -285,6 +291,7 @@ const Player = ({navigation}: Props) => {
           </View>
         </View>
       </PlayerBackground>
+      <PlayingSongBottomSheet ref={playingSongBottonSheetRef} />
     </View>
   );
 };

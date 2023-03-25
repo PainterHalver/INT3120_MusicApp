@@ -7,46 +7,22 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import {API_URL} from '../../constants';
 import {COLORS} from '../../constants';
 import {RootStackParamList} from '../../../App';
+import {Song} from '../../types';
+import {usePlayer} from '../../contexts/PlayerContext';
+import SongBottomSheet from '../../components/SongBottomSheet';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
 
 interface Props {
   searchValue: string;
 }
 
-// const data = [
-//   {
-//     title: 'Bài hát 1',
-//     artistsNames: 'Nghệ sĩ 1, Nghệ sĩ 2',
-//     thumbnail:
-//       'https://photo-resize-zmp3.zmdcdn.me/w94_r1x1_jpeg/cover/5/b/5/7/5b57e6c61848cfed2fa19cd31b293898.jpg',
-//   },
-//   {
-//     title: 'Bài hát 2',
-//     artistsNames: 'Nghệ sĩ 1, Nghệ sĩ 2',
-//     thumbnail:
-//       'https://photo-resize-zmp3.zmdcdn.me/w94_r1x1_jpeg/cover/5/b/5/7/5b57e6c61848cfed2fa19cd31b293898.jpg',
-//   },
-// ];
-
-type Album = {
-  encodedId: string;
-  title: string;
-  artistsNames: string;
-  thumbnail: string;
-};
-
-type SongResult = {
-  encodeId: string;
-  title: string;
-  artistsNames: string;
-  thumbnail: string;
-  thumbnailM: string;
-  album: Album;
-};
-
 const SearchView = ({searchValue}: Props) => {
+  const {setSelectedSong} = usePlayer();
+  const songBottonSheetRef = React.useRef<BottomSheetModal>(null);
+
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [searchError, setSearchError] = React.useState<string | null>(null);
-  const [searchResult, setSearchResult] = React.useState<SongResult[]>([]);
+  const [searchResult, setSearchResult] = React.useState<Song[]>([]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -69,7 +45,7 @@ const SearchView = ({searchValue}: Props) => {
     }
   };
 
-  const playSong = async (song: SongResult) => {
+  const playSong = async (song: Song) => {
     try {
       const res = await fetch(API_URL + '/song/detail?id=' + song.encodeId);
       let data = await res.json();
@@ -127,7 +103,11 @@ const SearchView = ({searchValue}: Props) => {
                     </View>
                     <TouchableNativeFeedback
                       hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                      background={TouchableNativeFeedback.Ripple('#00000011', true, 30)}>
+                      background={TouchableNativeFeedback.Ripple('#00000011', true, 30)}
+                      onPress={() => {
+                        setSelectedSong(song);
+                        songBottonSheetRef.current?.present();
+                      }}>
                       <View>
                         <IonIcon name="ios-ellipsis-vertical" size={20} color={COLORS.TEXT_GRAY} />
                       </View>
@@ -137,6 +117,7 @@ const SearchView = ({searchValue}: Props) => {
               );
             }))}
       </View>
+      <SongBottomSheet ref={songBottonSheetRef} />
     </View>
   );
 };
