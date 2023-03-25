@@ -24,6 +24,7 @@ import Player from './src/screens/Player';
 import MiniPlayer from './src/components/MiniPlayer';
 import Search from './src/screens/Search';
 import {PlayerProvider} from './src/contexts/PlayerContext';
+import {DatabaseProvider} from './src/contexts/DatabaseContext';
 import {DoubleCircleIcon} from './src/icons/DoubleCircleIcon';
 import {SearchIcon} from './src/icons/SearchIcon';
 import {COLORS} from './src/constants';
@@ -95,23 +96,6 @@ export const tracks: Track[] = [
 ];
 
 function App(): JSX.Element {
-  // ref
-  // const bottomSheetRef = React.useRef<BottomSheet>(null);
-
-  // // variables
-  // const snapPoints = React.useMemo(() => ['50%', '90%'], []);
-
-  // // callbacks
-  // const handleSheetChanges = React.useCallback((index: number) => {
-  //   console.log('handleSheetChanges', index);
-  // }, []);
-
-  // React.useEffect(() => {
-  //   setInterval(() => {
-  //     bottomSheetRef.current?.snapToIndex(0);
-  //   }, 3000);
-  // }, []);
-
   const Home = () => {
     return (
       <BottomTab.Navigator
@@ -189,23 +173,24 @@ function App(): JSX.Element {
   return (
     <SafeAreaProvider>
       <PlayerProvider>
-        <GestureHandlerRootView style={{flex: 1}}>
-          <BottomSheetModalProvider>
-            <NavigationContainer
-              theme={{
-                dark: false,
-                colors: {
-                  primary: 'rgb(0, 122, 255)',
-                  background: COLORS.BACKGROUND_PRIMARY,
-                  card: 'rgb(255, 255, 255)',
-                  text: COLORS.TEXT_PRIMARY,
-                  border: 'rgb(216, 216, 216)',
-                  notification: 'rgb(255, 59, 48)',
-                },
-              }}>
-              <Stack.Navigator>
-                <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
-                {/* <Stack.Screen
+        <DatabaseProvider>
+          <GestureHandlerRootView style={{flex: 1}}>
+            <BottomSheetModalProvider>
+              <NavigationContainer
+                theme={{
+                  dark: false,
+                  colors: {
+                    primary: 'rgb(0, 122, 255)',
+                    background: COLORS.BACKGROUND_PRIMARY,
+                    card: 'rgb(255, 255, 255)',
+                    text: COLORS.TEXT_PRIMARY,
+                    border: 'rgb(216, 216, 216)',
+                    notification: 'rgb(255, 59, 48)',
+                  },
+                }}>
+                <Stack.Navigator>
+                  <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
+                  {/* <Stack.Screen
             name="PlaylistDetail"
             component={PlaylistDetail}
             options={{
@@ -214,20 +199,20 @@ function App(): JSX.Element {
               ...TransitionPresets.ModalSlideFromBottomIOS,
             }}
           /> */}
-                <Stack.Screen
-                  name="Player"
-                  component={Player}
-                  options={{
-                    headerShown: false,
-                    gestureEnabled: true,
-                    gestureResponseDistance: 100,
-                    // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
-                    ...TransitionPresets.ModalSlideFromBottomIOS,
-                  }}
-                />
-              </Stack.Navigator>
-            </NavigationContainer>
-            {/* <BottomSheet
+                  <Stack.Screen
+                    name="Player"
+                    component={Player}
+                    options={{
+                      headerShown: false,
+                      gestureEnabled: true,
+                      gestureResponseDistance: 100,
+                      // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
+                      ...TransitionPresets.ModalSlideFromBottomIOS,
+                    }}
+                  />
+                </Stack.Navigator>
+              </NavigationContainer>
+              {/* <BottomSheet
             enablePanDownToClose
             ref={bottomSheetRef}
             index={1}
@@ -241,8 +226,9 @@ function App(): JSX.Element {
               <Text>Awesome 🎉</Text>
             </View>
           </BottomSheet> */}
-          </BottomSheetModalProvider>
-        </GestureHandlerRootView>
+            </BottomSheetModalProvider>
+          </GestureHandlerRootView>
+        </DatabaseProvider>
       </PlayerProvider>
     </SafeAreaProvider>
   );

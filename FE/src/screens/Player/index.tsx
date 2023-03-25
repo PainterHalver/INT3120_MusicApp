@@ -255,20 +255,13 @@ const Player = ({navigation}: Props) => {
                 hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
                 background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
                 onPress={() => {
-                  if (isPlaying) {
-                    playButtonRef.current?.play(33, 67);
-                  } else {
-                    playButtonRef.current?.play(0, 33);
-                  }
                   togglePlayback();
                 }}>
                 <View>
-                  <AnimatedLottieView
-                    ref={playButtonRef}
-                    style={{height: 80, width: 80}}
-                    source={require('./../../icons/play_pause.json')}
-                    loop={false}
-                    speed={2}
+                  <AntDesignIcon
+                    name={isPlaying ? 'pausecircleo' : 'playcircleo'}
+                    size={60}
+                    color="#fff"
                   />
                 </View>
               </TouchableNativeFeedback>

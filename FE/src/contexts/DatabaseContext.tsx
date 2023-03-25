@@ -1,0 +1,115 @@
+import React, {createContext, useContext, useEffect, useState} from 'react';
+import SQLite from 'react-native-sqlite-storage';
+import {Song} from '../types';
+
+export type DatabaseContextType = {
+  db: SQLite.SQLiteDatabase | null;
+
+  saveSongSearchHistory: (song: Song) => Promise<void>;
+  getTopSongSearchHistory: (limit?: number) => Promise<Song[]>;
+};
+
+const DatabaseContext = createContext<DatabaseContextType>({
+  db: null,
+  saveSongSearchHistory: async () => {},
+  getTopSongSearchHistory: async () => [],
+});
+
+export const DatabaseProvider = ({children}: any) => {
+  const [db, setDb] = useState<SQLite.SQLiteDatabase | null>(null);
+
+  const createTable = async (db: SQLite.SQLiteDatabase) => {
+    try {
+      const createTableQuery = `
+          CREATE TABLE IF NOT EXISTS search_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            encodeId TEXT,
+            title TEXT,
+            artistsNames TEXT,
+            thumbnail TEXT,
+            thumbnailM TEXT
+          );
+        `;
+      //   await db.executeSql('DROP TABLE IF EXISTS search_history');
+      //   console.log('DROPPED TABLE search_history');
+
+      await db.executeSql(createTableQuery);
+      console.log('CREATED TABLE search_history');
+    } catch (error) {
+      console.error('Error creating table', error);
+    }
+  };
+
+  const saveSongSearchHistory = async ({
+    encodeId,
+    title,
+    artistsNames,
+    thumbnail,
+    thumbnailM,
+  }: Song): Promise<void> => {
+    const insertQuery = `
+      INSERT INTO search_history (encodeId, title, artistsNames, thumbnail, thumbnailM) VALUES (?, ?, ?, ?, ?);
+    `;
+
+    if (!db) throw new Error('Database not initialized');
+
+    return db
+      .executeSql(insertQuery, [encodeId, title, artistsNames, thumbnail, thumbnailM])
+      .then(() => console.log('Data inserted'))
+      .catch(error => console.error('Error inserting data', error));
+  };
+
+  const getTopSongSearchHistory = async (limit: number = 10): Promise<Song[]> => {
+    try {
+      const selectQuery = `
+          SELECT * FROM search_history ORDER BY id DESC LIMIT ?;
+        `;
+
+      if (!db) throw new Error('Database not initialized');
+
+      const result = await db.executeSql(selectQuery, [limit]);
+      const rows = result[0].rows;
+      const songSearchHistory: Song[] = [];
+
+      for (let i = 0; i < rows.length; i++) {
+        const {encodeId, title, artistsNames, thumbnail, thumbnailM} = rows.item(i);
+        songSearchHistory.push({encodeId, title, artistsNames, thumbnail, thumbnailM});
+      }
+
+      return songSearchHistory;
+    } catch (error) {
+      console.error('Error querying data', error);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    const setup = async () => {
+      try {
+        const dbInstance = await SQLite.openDatabase({
+          name: 'database.db',
+          location: 'default',
+        });
+        setDb(dbInstance);
+        await createTable(dbInstance);
+      } catch (error) {
+        console.log('SETUP DATABASE ERROR: ', error);
+      }
+    };
+    setup();
+
+    return () => {
+      if (db) {
+        db.close();
+      }
+    };
+  }, []);
+
+  return (
+    <DatabaseContext.Provider value={{db, saveSongSearchHistory, getTopSongSearchHistory}}>
+      {children}
+    </DatabaseContext.Provider>
+  );
+};
+
+export const useDatabase = () => useContext(DatabaseContext);
