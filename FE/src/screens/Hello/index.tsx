@@ -6,9 +6,9 @@ import {Button, Platform, StatusBar, StyleSheet, TouchableNativeFeedback, View} 
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import LotteView from 'lottie-react-native';
 
 import {BottomTabParamList, RootStackParamList} from '../../../App';
+import {PlayPauseLottieIcon} from '../Player/PlayPauseLottieIcon';
 
 // Prop 1 là prop gần nhất, 2 là của parent
 type Props = CompositeScreenProps<
@@ -25,42 +25,17 @@ const Hello = ({navigation}: Props) => {
     }, []),
   );
 
-  const buttonRef = React.useRef<LotteView>(null);
-
   return (
     <View style={styles.containerWrapper}>
       <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
       <View style={styles.container}>
-        <Button
-          title="Bottom Sheet"
-          onPress={() => {
-            buttonRef.current?.play(33, 67);
-          }}
-        />
+        <Button title="Bottom Sheet" />
       </View>
       <TouchableNativeFeedback
         background={TouchableNativeFeedback.Ripple('#000', true, 500)}
-        useForeground
-        onPress={() => {
-          buttonRef.current?.play(0, 33);
-        }}>
+        useForeground>
         <View style={{flex: 1, backgroundColor: 'red'}}>
-          <LotteView
-            colorFilters={[
-              {
-                keypath: 'play',
-                color: '#fff',
-              },
-              {
-                keypath: 'pause',
-                color: '#fff',
-              },
-            ]}
-            ref={buttonRef}
-            source={require('./../../icons/play_pause.json')}
-            loop={false}
-            speed={2}
-          />
+          <PlayPauseLottieIcon />
         </View>
       </TouchableNativeFeedback>
     </View>

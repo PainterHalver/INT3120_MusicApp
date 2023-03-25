@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {Animated, Easing, Image, StyleSheet} from 'react-native';
+import Reanimated from 'react-native-reanimated';
 
 import {usePlayer} from '../contexts/PlayerContext';
 

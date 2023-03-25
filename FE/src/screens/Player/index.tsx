@@ -37,6 +37,7 @@ import PlayerBackground from './PlayerBackground';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import PlayingSongBottomSheet from './PlayingSongBottomSheet';
 import AnimatedLottieView from 'lottie-react-native';
+import {PlayPauseLottieIcon} from './PlayPauseLottieIcon';
 
 const {height, width} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
@@ -251,7 +252,7 @@ const Player = ({navigation}: Props) => {
                   <MaterialIcon name="skip-previous" size={55} color="#fff" />
                 </View>
               </TouchableNativeFeedback>
-              <TouchableNativeFeedback
+              {/* <TouchableNativeFeedback
                 hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
                 background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
                 onPress={() => {
@@ -264,7 +265,8 @@ const Player = ({navigation}: Props) => {
                     color="#fff"
                   />
                 </View>
-              </TouchableNativeFeedback>
+              </TouchableNativeFeedback> */}
+              <PlayPauseLottieIcon />
               <TouchableNativeFeedback
                 hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
                 background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
