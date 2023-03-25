@@ -11,12 +11,14 @@ import {Song} from '../../types';
 import {usePlayer} from '../../contexts/PlayerContext';
 import SongBottomSheet from '../../components/SongBottomSheet';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {useDatabase} from '../../contexts/DatabaseContext';
 
 interface Props {
   searchValue: string;
 }
 
 const SearchView = ({searchValue}: Props) => {
+  const {saveSongSearchHistory} = useDatabase();
   const {setSelectedSong} = usePlayer();
   const songBottonSheetRef = React.useRef<BottomSheetModal>(null);
 
@@ -62,6 +64,9 @@ const SearchView = ({searchValue}: Props) => {
 
       await TrackPlayer.load(track);
       await TrackPlayer.play();
+
+      // Lưu bài hát vào lịch sử tìm kiếm
+      saveSongSearchHistory(song);
     } catch (error) {
       console.log(error);
     }

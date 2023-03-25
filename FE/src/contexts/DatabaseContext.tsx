@@ -47,23 +47,23 @@ export const DatabaseProvider = ({children}: any) => {
     thumbnail,
     thumbnailM,
   }: Song): Promise<void> => {
-    const insertQuery = `
-      INSERT INTO search_history (encodeId, title, artistsNames, thumbnail, thumbnailM) VALUES (?, ?, ?, ?, ?);
-    `;
+    try {
+      const insertQuery = `
+        INSERT INTO search_history (encodeId, title, artistsNames, thumbnail, thumbnailM) VALUES (?, ?, ?, ?, ?);
+      `;
 
-    if (!db) throw new Error('Database not initialized');
+      if (!db) throw new Error('Database not initialized');
 
-    return db
-      .executeSql(insertQuery, [encodeId, title, artistsNames, thumbnail, thumbnailM])
-      .then(() => console.log('Data inserted'))
-      .catch(error => console.error('Error inserting data', error));
+      await db.executeSql(insertQuery, [encodeId, title, artistsNames, thumbnail, thumbnailM]);
+      console.log('Data inserted');
+    } catch (error) {
+      console.log('SAVE SONG SEARCH HISTORY ERROR: ', error);
+    }
   };
 
   const getTopSongSearchHistory = async (limit: number = 10): Promise<Song[]> => {
     try {
-      const selectQuery = `
-          SELECT * FROM search_history ORDER BY id DESC LIMIT ?;
-        `;
+      const selectQuery = `SELECT * FROM search_history ORDER BY id DESC LIMIT ?;`;
 
       if (!db) throw new Error('Database not initialized');
 
@@ -91,6 +91,7 @@ export const DatabaseProvider = ({children}: any) => {
           location: 'default',
         });
         setDb(dbInstance);
+        console.log('Database initialized', dbInstance);
         await createTable(dbInstance);
       } catch (error) {
         console.log('SETUP DATABASE ERROR: ', error);
@@ -100,6 +101,7 @@ export const DatabaseProvider = ({children}: any) => {
 
     return () => {
       if (db) {
+        console.log('Closing database');
         db.close();
       }
     };

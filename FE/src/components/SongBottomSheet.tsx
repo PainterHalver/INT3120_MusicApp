@@ -8,6 +8,7 @@ import {usePlayer} from '../contexts/PlayerContext';
 import {HeartIcon} from '../icons/HeartIcon';
 import {DownloadIcon} from '../icons/DownloadIcon';
 import {PlayNextIcon} from '../icons/PlayNextIcon';
+import {AddToPlaylistIcon} from '../icons/AddToPlaylistIcon';
 
 interface Props {}
 
@@ -87,6 +88,12 @@ const SongBottomSheet = forwardRef(({}: Props, ref: React.Ref<BottomSheetModal>)
           <View style={styles.option}>
             <HeartIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
             <Text style={styles.optionText}>Thêm vào thư viện</Text>
+          </View>
+        </TouchableNativeFeedback>
+        <TouchableNativeFeedback>
+          <View style={styles.option}>
+            <AddToPlaylistIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
+            <Text style={styles.optionText}>Thêm vào playlist</Text>
           </View>
         </TouchableNativeFeedback>
         <TouchableNativeFeedback>

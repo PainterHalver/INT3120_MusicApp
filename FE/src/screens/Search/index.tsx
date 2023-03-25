@@ -20,6 +20,7 @@ import {SearchIcon} from '../../icons/SearchIcon';
 import {COLORS} from '../../constants';
 import {Shadow} from 'react-native-shadow-2';
 import SearchView from './SearchView';
+import HistoryView from './HistoryView';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'Search'>,
@@ -63,7 +64,7 @@ const Search = ({}: Props) => {
           </View>
         </Shadow>
         <View style={styles.viewsContainer}>
-          {searchValue.length > 0 ? <SearchView searchValue={searchValue} /> : <Text>Default View</Text>}
+          {searchValue.length > 0 ? <SearchView searchValue={searchValue} /> : <HistoryView />}
         </View>
       </View>
     </View>
