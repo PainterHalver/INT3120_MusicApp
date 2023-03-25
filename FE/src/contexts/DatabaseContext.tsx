@@ -86,8 +86,9 @@ export const DatabaseProvider = ({children}: any) => {
   useEffect(() => {
     const setup = async () => {
       try {
+        SQLite.enablePromise(true);
         const dbInstance = await SQLite.openDatabase({
-          name: 'database.db',
+          name: 'data.db',
           location: 'default',
         });
         setDb(dbInstance);
