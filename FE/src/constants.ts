@@ -7,5 +7,3 @@ export const COLORS = {
   BACKGROUND_SECONDARY: '#F3F3F3',
   BOTTOM_BAR: '#FAFAFA',
 };
-
-export const API_URL = 'http://192.168.1.100:5000';

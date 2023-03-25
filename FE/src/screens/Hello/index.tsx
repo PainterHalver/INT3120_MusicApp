@@ -1,7 +1,16 @@
 // @refresh reset
 
 import React from 'react';
-import {Button, Platform, StatusBar, StyleSheet, TouchableNativeFeedback, View} from 'react-native';
+import {
+  Button,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableNativeFeedback,
+  View,
+} from 'react-native';
 
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
@@ -9,6 +18,8 @@ import {StackScreenProps} from '@react-navigation/stack';
 
 import {BottomTabParamList, RootStackParamList} from '../../../App';
 import {PlayPauseLottieIcon} from '../Player/PlayPauseLottieIcon';
+import {ZingMp3} from '../../zingmp3';
+import axios from 'axios';
 
 // Prop 1 là prop gần nhất, 2 là của parent
 type Props = CompositeScreenProps<
@@ -17,6 +28,13 @@ type Props = CompositeScreenProps<
 >;
 
 const Hello = ({navigation}: Props) => {
+  React.useEffect(() => {
+    (async () => {
+      // const data = await axios.get('https://zingmp3.vn');
+      // console.log(await ZingMp3.search('Thi'));
+    })();
+  }, []);
+
   useFocusEffect(
     React.useCallback(() => {
       StatusBar.setBarStyle('dark-content');
@@ -25,12 +43,12 @@ const Hello = ({navigation}: Props) => {
     }, []),
   );
 
+  const [isEnabled, setIsEnabled] = React.useState(false);
+
   return (
     <View style={styles.containerWrapper}>
       <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
-      <View style={styles.container}>
-        <Button title="Bottom Sheet" />
-      </View>
+      <View style={styles.container}></View>
       <TouchableNativeFeedback
         background={TouchableNativeFeedback.Ripple('#000', true, 500)}
         useForeground>

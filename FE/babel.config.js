@@ -7,6 +7,14 @@ module.exports = function (api) {
 
   const plugins = [
     // your plugins here
+    // ['module-resolver',
+    //   {
+    //     alias: {
+    //       'crypto': 'react-native-quick-crypto',
+    //       'stream': 'stream-browserify',
+    //       'buffer': '@craftzdog/react-native-buffer',
+    //     }
+    //   }],
     'react-native-reanimated/plugin',
     // [
     //   'react-native-reanimated/plugin', {

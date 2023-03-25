@@ -12,6 +12,7 @@ import {usePlayer} from '../../contexts/PlayerContext';
 import SongBottomSheet from '../../components/SongBottomSheet';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useDatabase} from '../../contexts/DatabaseContext';
+import {ZingMp3} from '../../zingmp3';
 
 interface Props {
   searchValue: string;
@@ -36,9 +37,8 @@ const SearchView = ({searchValue}: Props) => {
 
   const handleSearch = async () => {
     try {
-      const res = await fetch(API_URL + '/search?q=' + searchValue);
-      let data = await res.json();
-      setSearchResult(data.data.data.songs);
+      const data = await ZingMp3.search(searchValue);
+      setSearchResult(data.data.songs);
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
@@ -49,11 +49,10 @@ const SearchView = ({searchValue}: Props) => {
 
   const playSong = async (song: Song) => {
     try {
-      const res = await fetch(API_URL + '/song/detail?id=' + song.encodeId);
-      let data = await res.json();
+      const data = await ZingMp3.getSong(song.encodeId);
       const track: Track = {
         id: song.encodeId,
-        url: data.data.data['128'],
+        url: data.data['128'],
         title: song.title,
         artist: song.artistsNames,
         artwork: song.thumbnailM,
