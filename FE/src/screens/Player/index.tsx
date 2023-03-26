@@ -7,7 +7,6 @@ import {StackScreenProps} from '@react-navigation/stack';
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {
   Dimensions,
-  Easing,
   ImageBackground,
   Platform,
   ScrollView,
@@ -137,6 +136,31 @@ const Player = ({navigation}: Props) => {
     await AsyncStorage.setItem('@shuffle_enabled', (!isShuffleEnabled).toString());
   };
 
+  const rProgress = useAnimatedStyle(() => {
+    const offsetY = interpolate(
+      translateX.value,
+      [-2 * screenWidth, -screenWidth, 0],
+      [0, -100, 0],
+      Extrapolate.CLAMP,
+    );
+
+    return {
+      transform: [{translateY: offsetY}],
+    };
+  });
+  const rControl = useAnimatedStyle(() => {
+    const offsetY = interpolate(
+      translateX.value,
+      [-2 * screenWidth, -screenWidth, 0],
+      [0, -70, 0],
+      Extrapolate.CLAMP,
+    );
+
+    return {
+      transform: [{translateY: offsetY}],
+    };
+  });
+
   return (
     <View style={styles.containerWrapper}>
       <StatusBar
@@ -179,7 +203,7 @@ const Player = ({navigation}: Props) => {
                 padding: 2,
                 flexDirection: 'row',
                 justifyContent: 'center',
-                gap: 2,
+                gap: 3,
               }}>
               {[0, 1, 2].map((_, i) => {
                 const inputRange = [(-i - 1) * screenWidth, -i * screenWidth, (-i + 1) * screenWidth];
@@ -223,7 +247,7 @@ const Player = ({navigation}: Props) => {
             <PlayerScrollView translateX={translateX} />
           </View>
 
-          <View style={styles.progressContainer}>
+          <Reanimated.View style={[styles.progressContainer, rProgress]}>
             <View style={{marginHorizontal: -15}}>
               <Slider
                 style={styles.slider}
@@ -263,8 +287,8 @@ const Player = ({navigation}: Props) => {
                     .padStart(2, '0')}
               </Text>
             </View>
-          </View>
-          <View style={styles.controlContainer}>
+          </Reanimated.View>
+          <Reanimated.View style={[styles.controlContainer, rControl]}>
             <TouchableNativeFeedback
               hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
@@ -324,7 +348,7 @@ const Player = ({navigation}: Props) => {
                 )}
               </View>
             </TouchableNativeFeedback>
-          </View>
+          </Reanimated.View>
         </View>
       </PlayerBackground>
       <PlayingSongBottomSheet ref={playingSongBottonSheetRef} />
@@ -367,12 +391,13 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   controlContainer: {
-    flex: 3,
-    // backgroundColor: 'limegreen',
+    // flex: 1,
+    // backgroundColor: '#151a6c',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 30,
+    paddingBottom: 5,
   },
   playbackControl: {
     flexDirection: 'row',

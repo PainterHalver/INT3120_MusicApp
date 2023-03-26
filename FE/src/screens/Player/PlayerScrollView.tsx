@@ -102,7 +102,7 @@ const PlayerScrollView = ({translateX}: Props) => {
         <View style={{width: screenWidth}}>
           <View style={styles.imageContainer}>
             <View style={styles.imageView}>
-              <SpinningDisc size={screenWidth * 0.77} />
+              <SpinningDisc size={screenWidth * 0.82} />
             </View>
           </View>
           <View style={styles.metadataContainer}>
@@ -186,7 +186,7 @@ const LyricsPage = () => {
                 ? {uri: currentTrack.artwork}
                 : currentTrack.artwork) || require('./../../../assets/default.png')
             }
-            style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
+            style={{width: 45, height: 45, borderRadius: 7}}
           />
         </View>
         <View style={{marginRight: 'auto'}}>
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     flex: 3,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingHorizontal: 30,
     // backgroundColor: 'orangered',
   },
