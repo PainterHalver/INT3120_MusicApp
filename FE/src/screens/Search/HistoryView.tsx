@@ -1,17 +1,16 @@
-import {Text, View, StyleSheet, Image, TouchableNativeFeedback} from 'react-native';
-import React, {useEffect} from 'react';
-import TrackPlayer, {Track} from 'react-native-track-player';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import IonIcon from 'react-native-vector-icons/Ionicons';
-
-import {API_URL} from '../../constants';
-import {COLORS} from '../../constants';
-import {RootStackParamList} from '../../../App';
-import {Song} from '../../types';
-import {usePlayer} from '../../contexts/PlayerContext';
-import SongBottomSheet from '../../components/SongBottomSheet';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import React, {useEffect} from 'react';
+import {Image, StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
+import TrackPlayer, {Track} from 'react-native-track-player';
+import IonIcon from 'react-native-vector-icons/Ionicons';
+import {RootStackParamList} from '../../../App';
+import SongBottomSheet from '../../components/SongBottomSheet';
+import {COLORS} from '../../constants';
 import {useDatabase} from '../../contexts/DatabaseContext';
+import {usePlayer} from '../../contexts/PlayerContext';
+import {Song} from '../../types';
+import {ZingMp3} from '../../zingmp3';
 
 interface Props {}
 
@@ -32,11 +31,10 @@ const HistoryView = ({}: Props) => {
 
   const playSong = async (song: Song) => {
     try {
-      const res = await fetch(API_URL + '/song/detail?id=' + song.encodeId);
-      let data = await res.json();
+      const data = await ZingMp3.getSong(song.encodeId);
       const track: Track = {
         id: song.encodeId,
-        url: data.data.data['128'],
+        url: data.data['128'],
         title: song.title,
         artist: song.artistsNames,
         artwork: song.thumbnailM,

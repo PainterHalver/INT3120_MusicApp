@@ -27,11 +27,13 @@ export const DatabaseProvider = ({children}: any) => {
             title TEXT,
             artistsNames TEXT,
             thumbnail TEXT,
-            thumbnailM TEXT
+            thumbnailM TEXT,
+            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
           );
         `;
-      //   await db.executeSql('DROP TABLE IF EXISTS search_history');
-      //   console.log('DROPPED TABLE search_history');
+
+      // await db.executeSql('DROP TABLE IF EXISTS search_history');
+      // console.log('DROPPED TABLE search_history');
 
       await db.executeSql(createTableQuery);
       console.log('CREATED TABLE search_history');
@@ -63,7 +65,10 @@ export const DatabaseProvider = ({children}: any) => {
 
   const getTopSongSearchHistory = async (limit: number = 10): Promise<Song[]> => {
     try {
-      const selectQuery = `SELECT * FROM search_history ORDER BY id DESC LIMIT ?;`;
+      const selectQuery = `
+      SELECT * FROM search_history 
+      ORDER BY createdAt DESC
+      LIMIT ?;`;
 
       if (!db) throw new Error('Database not initialized');
 
@@ -76,7 +81,12 @@ export const DatabaseProvider = ({children}: any) => {
         songSearchHistory.push({encodeId, title, artistsNames, thumbnail, thumbnailM});
       }
 
-      return songSearchHistory;
+      // Filter out duplicate encodeId
+      const uniqueSongSearchHistory = songSearchHistory.filter(
+        (song, index, self) => index === self.findIndex(t => t.encodeId === song.encodeId),
+      );
+
+      return uniqueSongSearchHistory;
     } catch (error) {
       console.error('Error querying data', error);
       return [];

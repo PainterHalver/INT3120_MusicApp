@@ -1,17 +1,16 @@
-import {Text, View, StyleSheet, Image, TouchableNativeFeedback} from 'react-native';
-import React, {useEffect} from 'react';
-import TrackPlayer, {Track} from 'react-native-track-player';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import React, {useEffect} from 'react';
+import {Image, StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
+import TrackPlayer, {Track} from 'react-native-track-player';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 
-import {API_URL} from '../../constants';
-import {COLORS} from '../../constants';
-import {RootStackParamList} from '../../../App';
-import {Song} from '../../types';
-import {usePlayer} from '../../contexts/PlayerContext';
-import SongBottomSheet from '../../components/SongBottomSheet';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {RootStackParamList} from '../../../App';
+import SongBottomSheet from '../../components/SongBottomSheet';
+import {COLORS} from '../../constants';
 import {useDatabase} from '../../contexts/DatabaseContext';
+import {usePlayer} from '../../contexts/PlayerContext';
+import {Song} from '../../types';
 import {ZingMp3} from '../../zingmp3';
 
 interface Props {

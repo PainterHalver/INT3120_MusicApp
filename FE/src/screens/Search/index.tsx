@@ -1,26 +1,15 @@
-import {
-  Platform,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  Dimensions,
-  View,
-  TouchableHighlight,
-  TextInput,
-} from 'react-native';
-import React, {useState} from 'react';
-import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import {BottomTabParamList, RootStackParamList} from '../../../App';
-import FeatherIcon from 'react-native-vector-icons/Feather';
-import {Pressable} from 'react-native';
-import {SearchIcon} from '../../icons/SearchIcon';
-import {COLORS} from '../../constants';
+import React, {useState} from 'react';
+import {Dimensions, Platform, Pressable, StatusBar, StyleSheet, TextInput, View} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
-import SearchView from './SearchView';
+import {BottomTabParamList, RootStackParamList} from '../../../App';
+import {COLORS} from '../../constants';
+import {SearchIcon} from '../../icons/SearchIcon';
+import {XCloseIcon} from '../../icons/XCloseIcon';
 import HistoryView from './HistoryView';
+import SearchView from './SearchView';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'Search'>,
@@ -60,6 +49,13 @@ const Search = ({}: Props) => {
                 onChangeText={newText => setSearchValue(newText)}
                 placeholder="Tìm kiếm bài hát, nghệ sĩ..."
               />
+              {searchValue && (
+                <Pressable
+                  onPress={() => setSearchValue('')}
+                  hitSlop={{bottom: 10, top: 10, right: 10, left: 10}}>
+                  <XCloseIcon size={18} color={COLORS.TEXT_GRAY} />
+                </Pressable>
+              )}
             </View>
           </View>
         </Shadow>
@@ -87,7 +83,8 @@ const styles = StyleSheet.create({
     paddingBottom: 13,
   },
   searchbar: {
-    paddingHorizontal: 5,
+    paddingLeft: 5,
+    paddingRight: 7,
     borderRadius: 20,
     alignItems: 'center',
     flexDirection: 'row',
