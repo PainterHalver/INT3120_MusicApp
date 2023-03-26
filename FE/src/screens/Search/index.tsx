@@ -1,8 +1,9 @@
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Dimensions, Platform, Pressable, StatusBar, StyleSheet, TextInput, View} from 'react-native';
+import Animated, {FadeIn} from 'react-native-reanimated';
 import {Shadow} from 'react-native-shadow-2';
 import {BottomTabParamList, RootStackParamList} from '../../../App';
 import {COLORS} from '../../constants';
@@ -18,7 +19,7 @@ type Props = CompositeScreenProps<
 
 const {width, height} = Dimensions.get('screen');
 
-const Search = ({}: Props) => {
+const Search = ({route}: Props) => {
   useFocusEffect(
     React.useCallback(() => {
       StatusBar.setBarStyle('dark-content');
@@ -27,10 +28,18 @@ const Search = ({}: Props) => {
     }, []),
   );
 
+  const searchInputRef = React.useRef<TextInput>(null);
+  useEffect(() => {
+    if (route.params?.shouldFocusSearchBar) {
+      console.log('FOCUSING SEARCHBAR');
+      setTimeout(() => searchInputRef.current?.focus(), 100);
+    }
+  });
+
   const [searchValue, setSearchValue] = useState<string>('');
 
   return (
-    <View style={styles.containerWrapper}>
+    <Animated.View entering={FadeIn} style={styles.containerWrapper}>
       <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
       <View style={styles.container}>
         <Shadow
@@ -44,6 +53,7 @@ const Search = ({}: Props) => {
                 <SearchIcon size={14} color={COLORS.TEXT_GRAY} />
               </View>
               <TextInput
+                ref={searchInputRef}
                 style={styles.inputSearch}
                 value={searchValue}
                 onChangeText={newText => setSearchValue(newText)}
@@ -63,7 +73,7 @@ const Search = ({}: Props) => {
           {searchValue.length > 0 ? <SearchView searchValue={searchValue} /> : <HistoryView />}
         </View>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 

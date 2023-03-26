@@ -2,9 +2,17 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {View, TextInput, Text, StyleSheet} from 'react-native';
 import {SearchIcon} from '../icons/SearchIcon';
 import {COLORS} from '../constants';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {Pressable} from 'react-native';
+
+import {BottomTabParamList} from '../../App';
+
 const BoxSearch = () => {
+  const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
+
   return (
-    <View
+    <Pressable
+      onPress={() => navigation.navigate('Search', {shouldFocusSearchBar: true})}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -35,7 +43,11 @@ const BoxSearch = () => {
         <Text style={{paddingHorizontal: 5}}>
           <SearchIcon size={15} color={COLORS.TEXT_GRAY} />
         </Text>
-        <TextInput style={styles.inputSearch} placeholder="Tìm kiếm bài hát, nghệ sĩ..." />
+        <TextInput
+          editable={false}
+          style={styles.inputSearch}
+          placeholder="Tìm kiếm bài hát, nghệ sĩ..."
+        />
       </View>
       <View
         style={{
@@ -47,7 +59,7 @@ const BoxSearch = () => {
         }}>
         <Icon name="bell" size={20} color="black" style={{fontWeight: '200'}} />
       </View>
-    </View>
+    </Pressable>
   );
 };
 export default BoxSearch;

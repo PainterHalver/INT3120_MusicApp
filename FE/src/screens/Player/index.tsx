@@ -6,11 +6,11 @@ import Slider from '@react-native-community/slider';
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {
-  Animated,
   Dimensions,
   Easing,
   ImageBackground,
   Platform,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -38,8 +38,16 @@ import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import PlayingSongBottomSheet from './PlayingSongBottomSheet';
 import AnimatedLottieView from 'lottie-react-native';
 import {PlayPauseLottieIcon} from './PlayPauseLottieIcon';
+import PlayerScrollView from './PlayerScrollView';
+import Reanimated, {
+  Extrapolate,
+  interpolate,
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+} from 'react-native-reanimated';
 
-const {height, width} = Dimensions.get('screen');
+const {height, width: screenWidth} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
 
 const Player = ({navigation}: Props) => {
@@ -49,10 +57,12 @@ const Player = ({navigation}: Props) => {
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [slidingSlider, setSlidingSlider] = useState<boolean>(false);
   const [repeatMode, setRepeatMode] = useState<RepeatMode>(RepeatMode.Off);
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
   const playingSongBottonSheetRef = React.useRef<BottomSheetModal>(null);
   const playButtonRef = useRef<AnimatedLottieView>(null);
+
+  // Paging animation
+  const translateX = useSharedValue(-screenWidth);
 
   useEffect(() => {
     if (!slidingSlider) {
@@ -127,11 +137,6 @@ const Player = ({navigation}: Props) => {
     await AsyncStorage.setItem('@shuffle_enabled', (!isShuffleEnabled).toString());
   };
 
-  // TODO: Implement this
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-  };
-
   return (
     <View style={styles.containerWrapper}>
       <StatusBar
@@ -165,44 +170,59 @@ const Player = ({navigation}: Props) => {
               </View>
             </TouchableNativeFeedback>
           </View>
-          <View style={styles.imageContainer}>
-            <View style={styles.imageView}>
-              <SpinningDisc size={width * 0.77} />
+
+          {/* Scroll View Container */}
+          <View style={{flex: 10}}>
+            {/* Paginator */}
+            <View
+              style={{
+                padding: 2,
+                flexDirection: 'row',
+                justifyContent: 'center',
+                gap: 2,
+              }}>
+              {[0, 1, 2].map((_, i) => {
+                const inputRange = [(-i - 1) * screenWidth, -i * screenWidth, (-i + 1) * screenWidth];
+
+                const rWidth = useAnimatedStyle(() => {
+                  const dotWidth = interpolate(
+                    translateX.value,
+                    inputRange,
+                    [5, 12, 5],
+                    Extrapolate.CLAMP,
+                  );
+                  const opacity = interpolate(
+                    translateX.value,
+                    inputRange,
+                    [0.4, 1, 0.4],
+                    Extrapolate.CLAMP,
+                  );
+
+                  return {
+                    width: dotWidth,
+                    opacity,
+                  };
+                });
+
+                return (
+                  <Reanimated.View
+                    key={i}
+                    style={[
+                      {
+                        height: 2.5,
+                        borderRadius: 5,
+                        backgroundColor: '#fff',
+                      },
+                      rWidth,
+                    ]}
+                  />
+                );
+              })}
             </View>
+            {/* ScrollView */}
+            <PlayerScrollView translateX={translateX} />
           </View>
-          <View style={styles.metadataContainer}>
-            <TouchableNativeFeedback
-              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-              background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}>
-              <View>
-                <ShareIcon size={21} color="#ffffffaa" />
-              </View>
-            </TouchableNativeFeedback>
-            <View style={styles.metadata}>
-              <Text style={{color: '#fff', fontSize: 18, fontWeight: '600'}}>
-                {currentTrack.title && currentTrack.title.length > 25
-                  ? currentTrack.title.substring(0, 25) + '...'
-                  : currentTrack.title}
-              </Text>
-              <Text style={{color: '#ffffffbb', fontSize: 16}}>
-                {currentTrack.artist && currentTrack.artist.length > 30
-                  ? currentTrack.artist.substring(0, 30) + '...'
-                  : currentTrack.artist}
-              </Text>
-            </View>
-            <TouchableNativeFeedback
-              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-              background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
-              onPress={toggleFavorite}>
-              <View>
-                {isFavorite ? (
-                  <HeartIcon size={25} color={ICON_ACTIVATED_COLOR} fill={ICON_ACTIVATED_COLOR} />
-                ) : (
-                  <HeartIcon size={25} color="#ffffffaa" />
-                )}
-              </View>
-            </TouchableNativeFeedback>
-          </View>
+
           <View style={styles.progressContainer}>
             <View style={{marginHorizontal: -15}}>
               <Slider
@@ -329,40 +349,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   heading: {
-    height: 60,
+    height: 52,
+    paddingTop: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
   },
-  imageContainer: {
-    flex: 7,
-    // backgroundColor: '#a2a222',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imageView: {
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 0.7,
-    shadowRadius: 2,
-    borderRadius: 1000,
-    elevation: 20,
-  },
-  metadataContainer: {
-    flex: 3,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 30,
-  },
-  metadata: {
-    // backgroundColor: 'green',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+
   progressContainer: {
-    flex: 2,
+    flex: 1,
     // backgroundColor: '#712722',
     paddingHorizontal: 25,
   },
@@ -372,7 +368,7 @@ const styles = StyleSheet.create({
   },
   controlContainer: {
     flex: 3,
-    // backgroundColor: 'gray',
+    // backgroundColor: 'limegreen',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

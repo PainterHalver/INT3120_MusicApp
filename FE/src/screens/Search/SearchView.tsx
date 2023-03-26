@@ -37,7 +37,7 @@ const SearchView = ({searchValue}: Props) => {
   const handleSearch = async () => {
     try {
       const data = await ZingMp3.search(searchValue);
-      setSearchResult(data.data.songs);
+      setSearchResult(data.data.songs || []);
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {

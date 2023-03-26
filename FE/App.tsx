@@ -36,7 +36,9 @@ const Stack = createStackNavigator<RootStackParamList>();
 // https://reactnavigation.org/docs/typescript/#type-checking-screens
 export type BottomTabParamList = {
   Hello: undefined;
-  Search: undefined;
+  Search: {
+    shouldFocusSearchBar?: boolean;
+  };
   Welcome: undefined;
 };
 
@@ -69,30 +71,30 @@ export const tracks: Track[] = [
   //   artist: 'Ha Anh Tuan',
   //   artwork: require('./assets/Thang-Tu-La-Loi-Noi-Doi-Cua-Em-Ha-Anh-Tuan.jpg'),
   // },
-  {
-    id: 4,
-    url: 'https://mp3-s1-zmp3.zmdcdn.me/0fb7961a885a6104384b/3744477689111912134?authen=exp=1679728791~acl=/0fb7961a885a6104384b/*~hmac=95837cb86af9d8415288d1b2cfcce4f5&fs=MTY3OTU1NTk5MTQxNXx3ZWJWNnwxMDAxMzAzNzIyfDE0LjIzMi4yMDgdUngMTM3',
-    title: "STAR WALKIN' (League of Legends Worlds Anthem)",
-    artist: 'Lil Nas X',
-    artwork:
-      'https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/4/0/3/5/40354058076ab81f7da2e14e8965a3e2.jpg',
-  },
-  {
-    id: 5,
-    url: 'https://mp3-s1-zmp3.zmdcdn.me/c24b010aaf4d46131f5c/6268129782441873357?authen=exp=1679728854~acl=/c24b010aaf4d46131f5c/*~hmac=924be74438c437c42c26b135bfd46222&fs=MTY3OTU1NjA1NDQ2OHx3ZWJWNnwwfDE3MS4yNTIdUngMTUzLjI0OQ',
-    title: 'Prisoner',
-    artist: 'Miley Cyrus, Dua Lipa',
-    artwork:
-      'https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/8/a/7/f/8a7f095c07e570036d93d5f765c03e94.jpg',
-  },
-  {
-    id: 6,
-    url: 'https://mp3-s1-zmp3.zmdcdn.me/e67081ab1debf4b5adfa/6844236296318957939?authen=exp=1679728884~acl=/e67081ab1debf4b5adfa/*~hmac=d1f034477c865bfdea68b2932b23d21a&fs=MTY3OTU1NjA4NDExNnx3ZWJWNnwxMDAwMjmUsICxOTmUsIC1fDE0LjE5MS4yNDEdUngMjE2',
-    title: 'Crying On The Dancefloor',
-    artist: 'Sam Feldt, Jonas Blue, Endless Summer, Violet Days',
-    artwork:
-      'https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/c/9/4/5/c9459f01d5e8edc9bf8710fab810072e.jpg',
-  },
+  // {
+  //   id: 4,
+  //   url: 'https://mp3-s1-zmp3.zmdcdn.me/0fb7961a885a6104384b/3744477689111912134?authen=exp=1679728791~acl=/0fb7961a885a6104384b/*~hmac=95837cb86af9d8415288d1b2cfcce4f5&fs=MTY3OTU1NTk5MTQxNXx3ZWJWNnwxMDAxMzAzNzIyfDE0LjIzMi4yMDgdUngMTM3',
+  //   title: "STAR WALKIN' (League of Legends Worlds Anthem)",
+  //   artist: 'Lil Nas X',
+  //   artwork:
+  //     'https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/4/0/3/5/40354058076ab81f7da2e14e8965a3e2.jpg',
+  // },
+  // {
+  //   id: 5,
+  //   url: 'https://mp3-s1-zmp3.zmdcdn.me/c24b010aaf4d46131f5c/6268129782441873357?authen=exp=1679728854~acl=/c24b010aaf4d46131f5c/*~hmac=924be74438c437c42c26b135bfd46222&fs=MTY3OTU1NjA1NDQ2OHx3ZWJWNnwwfDE3MS4yNTIdUngMTUzLjI0OQ',
+  //   title: 'Prisoner',
+  //   artist: 'Miley Cyrus, Dua Lipa',
+  //   artwork:
+  //     'https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/8/a/7/f/8a7f095c07e570036d93d5f765c03e94.jpg',
+  // },
+  // {
+  //   id: 6,
+  //   url: 'https://mp3-s1-zmp3.zmdcdn.me/e67081ab1debf4b5adfa/6844236296318957939?authen=exp=1679728884~acl=/e67081ab1debf4b5adfa/*~hmac=d1f034477c865bfdea68b2932b23d21a&fs=MTY3OTU1NjA4NDExNnx3ZWJWNnwxMDAwMjmUsICxOTmUsIC1fDE0LjE5MS4yNDEdUngMjE2',
+  //   title: 'Crying On The Dancefloor',
+  //   artist: 'Sam Feldt, Jonas Blue, Endless Summer, Violet Days',
+  //   artwork:
+  //     'https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/c/9/4/5/c9459f01d5e8edc9bf8710fab810072e.jpg',
+  // },
 ];
 
 function App(): JSX.Element {
@@ -204,8 +206,8 @@ function App(): JSX.Element {
                     component={Player}
                     options={{
                       headerShown: false,
-                      gestureEnabled: true,
-                      gestureResponseDistance: 100,
+                      // gestureEnabled: true,
+                      // gestureResponseDistance: 100,
                       // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
                       ...TransitionPresets.ModalSlideFromBottomIOS,
                     }}

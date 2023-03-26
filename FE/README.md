@@ -23,6 +23,7 @@
 ## Note
 
 - react-native-track-player bản nightly mới chạy được RemoteSeek
+- https://github.com/software-mansion/react-native-gesture-handler/issues/420#issuecomment-592686502
 
 ## Todos:
 

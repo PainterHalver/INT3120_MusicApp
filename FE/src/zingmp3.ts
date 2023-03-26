@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Crypto from 'react-native-quick-crypto';
 import {Buffer} from 'buffer';
+import {ZingMp3LyricResponse} from './types';
 
 class ZingMp3Api {
   public VERSION: string;
@@ -126,6 +127,7 @@ class ZingMp3Api {
       const client = axios.create({
         baseURL: `${this.URL}`,
       });
+
       // print http url every request, incluing query in a single line
       client.interceptors.request.use((req: any) => {
         console.log(req.method + ' ' + req.url + ' ' + JSON.stringify(req.params));
@@ -292,14 +294,14 @@ class ZingMp3Api {
   }
 
   // getLyric
-  public getLyric(songId: string): Promise<any> {
+  public getLyric(songId: string): Promise<ZingMp3LyricResponse> {
     return new Promise<any>((resolve, rejects) => {
       this.requestZingMp3('/api/v2/lyric/get/lyric', {
         id: songId,
         sig: this.hashParam('/api/v2/lyric/get/lyric', songId),
       })
         .then(res => {
-          resolve(res);
+          resolve(res.data);
         })
         .catch(err => {
           rejects(err);
@@ -310,12 +312,6 @@ class ZingMp3Api {
   // search
   public search(name: string): Promise<any> {
     return new Promise<any>((resolve, rejects) => {
-      console.log(this.hashParamNoId('/api/v2/search/multi'));
-      const res = fetch(
-        'https://zingmp3.vn/api/v2/search/multi?q=thi&sig=' + this.hashParamNoId('/api/v2/search/multi'),
-      )
-        .then(res => res.json())
-        .then(res => console.log(res));
       this.requestZingMp3('/api/v2/search/multi', {
         q: name,
         sig: this.hashParamNoId('/api/v2/search/multi'),
