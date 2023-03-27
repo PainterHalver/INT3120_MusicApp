@@ -14,6 +14,7 @@ import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
 
 import {tracks} from '../../App';
 import {Song} from '../types';
+import {ZingMp3} from '../zingmp3';
 
 export type PlayerContextType = {
   currentTrack: Track;
@@ -25,12 +26,14 @@ export type PlayerContextType = {
   isRotating: boolean;
   lastArtwork: string;
   selectedSong: Song;
+  lyrics: string[];
 
   setIsPlaying: (isPlaying: boolean) => void;
   setPausedRotationValue: (pausedRotationValue: number) => void;
   setIsRotating: (isRotating: boolean) => void;
   setLastArtwork: (currentArtwork: string) => void;
   setSelectedSong: (selectedSong: Song) => void;
+  setLyrics: (lyrics: string[]) => void;
 };
 
 const defaultTrack: Track = {
@@ -60,11 +63,13 @@ const PlayerContext = createContext<PlayerContextType>({
   isRotating: false,
   lastArtwork: require('./../../assets/default.png'),
   selectedSong: {} as Song,
+  lyrics: [],
   setIsPlaying: () => {},
   setPausedRotationValue: () => {},
   setIsRotating: () => {},
   setLastArtwork: () => {},
   setSelectedSong: () => {},
+  setLyrics: () => {},
 });
 
 export const PlayerProvider = ({children}: any) => {
@@ -79,6 +84,22 @@ export const PlayerProvider = ({children}: any) => {
     track.artwork || require('./../../assets/default.png'),
   );
   const [selectedSong, setSelectedSong] = React.useState<Song>(defaultSong);
+  const [lyrics, setLyrics] = React.useState<string[]>([]);
+
+  const getLyricSentences = async (track: Track | undefined): Promise<string[]> => {
+    try {
+      if (!track) return ['Không tìm thấy lời bài hát'];
+
+      const data = await ZingMp3.getLyric(track.id);
+      const lyricSentences = data.sentences.map(sentence => {
+        return sentence.words.map(word => word.data).join(' ');
+      });
+      return lyricSentences;
+    } catch (error) {
+      console.log(error);
+      return ['Không tìm thấy lời bài hát'];
+    }
+  };
 
   useTrackPlayerEvents([Event.PlaybackState], (event: any) => {
     if (event.type === Event.PlaybackState) {
@@ -138,8 +159,10 @@ export const PlayerProvider = ({children}: any) => {
       if (track) {
         setTrack(track);
       }
-    });
 
+      // Clear lyrics
+      setLyrics(await getLyricSentences(track));
+    });
     AppState.addEventListener('change', async appState => {
       if (appState === 'active') {
         const state = await TrackPlayer.getState();
@@ -160,11 +183,13 @@ export const PlayerProvider = ({children}: any) => {
         isRotating,
         lastArtwork,
         selectedSong,
+        lyrics,
         setIsPlaying,
         setPausedRotationValue,
         setIsRotating,
         setLastArtwork,
         setSelectedSong,
+        setLyrics,
       }}>
       {children}
     </PlayerContext.Provider>

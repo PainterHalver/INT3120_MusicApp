@@ -148,25 +148,7 @@ const PlayerScrollView = ({translateX}: Props) => {
 };
 
 const LyricsPage = () => {
-  const {currentTrack} = usePlayer();
-  const [lyricSentences, setLyricSentences] = useState<string[]>([]);
-
-  const getLyricSentences = async () => {
-    try {
-      const lyrics = await ZingMp3.getLyric(currentTrack.id);
-      const lyricSentences = lyrics.sentences.map(sentence => {
-        return sentence.words.map(word => word.data).join(' ');
-      });
-      setLyricSentences(lyricSentences);
-    } catch (error) {
-      console.log(error);
-      setLyricSentences(['Không tìm thấy lời bài hát']);
-    }
-  };
-
-  useEffect(() => {
-    getLyricSentences();
-  }, [currentTrack]);
+  const {currentTrack, lyrics, setLyrics} = usePlayer();
 
   return (
     <View style={styles.lyricsPage}>
@@ -208,7 +190,7 @@ const LyricsPage = () => {
           paddingVertical: 15,
           paddingHorizontal: 20,
         }}>
-        {lyricSentences.map((sentence, index) => {
+        {lyrics.map((sentence, index) => {
           return (
             <Text
               key={index}

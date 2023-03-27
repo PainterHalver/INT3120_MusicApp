@@ -29,6 +29,7 @@ import {DoubleCircleIcon} from './src/icons/DoubleCircleIcon';
 import {SearchIcon} from './src/icons/SearchIcon';
 import {COLORS} from './src/constants';
 import BottomSheet, {BottomSheetBackdrop, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {LoadingModalProvider} from './src/contexts/LoadingModalContext';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -176,23 +177,24 @@ function App(): JSX.Element {
     <SafeAreaProvider>
       <PlayerProvider>
         <DatabaseProvider>
-          <GestureHandlerRootView style={{flex: 1}}>
-            <BottomSheetModalProvider>
-              <NavigationContainer
-                theme={{
-                  dark: false,
-                  colors: {
-                    primary: 'rgb(0, 122, 255)',
-                    background: COLORS.BACKGROUND_PRIMARY,
-                    card: 'rgb(255, 255, 255)',
-                    text: COLORS.TEXT_PRIMARY,
-                    border: 'rgb(216, 216, 216)',
-                    notification: 'rgb(255, 59, 48)',
-                  },
-                }}>
-                <Stack.Navigator>
-                  <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
-                  {/* <Stack.Screen
+          <LoadingModalProvider>
+            <GestureHandlerRootView style={{flex: 1}}>
+              <BottomSheetModalProvider>
+                <NavigationContainer
+                  theme={{
+                    dark: false,
+                    colors: {
+                      primary: 'rgb(0, 122, 255)',
+                      background: COLORS.BACKGROUND_PRIMARY,
+                      card: 'rgb(255, 255, 255)',
+                      text: COLORS.TEXT_PRIMARY,
+                      border: 'rgb(216, 216, 216)',
+                      notification: 'rgb(255, 59, 48)',
+                    },
+                  }}>
+                  <Stack.Navigator>
+                    <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
+                    {/* <Stack.Screen
             name="PlaylistDetail"
             component={PlaylistDetail}
             options={{
@@ -201,20 +203,20 @@ function App(): JSX.Element {
               ...TransitionPresets.ModalSlideFromBottomIOS,
             }}
           /> */}
-                  <Stack.Screen
-                    name="Player"
-                    component={Player}
-                    options={{
-                      headerShown: false,
-                      // gestureEnabled: true,
-                      // gestureResponseDistance: 100,
-                      // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
-                      ...TransitionPresets.ModalSlideFromBottomIOS,
-                    }}
-                  />
-                </Stack.Navigator>
-              </NavigationContainer>
-              {/* <BottomSheet
+                    <Stack.Screen
+                      name="Player"
+                      component={Player}
+                      options={{
+                        headerShown: false,
+                        // gestureEnabled: true,
+                        // gestureResponseDistance: 100,
+                        // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
+                        ...TransitionPresets.ModalSlideFromBottomIOS,
+                      }}
+                    />
+                  </Stack.Navigator>
+                </NavigationContainer>
+                {/* <BottomSheet
             enablePanDownToClose
             ref={bottomSheetRef}
             index={1}
@@ -228,8 +230,9 @@ function App(): JSX.Element {
               <Text>Awesome 🎉</Text>
             </View>
           </BottomSheet> */}
-            </BottomSheetModalProvider>
-          </GestureHandlerRootView>
+              </BottomSheetModalProvider>
+            </GestureHandlerRootView>
+          </LoadingModalProvider>
         </DatabaseProvider>
       </PlayerProvider>
     </SafeAreaProvider>

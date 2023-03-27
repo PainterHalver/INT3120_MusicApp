@@ -20,6 +20,7 @@ import {BottomTabParamList, RootStackParamList} from '../../../App';
 import {PlayPauseLottieIcon} from '../Player/PlayPauseLottieIcon';
 import {ZingMp3} from '../../zingmp3';
 import axios from 'axios';
+import {useLoadingModal} from '../../contexts/LoadingModalContext';
 
 // Prop 1 là prop gần nhất, 2 là của parent
 type Props = CompositeScreenProps<
@@ -43,12 +44,19 @@ const Hello = ({navigation}: Props) => {
     }, []),
   );
 
-  const [isEnabled, setIsEnabled] = React.useState(false);
+  const {setLoading} = useLoadingModal();
+
+  const buttonHandler = () => {
+    setLoading(true);
+    setTimeout(() => setLoading(false), 2000);
+  };
 
   return (
     <View style={styles.containerWrapper}>
       <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
-      <View style={styles.container}></View>
+      <View style={styles.container}>
+        <Button title="loading modal" onPress={buttonHandler} />
+      </View>
       <TouchableNativeFeedback
         background={TouchableNativeFeedback.Ripple('#000', true, 500)}
         useForeground>
