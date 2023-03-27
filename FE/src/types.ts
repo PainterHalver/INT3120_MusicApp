@@ -1,3 +1,5 @@
+import {Track} from 'react-native-track-player';
+
 export type Album = {
   encodedId: string;
   title: string;
@@ -24,4 +26,14 @@ export type ZingMp3LyricResponse = {
     }[];
   }[];
   streamingUrl: string; // video
+};
+
+export const songsToTracks = (songs: Song[]): Track[] => {
+  return songs.map(song => ({
+    id: song.encodeId,
+    url: '', // sẽ được thêm nhờ playback error event
+    title: song.title,
+    artist: song.artistsNames,
+    artwork: song.thumbnailM,
+  }));
 };

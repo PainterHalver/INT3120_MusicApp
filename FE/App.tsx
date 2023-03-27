@@ -53,7 +53,8 @@ export type RootStackParamList = {
 export const tracks: Track[] = [
   // {
   //   id: 1,
-  //   url: require('./assets/Led_Zeppelin-Stairway_To_Heaven.mp3'),
+  //   // url: require('./assets/Led_Zeppelin-Stairway_To_Heaven.mp3'),
+  //   url: '',
   //   title: 'Stairway To Heaven',
   //   artist: 'Led Zeppelin',
   //   artwork: require('./assets/Led_Zeppelin-Stairway_To_Heaven.png'),

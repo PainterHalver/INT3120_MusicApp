@@ -8,6 +8,7 @@ import {RootStackParamList} from '../../../App';
 import SongBottomSheet from '../../components/SongBottomSheet';
 import {COLORS} from '../../constants';
 import {useDatabase} from '../../contexts/DatabaseContext';
+import {useLoadingModal} from '../../contexts/LoadingModalContext';
 import {usePlayer} from '../../contexts/PlayerContext';
 import {Song} from '../../types';
 import {ZingMp3} from '../../zingmp3';
@@ -17,6 +18,7 @@ interface Props {}
 const HistoryView = ({}: Props) => {
   const {setSelectedSong} = usePlayer();
   const {getTopSongSearchHistory} = useDatabase();
+  const {setLoading} = useLoadingModal();
   const songBottonSheetRef = React.useRef<BottomSheetModal>(null);
   const [historySongs, setHistorySongs] = React.useState<Song[]>([]);
 
@@ -31,6 +33,7 @@ const HistoryView = ({}: Props) => {
 
   const playSong = async (song: Song) => {
     try {
+      setLoading(true);
       const data = await ZingMp3.getSong(song.encodeId);
       const track: Track = {
         id: song.encodeId,
@@ -40,6 +43,8 @@ const HistoryView = ({}: Props) => {
         artwork: song.thumbnailM,
       };
 
+      setLoading(false);
+
       // Hiện player trước rồi mới load bài hát
       navigation.navigate('Player');
 
@@ -47,6 +52,8 @@ const HistoryView = ({}: Props) => {
       await TrackPlayer.play();
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,7 +68,7 @@ const HistoryView = ({}: Props) => {
             paddingBottom: 7,
             paddingHorizontal: 15,
           }}>
-          Nghe gần đây
+          Lịch sử tìm kiếm
         </Text>
         {historySongs.length > 0 &&
           historySongs.map((song, index) => {

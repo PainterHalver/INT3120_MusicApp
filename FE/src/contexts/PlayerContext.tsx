@@ -158,11 +158,27 @@ export const PlayerProvider = ({children}: any) => {
       let track = await TrackPlayer.getActiveTrack();
       if (track) {
         setTrack(track);
+      } else {
+        return;
+      }
+
+      // Load URL nếu chưa có
+      if (!track.url) {
+        console.log(track.title + ': Chưa có url, đang lấy url...');
+        const data = await ZingMp3.getSong(track.id);
+        const url = data.data['128'];
+        await TrackPlayer.load({
+          ...track,
+          url,
+        });
+        return;
       }
 
       // Clear lyrics
+      console.log('Lấy Lyrics');
       setLyrics(await getLyricSentences(track));
     });
+
     AppState.addEventListener('change', async appState => {
       if (appState === 'active') {
         const state = await TrackPlayer.getState();

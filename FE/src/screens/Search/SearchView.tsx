@@ -10,8 +10,9 @@ import SongBottomSheet from '../../components/SongBottomSheet';
 import {COLORS} from '../../constants';
 import {useDatabase} from '../../contexts/DatabaseContext';
 import {usePlayer} from '../../contexts/PlayerContext';
-import {Song} from '../../types';
+import {Song, songsToTracks} from '../../types';
 import {ZingMp3} from '../../zingmp3';
+import {useLoadingModal} from '../../contexts/LoadingModalContext';
 
 interface Props {
   searchValue: string;
@@ -20,6 +21,7 @@ interface Props {
 const SearchView = ({searchValue}: Props) => {
   const {saveSongSearchHistory} = useDatabase();
   const {setSelectedSong} = usePlayer();
+  const {setLoading} = useLoadingModal();
   const songBottonSheetRef = React.useRef<BottomSheetModal>(null);
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -48,6 +50,7 @@ const SearchView = ({searchValue}: Props) => {
 
   const playSong = async (song: Song) => {
     try {
+      setLoading(true);
       const data = await ZingMp3.getSong(song.encodeId);
       const track: Track = {
         id: song.encodeId,
@@ -57,16 +60,25 @@ const SearchView = ({searchValue}: Props) => {
         artwork: song.thumbnailM,
       };
 
+      const recommendedSongs = await ZingMp3.getRecommendSongs(song.encodeId);
+      const newQueue = songsToTracks(recommendedSongs);
+      newQueue.unshift(track);
+
+      await TrackPlayer.reset();
+      await TrackPlayer.add(newQueue);
+
+      setLoading(false);
+
       // Hiện player trước rồi mới load bài hát
       navigation.navigate('Player');
-
-      await TrackPlayer.load(track);
       await TrackPlayer.play();
 
       // Lưu bài hát vào lịch sử tìm kiếm
       saveSongSearchHistory(song);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 

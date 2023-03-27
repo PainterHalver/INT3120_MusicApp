@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Crypto from 'react-native-quick-crypto';
 import {Buffer} from 'buffer';
-import {ZingMp3LyricResponse} from './types';
+import {Song, ZingMp3LyricResponse} from './types';
 
 class ZingMp3Api {
   public VERSION: string;
@@ -386,6 +386,25 @@ class ZingMp3Api {
       })
         .then(res => {
           resolve(res);
+        })
+        .catch(err => {
+          rejects(err);
+        });
+    });
+  }
+
+  public getRecommendSongs(songId: string): Promise<Song[]> {
+    return new Promise<any>((resolve, rejects) => {
+      this.requestZingMp3('/api/v2/recommend/get/songs', {
+        id: songId,
+        sig: this.getHmac512(
+          '/api/v2/recommend/get/songs' +
+            this.getHash256(`count=999ctime=${this.CTIME}id=${songId}version=${this.VERSION}`),
+          this.SECRET_KEY,
+        ),
+      })
+        .then(res => {
+          resolve(res.data.items);
         })
         .catch(err => {
           rejects(err);

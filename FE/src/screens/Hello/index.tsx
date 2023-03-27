@@ -32,7 +32,7 @@ const Hello = ({navigation}: Props) => {
   React.useEffect(() => {
     (async () => {
       // const data = await axios.get('https://zingmp3.vn');
-      // console.log(await ZingMp3.search('Thi'));
+      // console.log(await ZingMp3.getRecommendSongs('Z68A6F9O'));
     })();
   }, []);
 
