@@ -1,5 +1,8 @@
 import RNFS from 'react-native-fs';
 import notifee, {AndroidImportance} from '@notifee/react-native';
+import * as MediaLibrary from 'expo-media-library';
+import {FFmpegKit} from 'ffmpeg-kit-react-native';
+import TrackPlayer, {Track} from 'react-native-track-player';
 
 class FileSystem {
   private BASE_PATH = RNFS.ExternalDirectoryPath + '/';
@@ -55,11 +58,79 @@ class FileSystem {
 
   public getMusicFiles = async () => {
     try {
+      const tracks: Track[] = [];
+
       const files = await RNFS.readDir(this.BASE_PATH);
       console.log(files);
-      return files;
+
+      // Xóa folder /copied nếu đã tồn tại
+      const copiedPath = this.BASE_PATH + 'copied';
+      const existCopied = await RNFS.exists(copiedPath);
+      if (existCopied) {
+        await RNFS.unlink(copiedPath);
+      }
+      await RNFS.mkdir(copiedPath);
+
+      // Copy các file audio vào folder /copied
+      let media = await MediaLibrary.getAssetsAsync({
+        mediaType: 'audio',
+      });
+      const assets = media.assets.filter(item => item.duration > 5);
+      await Promise.all(
+        assets.map(async item => {
+          const outputImage = copiedPath + '/' + item.filename + '.jpg';
+          const outputMetadata = copiedPath + '/' + item.filename + '.txt';
+          await FFmpegKit.execute(`-i ${item.uri} -an -vcodec copy ${outputImage}`);
+          await FFmpegKit.execute(`-i ${item.uri} -f ffmetadata ${outputMetadata}`);
+          const metadata = await RNFS.readFile(outputMetadata, 'utf8');
+          const titleMatch = metadata.match(/Title=([^=\n]+)/);
+          const artistMatch = metadata.match(/Artist=([^=\n]+)/);
+          tracks.push({
+            url: item.uri,
+            artwork: 'file://' + outputImage,
+            title: titleMatch ? titleMatch[1] : item.filename,
+            artist: artistMatch ? artistMatch[1] : 'Unknown',
+          });
+          await RNFS.unlink(outputMetadata);
+        }),
+      );
+      console.log(tracks);
+      // await TrackPlayer.reset();
+      // await TrackPlayer.add(tracks);
+
+      // const session = await FFmpegKit.execute(
+      //   '-i /storage/emulated/0/Download/starwalkin.flac -an -vcodec copy /storage/emulated/0/Download/cover.jpg',
+      // );
+      // const command = session.getCommand();
+      // console.log(command);
+      return tracks;
     } catch (error) {
       console.log('Downloader/getMusicFiles:', error);
+    }
+  };
+
+  public checkMediaPermission = async () => {
+    const permission = await MediaLibrary.requestPermissionsAsync();
+
+    if (permission.granted) {
+      // await this.getAudioFiles();
+      return;
+    }
+
+    if (!permission.granted && !permission.canAskAgain) {
+      throw new Error('Bạn đã từ chối quyền truy cập thư viện');
+    }
+
+    if (!permission.granted && permission.canAskAgain) {
+      const {status, canAskAgain} = await MediaLibrary.requestPermissionsAsync();
+      if (status === 'granted') {
+        // await this.getAudioFiles();
+        return;
+      }
+
+      if (status === 'denied') {
+        throw new Error('Bạn đã từ chối quyền truy cập thư viện');
+      }
     }
   };
 }

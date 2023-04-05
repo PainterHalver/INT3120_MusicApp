@@ -57,7 +57,7 @@ export const DatabaseProvider = ({children}: any) => {
       if (!db) throw new Error('Database not initialized');
 
       await db.executeSql(insertQuery, [encodeId, title, artistsNames, thumbnail, thumbnailM]);
-      console.log(title + 'added to history');
+      console.log(title + ' added to history');
     } catch (error) {
       console.log('SAVE SONG SEARCH HISTORY ERROR: ', error);
     }

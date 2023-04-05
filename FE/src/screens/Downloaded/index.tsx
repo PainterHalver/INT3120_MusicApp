@@ -7,6 +7,7 @@ import {
   TouchableNativeFeedback,
   View,
   Text,
+  Alert,
 } from 'react-native';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
@@ -17,6 +18,7 @@ import FileSystem from '../../filesystem';
 import {PlayPauseLottieIcon} from '../Player/PlayPauseLottieIcon';
 import {Shadow} from 'react-native-shadow-2';
 import {COLORS} from '../../constants';
+import RNFS from 'react-native-fs';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'Downloaded'>,
@@ -24,9 +26,17 @@ type Props = CompositeScreenProps<
 >;
 
 const Downloaded = ({navigation}: Props) => {
+  const [permissionError, setPermissionError] = React.useState<string>('');
+
   React.useEffect(() => {
     (async () => {
-      await FileSystem.getMusicFiles();
+      try {
+        // await FileSystem.checkMediaPermission();
+        // await FileSystem.getMusicFiles();
+      } catch (error) {
+        console.log('Downloaded', error);
+        setPermissionError('Bạn đã từ chối quyền truy cập thư viện');
+      }
     })();
   }, []);
 
