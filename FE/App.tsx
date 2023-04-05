@@ -30,6 +30,8 @@ import {SearchIcon} from './src/icons/SearchIcon';
 import {COLORS} from './src/constants';
 import BottomSheet, {BottomSheetBackdrop, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {LoadingModalProvider} from './src/contexts/LoadingModalContext';
+import Downloaded from './src/screens/Downloaded';
+import {DownloadIcon} from './src/icons/DownloadIcon';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -41,6 +43,7 @@ export type BottomTabParamList = {
     shouldFocusSearchBar?: boolean;
   };
   Welcome: undefined;
+  Downloaded: undefined;
 };
 
 export type RootStackParamList = {
@@ -111,6 +114,16 @@ function App(): JSX.Element {
           }}
         />
         <BottomTab.Screen
+          name="Downloaded"
+          component={Downloaded}
+          options={{
+            title: 'Đã tải',
+            tabBarIcon: ({focused, color, size}) => (
+              <DownloadIcon size={size} color={color} strokeWidth={15} />
+            ),
+          }}
+        />
+        <BottomTab.Screen
           name="Hello"
           component={Hello}
           options={{
@@ -167,20 +180,6 @@ function App(): JSX.Element {
                     />
                   </Stack.Navigator>
                 </NavigationContainer>
-                {/* <BottomSheet
-            enablePanDownToClose
-            ref={bottomSheetRef}
-            index={1}
-            snapPoints={snapPoints}
-            onChange={handleSheetChanges}
-            backgroundStyle={{backgroundColor: 'cyan'}}
-            backdropComponent={props => (
-              <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
-            )}>
-            <View>
-              <Text>Awesome 🎉</Text>
-            </View>
-          </BottomSheet> */}
               </BottomSheetModalProvider>
             </GestureHandlerRootView>
           </LoadingModalProvider>

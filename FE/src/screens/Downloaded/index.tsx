@@ -1,26 +1,33 @@
-// @refresh reset
-
 import React from 'react';
-import {Button, Platform, StatusBar, StyleSheet, TouchableNativeFeedback, View} from 'react-native';
-
+import {
+  Button,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  TouchableNativeFeedback,
+  View,
+  Text,
+} from 'react-native';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 
 import {BottomTabParamList, RootStackParamList} from '../../../App';
-import {useLoadingModal} from '../../contexts/LoadingModalContext';
-import {PlayPauseLottieIcon} from '../Player/PlayPauseLottieIcon';
 import FileSystem from '../../filesystem';
+import {PlayPauseLottieIcon} from '../Player/PlayPauseLottieIcon';
+import {Shadow} from 'react-native-shadow-2';
+import {COLORS} from '../../constants';
 
-// Prop 1 là prop gần nhất, 2 là của parent
 type Props = CompositeScreenProps<
-  BottomTabScreenProps<BottomTabParamList, 'Hello'>,
+  BottomTabScreenProps<BottomTabParamList, 'Downloaded'>,
   StackScreenProps<RootStackParamList>
 >;
 
-const Hello = ({navigation}: Props) => {
+const Downloaded = ({navigation}: Props) => {
   React.useEffect(() => {
-    (async () => {})();
+    (async () => {
+      await FileSystem.getMusicFiles();
+    })();
   }, []);
 
   useFocusEffect(
@@ -31,31 +38,25 @@ const Hello = ({navigation}: Props) => {
     }, []),
   );
 
-  const buttonHandler = async () => {
-    await FileSystem.downloadFileToExternalStorage(
-      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-      'SoundHelix-Song-1.mp3',
-    );
-  };
-
   return (
     <View style={styles.containerWrapper}>
       <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
       <View style={styles.container}>
-        <Button title="Download" onPress={buttonHandler} />
+        <Shadow
+          sides={{bottom: true, top: false, end: false, start: false}}
+          style={styles.headerContainer}
+          stretch
+          distance={2.5}>
+          <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 18, fontWeight: '500'}}>Đã tải</Text>
+          </View>
+        </Shadow>
       </View>
-      <TouchableNativeFeedback
-        background={TouchableNativeFeedback.Ripple('#000', true, 500)}
-        useForeground>
-        <View style={{flex: 1, backgroundColor: 'red'}}>
-          <PlayPauseLottieIcon />
-        </View>
-      </TouchableNativeFeedback>
     </View>
   );
 };
 
-export default Hello;
+export default Downloaded;
 
 const styles = StyleSheet.create({
   containerWrapper: {
@@ -64,8 +65,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    // backgroundColor: 'cyan',
-    justifyContent: 'center',
-    alignItems: 'center',
+  },
+  headerContainer: {
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    paddingBottom: 13,
   },
 });
