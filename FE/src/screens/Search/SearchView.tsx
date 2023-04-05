@@ -76,7 +76,7 @@ const SearchView = ({searchValue}: Props) => {
       // Lưu bài hát vào lịch sử tìm kiếm
       saveSongSearchHistory(song);
     } catch (error) {
-      console.log(error);
+      console.log('PLAY SONG: ', error);
     } finally {
       setLoading(false);
     }

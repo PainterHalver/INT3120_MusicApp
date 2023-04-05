@@ -68,7 +68,7 @@ const HistoryView = ({}: Props) => {
             paddingBottom: 7,
             paddingHorizontal: 15,
           }}>
-          Lịch sử tìm kiếm
+          Tìm kiếm gần đây
         </Text>
         {historySongs.length > 0 &&
           historySongs.map((song, index) => {

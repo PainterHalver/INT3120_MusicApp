@@ -12,7 +12,6 @@ import TrackPlayer, {
 } from 'react-native-track-player';
 import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
 
-import {tracks} from '../../App';
 import {Song} from '../types';
 import {ZingMp3} from '../zingmp3';
 
@@ -36,8 +35,9 @@ export type PlayerContextType = {
   setLyrics: (lyrics: string[]) => void;
 };
 
+// TODO: Do something with this
 const defaultTrack: Track = {
-  id: '1',
+  id: 'ZUIIIBWU',
   title: 'Default Track Title',
   artist: 'Default Track Artist',
   url: '',
@@ -91,12 +91,15 @@ export const PlayerProvider = ({children}: any) => {
       if (!track) return ['Không tìm thấy lời bài hát'];
 
       const data = await ZingMp3.getLyric(track.id);
+
+      if (!data) return ['Không tìm thấy lời bài hát'];
+
       const lyricSentences = data.sentences.map(sentence => {
         return sentence.words.map(word => word.data).join(' ');
       });
       return lyricSentences;
     } catch (error) {
-      console.log(error);
+      console.log('PlayerContext/getLyricSentences:', error);
       return ['Không tìm thấy lời bài hát'];
     }
   };
@@ -144,8 +147,6 @@ export const PlayerProvider = ({children}: any) => {
 
         // TODO: Delete these
         await TrackPlayer.reset();
-        await TrackPlayer.add(tracks);
-        console.log(`Added ${tracks.length} tracks`);
       } catch (e) {
         console.log(e);
       }

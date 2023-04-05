@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Crypto from 'react-native-quick-crypto';
 import {Buffer} from 'buffer';
-import {Song, ZingMp3LyricResponse} from './types';
+import {Song, Lyrics} from './types';
 
 class ZingMp3Api {
   public VERSION: string;
@@ -159,7 +159,7 @@ class ZingMp3Api {
             });
         })
         .catch(err => {
-          console.log(err);
+          console.log('ZingMP3/requestZingMp3:', err);
         });
     });
   }
@@ -294,14 +294,18 @@ class ZingMp3Api {
   }
 
   // getLyric
-  public getLyric(songId: string): Promise<ZingMp3LyricResponse> {
+  public getLyric(songId: string): Promise<Lyrics | null> {
     return new Promise<any>((resolve, rejects) => {
       this.requestZingMp3('/api/v2/lyric/get/lyric', {
         id: songId,
         sig: this.hashParam('/api/v2/lyric/get/lyric', songId),
       })
         .then(res => {
-          resolve(res.data);
+          if (!res.data || !res.data.sentences) {
+            resolve(null);
+          } else {
+            resolve(res.data);
+          }
         })
         .catch(err => {
           rejects(err);
@@ -404,7 +408,12 @@ class ZingMp3Api {
         ),
       })
         .then(res => {
-          resolve(res.data.items);
+          // if not an mpty object {}
+          if (Object.keys(res.data).length !== 0) {
+            resolve(res.data.items);
+          } else {
+            resolve([]);
+          }
         })
         .catch(err => {
           rejects(err);

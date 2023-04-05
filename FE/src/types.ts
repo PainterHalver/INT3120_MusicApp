@@ -16,7 +16,7 @@ export type Song = {
   album?: Album;
 };
 
-export type ZingMp3LyricResponse = {
+export type Lyrics = {
   file: string;
   sentences: {
     words: {
