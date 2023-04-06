@@ -4,6 +4,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {Image, Platform, StatusBar, StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
 import IonIcon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {Shadow} from 'react-native-shadow-2';
 import TrackPlayer, {Track} from 'react-native-track-player';
@@ -23,16 +24,18 @@ const Downloaded = ({navigation}: Props) => {
   const [downloadedTracks, setDownloadedTracks] = React.useState<Track[]>([]);
   const [selectedTrack, setSelectedTrack] = React.useState<Track | null>(null);
 
+  const init = async () => {
+    try {
+      await FileSystem.checkMediaPermission();
+      setDownloadedTracks(await FileSystem.getMusicFiles());
+    } catch (error) {
+      console.log('Downloaded', error);
+      setPermissionError('Bạn đã từ chối quyền truy cập thư viện');
+    }
+  };
+
   React.useEffect(() => {
-    (async () => {
-      try {
-        await FileSystem.checkMediaPermission();
-        setDownloadedTracks(await FileSystem.getMusicFiles());
-      } catch (error) {
-        console.log('Downloaded', error);
-        setPermissionError('Bạn đã từ chối quyền truy cập thư viện');
-      }
-    })();
+    init();
   }, []);
 
   useFocusEffect(
@@ -67,8 +70,31 @@ const Downloaded = ({navigation}: Props) => {
           style={styles.headerContainer}
           stretch
           distance={2.5}>
-          <View style={{alignItems: 'center', justifyContent: 'center'}}>
-            <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 18, fontWeight: '500'}}>Đã tải</Text>
+          <View
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+              padding: 5,
+              justifyContent: 'space-between',
+            }}>
+            <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 25, fontWeight: '600'}}>Đã tải về</Text>
+            <TouchableNativeFeedback
+              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+              background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE, true, 23)}
+              onPress={async () => {
+                try {
+                  setLoading(true);
+                  await init();
+                } catch (error) {
+                  console.log(error);
+                } finally {
+                  setLoading(false);
+                }
+              }}>
+              <View>
+                <MaterialCommunityIcon name="reload" size={25} color={COLORS.TEXT_PRIMARY} />
+              </View>
+            </TouchableNativeFeedback>
           </View>
         </Shadow>
         <View style={{flex: 1}}>

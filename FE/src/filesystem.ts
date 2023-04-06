@@ -13,7 +13,7 @@ class FileSystem {
     try {
       const path = this.BASE_PATH + fileName;
       const channelId = await notifee.createChannel({
-        id: 'download',
+        id: 'download_' + url,
         name: 'Download Channel',
         vibration: false,
         importance: AndroidImportance.HIGH,
@@ -84,8 +84,8 @@ class FileSystem {
           await FFmpegKit.execute(`-i ${item.path} -an -vcodec copy ${outputImage}`);
           await FFmpegKit.execute(`-i ${item.path} -f ffmetadata ${outputMetadata}`);
           const metadata = await RNFS.readFile(outputMetadata, 'utf8');
-          const titleMatch = metadata.match(/Title=([^=\n]+)/);
-          const artistMatch = metadata.match(/Artist=([^=\n]+)/);
+          const titleMatch = metadata.match(/Title=([^=\n]+)/i);
+          const artistMatch = metadata.match(/Artist=([^=\n]+)/i);
           tracks.push({
             id: index.toString(),
             index: index,
@@ -115,8 +115,8 @@ class FileSystem {
           // const info = session.getMediaInformation();
           // const properties = info.getAllProperties();
           // console.log(properties);
-          const titleMatch = metadata.match(/Title=([^=\n]+)/);
-          const artistMatch = metadata.match(/Artist=([^=\n]+)/);
+          const titleMatch = metadata.match(/Title=([^=\n]+)/i);
+          const artistMatch = metadata.match(/Artist=([^=\n]+)/i);
           tracks.push({
             id: item.id,
             index: i + index,

@@ -8,4 +8,6 @@ export const COLORS = {
   BACKGROUND_PRIMARY: '#FEFEFE',
   BACKGROUND_SECONDARY: '#F3F3F3',
   BOTTOM_BAR: '#FAFAFA',
+
+  RIPPLE: '#cccccc55',
 };
