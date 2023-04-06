@@ -2,7 +2,16 @@ import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
-import {Image, Platform, StatusBar, StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
+import {
+  Image,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableNativeFeedback,
+  View,
+} from 'react-native';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -117,61 +126,63 @@ const Downloaded = ({navigation}: Props) => {
                 }}>
                 Nhạc trong máy
               </Text>
-              {downloadedTracks.map((track, index) => {
-                return (
-                  <TouchableNativeFeedback
-                    key={index}
-                    background={TouchableNativeFeedback.Ripple('#00000011', false)}
-                    onPress={() => playSong(track)}>
-                    <View
-                      style={{
-                        paddingHorizontal: 15,
-                        paddingVertical: 7,
-                        flexDirection: 'row',
-                        gap: 10,
-                        alignItems: 'center',
-                      }}>
-                      <View style={{position: 'relative', width: 45, height: 45}}>
-                        <Image
-                          source={require('../../../assets/default_song_thumbnail.png')}
-                          style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
-                        />
-                        <Image
-                          source={
-                            track.artwork
-                              ? {uri: track.artwork}
-                              : require('../../../assets/default_song_thumbnail.png')
-                          }
-                          style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
-                        />
-                      </View>
-                      <View style={{marginRight: 'auto'}}>
-                        <Text style={{fontSize: 13, color: COLORS.TEXT_PRIMARY}}>
-                          {track.title && track.title.length > 40
-                            ? track.title.substring(0, 40) + '...'
-                            : track.title}
-                        </Text>
-                        <Text style={{fontSize: 13, color: COLORS.TEXT_GRAY}}>
-                          {track.artist && track.artist.length > 40
-                            ? track.artist.substring(0, 40) + '...'
-                            : track.artist}
-                        </Text>
-                      </View>
-                      <TouchableNativeFeedback
-                        hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                        background={TouchableNativeFeedback.Ripple('#00000011', true, 30)}
-                        onPress={() => {
-                          setSelectedTrack(track);
-                          downloadedTrackBottomSheetRef.current?.present();
+              <ScrollView contentContainerStyle={{paddingBottom: 20}}>
+                {downloadedTracks.map((track, index) => {
+                  return (
+                    <TouchableNativeFeedback
+                      key={index}
+                      background={TouchableNativeFeedback.Ripple('#00000011', false)}
+                      onPress={() => playSong(track)}>
+                      <View
+                        style={{
+                          paddingHorizontal: 15,
+                          paddingVertical: 7,
+                          flexDirection: 'row',
+                          gap: 10,
+                          alignItems: 'center',
                         }}>
-                        <View>
-                          <IonIcon name="ios-ellipsis-vertical" size={20} color={COLORS.TEXT_GRAY} />
+                        <View style={{position: 'relative', width: 45, height: 45}}>
+                          <Image
+                            source={require('../../../assets/default_song_thumbnail.png')}
+                            style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
+                          />
+                          <Image
+                            source={
+                              track.artwork
+                                ? {uri: track.artwork}
+                                : require('../../../assets/default_song_thumbnail.png')
+                            }
+                            style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
+                          />
                         </View>
-                      </TouchableNativeFeedback>
-                    </View>
-                  </TouchableNativeFeedback>
-                );
-              })}
+                        <View style={{marginRight: 'auto'}}>
+                          <Text style={{fontSize: 13, color: COLORS.TEXT_PRIMARY}}>
+                            {track.title && track.title.length > 40
+                              ? track.title.substring(0, 40) + '...'
+                              : track.title}
+                          </Text>
+                          <Text style={{fontSize: 13, color: COLORS.TEXT_GRAY}}>
+                            {track.artist && track.artist.length > 40
+                              ? track.artist.substring(0, 40) + '...'
+                              : track.artist}
+                          </Text>
+                        </View>
+                        <TouchableNativeFeedback
+                          hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+                          background={TouchableNativeFeedback.Ripple('#00000011', true, 30)}
+                          onPress={() => {
+                            setSelectedTrack(track);
+                            downloadedTrackBottomSheetRef.current?.present();
+                          }}>
+                          <View>
+                            <IonIcon name="ios-ellipsis-vertical" size={20} color={COLORS.TEXT_GRAY} />
+                          </View>
+                        </TouchableNativeFeedback>
+                      </View>
+                    </TouchableNativeFeedback>
+                  );
+                })}
+              </ScrollView>
             </View>
           )}
         </View>

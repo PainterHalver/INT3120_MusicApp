@@ -1,13 +1,20 @@
 import RNFS from 'react-native-fs';
 import notifee, {AndroidImportance} from '@notifee/react-native';
 import * as MediaLibrary from 'expo-media-library';
-import {FFmpegKit, FFprobeKit} from 'ffmpeg-kit-react-native';
+import {FFmpegKit, FFprobeKit, FFmpegKitConfig} from 'ffmpeg-kit-react-native';
 import TrackPlayer, {Track} from 'react-native-track-player';
 
 class FileSystem {
   private BASE_PATH = RNFS.ExternalDirectoryPath + '/';
 
-  constructor() {}
+  constructor() {
+    // Turn off logging
+    FFmpegKitConfig.enableLogCallback(message => {
+      // console.log(message);
+    });
+
+    FFmpegKitConfig.setSessionHistorySize(500);
+  }
 
   public downloadFileToExternalStorage = async (url: string, fileName: string) => {
     try {
@@ -58,13 +65,10 @@ class FileSystem {
 
   public getMusicFiles = async (): Promise<Track[]> => {
     try {
-      // Xóa folder /copied nếu đã tồn tại
-      const copiedPath = this.BASE_PATH + 'copied/';
-      const existCopied = await RNFS.exists(copiedPath);
-      if (existCopied) {
-        await RNFS.unlink(copiedPath);
+      const FROM_EXTERNAL_PATH = this.BASE_PATH + 'from_external/';
+      if (!(await RNFS.exists(FROM_EXTERNAL_PATH))) {
+        await RNFS.mkdir(FROM_EXTERNAL_PATH);
       }
-      await RNFS.mkdir(copiedPath);
 
       const files = await RNFS.readDir(this.BASE_PATH);
       let musicFiles = files
@@ -81,12 +85,16 @@ class FileSystem {
       const total = assets.length + filesLength;
       const tracks: Track[] = Array(total);
 
+      // TODO: Hiện tại tối đa được 500 session FFmpegKit
+
       // Copy các metadata audio vào BasePath
       await Promise.all(
         musicFiles.map(async (item, index) => {
           const outputImage = this.BASE_PATH + item.name + '.jpg';
+          if (!(await RNFS.exists(outputImage))) {
+            await FFmpegKit.execute(`-i ${item.path} -an -vcodec copy ${outputImage}`);
+          }
           const outputMetadata = this.BASE_PATH + item.name + '.txt';
-          await FFmpegKit.execute(`-i ${item.path} -an -vcodec copy ${outputImage}`);
           await FFmpegKit.execute(`-i ${item.path} -f ffmetadata ${outputMetadata}`);
           const metadata = await RNFS.readFile(outputMetadata, 'utf8');
           const titleMatch = metadata.match(/Title=([^=\n]+)/i);
@@ -106,9 +114,11 @@ class FileSystem {
       // Copy các metadata audio từ ngoài vào folder /copied
       await Promise.all(
         assets.map(async (item, index) => {
-          const outputImage = copiedPath + item.filename + '.jpg';
-          const outputMetadata = copiedPath + item.filename + '.txt';
-          await FFmpegKit.execute(`-i ${item.uri} -an -vcodec copy ${outputImage}`);
+          const outputImage = FROM_EXTERNAL_PATH + item.filename + '.jpg';
+          if (!(await RNFS.exists(outputImage))) {
+            await FFmpegKit.execute(`-i ${item.uri} -an -vcodec copy ${outputImage}`);
+          }
+          const outputMetadata = FROM_EXTERNAL_PATH + item.filename + '.txt';
           await FFmpegKit.execute(`-i ${item.uri} -f ffmetadata ${outputMetadata}`);
           const metadata = await RNFS.readFile(outputMetadata, 'utf8');
           // const session = await FFprobeKit.getMediaInformation(item.uri);

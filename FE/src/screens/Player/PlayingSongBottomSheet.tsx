@@ -1,11 +1,12 @@
 import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
-import {View, Text, StyleSheet, Image, TouchableNativeFeedback} from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableNativeFeedback, ToastAndroid} from 'react-native';
 import React, {forwardRef} from 'react';
 import {COLORS} from '../../constants';
 import {ShareIcon} from '../../icons/ShareIcon';
 import {usePlayer} from '../../contexts/PlayerContext';
 import {HeartIcon} from '../../icons/HeartIcon';
 import {DownloadIcon} from '../../icons/DownloadIcon';
+import FileSystem from '../../FileSystem';
 
 interface Props {}
 
@@ -13,6 +14,21 @@ const PlayingSongBottomSheet = forwardRef((props, ref: React.Ref<BottomSheetModa
   const {currentTrack} = usePlayer();
 
   const snapPoints = React.useMemo(() => ['50%', '90%'], []);
+
+  const downloadTrack = async () => {
+    try {
+      if (!currentTrack.url || typeof currentTrack.url !== 'string') {
+        throw new Error('Không lấy được link bài hát');
+      }
+
+      ToastAndroid.show('Đang tải ' + currentTrack.title, ToastAndroid.SHORT);
+      await FileSystem.downloadFileToExternalStorage(currentTrack.url, currentTrack.id + '.mp3');
+      ToastAndroid.show('Đã tải ' + currentTrack.title, ToastAndroid.SHORT);
+    } catch (error) {
+      console.log(error);
+      ToastAndroid.show('Có lỗi xảy ra khi tải về', ToastAndroid.SHORT);
+    }
+  };
 
   return (
     <BottomSheetModal
@@ -76,7 +92,11 @@ const PlayingSongBottomSheet = forwardRef((props, ref: React.Ref<BottomSheetModa
         <View style={styles.hr} />
       </View>
       <View style={styles.options}>
-        <TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress={() => {
+            downloadTrack();
+            (ref as any).current.close();
+          }}>
           <View style={styles.option}>
             <DownloadIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
             <Text style={styles.optionText}>Tải về</Text>

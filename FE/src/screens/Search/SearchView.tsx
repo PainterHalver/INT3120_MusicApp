@@ -1,6 +1,6 @@
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
-import {Image, StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
+import {Image, Keyboard, StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
 import TrackPlayer, {Track} from 'react-native-track-player';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 
@@ -120,6 +120,7 @@ const SearchView = ({searchValue}: Props) => {
                       background={TouchableNativeFeedback.Ripple('#00000011', true, 30)}
                       onPress={() => {
                         setSelectedSong(song);
+                        Keyboard.dismiss();
                         songBottonSheetRef.current?.present();
                       }}>
                       <View>
