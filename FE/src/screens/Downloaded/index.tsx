@@ -12,6 +12,8 @@ import {BottomTabParamList, RootStackParamList} from '../../../App';
 import {COLORS} from '../../constants';
 import {useLoadingModal} from '../../contexts/LoadingModalContext';
 import FileSystem from '../../FileSystem';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import DownloadedTrackBottomSheet from './DownloadedTrackBottomSheet';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'Downloaded'>,
@@ -22,12 +24,15 @@ const Downloaded = ({navigation}: Props) => {
   const {setLoading} = useLoadingModal();
   const [permissionError, setPermissionError] = React.useState<string>('');
   const [downloadedTracks, setDownloadedTracks] = React.useState<Track[]>([]);
-  const [selectedTrack, setSelectedTrack] = React.useState<Track | null>(null);
+  const [selectedTrack, setSelectedTrack] = React.useState<Track>({} as Track);
+
+  const downloadedTrackBottomSheetRef = React.useRef<BottomSheetModal>(null);
 
   const init = async () => {
     try {
       await FileSystem.checkMediaPermission();
-      setDownloadedTracks(await FileSystem.getMusicFiles());
+      const tracks = await FileSystem.getMusicFiles();
+      setDownloadedTracks(tracks);
     } catch (error) {
       console.log('Downloaded', error);
       setPermissionError('Bạn đã từ chối quyền truy cập thư viện');
@@ -52,7 +57,7 @@ const Downloaded = ({navigation}: Props) => {
 
       await TrackPlayer.reset();
       await TrackPlayer.add(downloadedTracks);
-      await TrackPlayer.skip(track.index); // Thêm index vào từ FileSystem.getMusicFiles()
+      await TrackPlayer.skip(track.index);
       await TrackPlayer.play();
     } catch (error) {
       console.log(error);
@@ -157,7 +162,7 @@ const Downloaded = ({navigation}: Props) => {
                         background={TouchableNativeFeedback.Ripple('#00000011', true, 30)}
                         onPress={() => {
                           setSelectedTrack(track);
-                          // songBottonSheetRef.current?.present();
+                          downloadedTrackBottomSheetRef.current?.present();
                         }}>
                         <View>
                           <IonIcon name="ios-ellipsis-vertical" size={20} color={COLORS.TEXT_GRAY} />
@@ -171,6 +176,12 @@ const Downloaded = ({navigation}: Props) => {
           )}
         </View>
       </View>
+
+      <DownloadedTrackBottomSheet
+        ref={downloadedTrackBottomSheetRef}
+        selectedTrack={selectedTrack}
+        setDownloadedTracks={setDownloadedTracks}
+      />
     </View>
   );
 };

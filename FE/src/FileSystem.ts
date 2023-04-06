@@ -58,15 +58,6 @@ class FileSystem {
 
   public getMusicFiles = async (): Promise<Track[]> => {
     try {
-      const tracks: Track[] = [];
-
-      const files = await RNFS.readDir(this.BASE_PATH);
-      let musicFiles = files
-        .filter(item => item.isFile() && /\.(?:mp3|flac|m4a|wav)$/i.test(item.name))
-        .map(item => {
-          return {path: item.path, name: item.name};
-        });
-
       // Xóa folder /copied nếu đã tồn tại
       const copiedPath = this.BASE_PATH + 'copied/';
       const existCopied = await RNFS.exists(copiedPath);
@@ -75,7 +66,21 @@ class FileSystem {
       }
       await RNFS.mkdir(copiedPath);
 
-      let i = 0;
+      const files = await RNFS.readDir(this.BASE_PATH);
+      let musicFiles = files
+        .filter(item => item.isFile() && /\.(?:mp3|flac|m4a|wav)$/i.test(item.name))
+        .map(item => {
+          return {path: item.path, name: item.name};
+        });
+      const filesLength = musicFiles.length;
+
+      const media = await MediaLibrary.getAssetsAsync({
+        mediaType: 'audio',
+      });
+      const assets = media.assets.filter(item => item.duration > 5);
+      const total = assets.length + filesLength;
+      const tracks: Track[] = Array(total);
+
       // Copy các metadata audio vào BasePath
       await Promise.all(
         musicFiles.map(async (item, index) => {
@@ -86,24 +91,19 @@ class FileSystem {
           const metadata = await RNFS.readFile(outputMetadata, 'utf8');
           const titleMatch = metadata.match(/Title=([^=\n]+)/i);
           const artistMatch = metadata.match(/Artist=([^=\n]+)/i);
-          tracks.push({
-            id: index.toString(),
+          tracks[index] = {
+            id: item.name,
             index: index,
             url: item.path,
             artwork: 'file://' + outputImage,
             title: titleMatch ? titleMatch[1] : item.name,
             artist: artistMatch ? artistMatch[1] : 'Unknown',
-          });
+          };
           await RNFS.unlink(outputMetadata);
         }),
       );
-      i = tracks.length;
 
       // Copy các metadata audio từ ngoài vào folder /copied
-      let media = await MediaLibrary.getAssetsAsync({
-        mediaType: 'audio',
-      });
-      const assets = media.assets.filter(item => item.duration > 5);
       await Promise.all(
         assets.map(async (item, index) => {
           const outputImage = copiedPath + item.filename + '.jpg';
@@ -117,23 +117,30 @@ class FileSystem {
           // console.log(properties);
           const titleMatch = metadata.match(/Title=([^=\n]+)/i);
           const artistMatch = metadata.match(/Artist=([^=\n]+)/i);
-          tracks.push({
-            id: item.id,
-            index: i + index,
+          tracks[filesLength + index] = {
+            id: item.filename,
+            index: filesLength + index,
             url: item.uri,
             artwork: 'file://' + outputImage,
             title: titleMatch ? titleMatch[1] : item.filename,
             artist: artistMatch ? artistMatch[1] : 'Unknown',
-          });
+          };
           await RNFS.unlink(outputMetadata);
         }),
       );
-      console.log(tracks);
 
       return tracks;
     } catch (error) {
       console.log('Downloader/getMusicFiles:', error);
       return [];
+    }
+  };
+
+  public deleteFile = async (path: string): Promise<void> => {
+    try {
+      await RNFS.unlink(path);
+    } catch (error) {
+      console.log('Downloader/deleteFile:', error);
     }
   };
 
