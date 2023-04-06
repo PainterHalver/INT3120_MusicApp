@@ -6,32 +6,28 @@
  */
 
 import {BottomTabBar, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {DefaultTheme, NavigationContainer, NavigatorScreenParams} from '@react-navigation/native';
-import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
-import React, {useEffect} from 'react';
+import {NavigationContainer, NavigatorScreenParams} from '@react-navigation/native';
+import {TransitionPresets, createStackNavigator} from '@react-navigation/stack';
+import React from 'react';
 import {Text, TouchableNativeFeedback, View} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import type {Track} from 'react-native-track-player';
-import TrackPlayer, {AppKilledPlaybackBehavior, Capability} from 'react-native-track-player';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Hello from './src/screens/Hello';
 import NewApp from './src/screens/NewApp';
 import Player from './src/screens/Player';
 // import PlaylistDetail from './src/screens/PlaylistDetail';
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import MiniPlayer from './src/components/MiniPlayer';
-import Search from './src/screens/Search';
-import {PlayerProvider} from './src/contexts/PlayerContext';
-import {DatabaseProvider} from './src/contexts/DatabaseContext';
-import {DoubleCircleIcon} from './src/icons/DoubleCircleIcon';
-import {SearchIcon} from './src/icons/SearchIcon';
 import {COLORS} from './src/constants';
-import BottomSheet, {BottomSheetBackdrop, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {LoadingModalProvider} from './src/contexts/LoadingModalContext';
-import Downloaded from './src/screens/Downloaded';
+import {PlayerProvider} from './src/contexts/PlayerContext';
+import {DoubleCircleIcon} from './src/icons/DoubleCircleIcon';
 import {DownloadIcon} from './src/icons/DownloadIcon';
+import {SearchIcon} from './src/icons/SearchIcon';
+import Downloaded from './src/screens/Downloaded';
+import Search from './src/screens/Search';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
