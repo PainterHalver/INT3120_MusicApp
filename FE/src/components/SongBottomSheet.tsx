@@ -10,10 +10,9 @@ import {DownloadIcon} from '../icons/DownloadIcon';
 import {HeartIcon} from '../icons/HeartIcon';
 import {PlayNextIcon} from '../icons/PlayNextIcon';
 import {ShareIcon} from '../icons/ShareIcon';
-import {compileFunction} from 'vm';
 import {Song} from '../types';
-import {ZingMp3} from '../zingmp3';
-import FileSystem from '../filesystem';
+import {ZingMp3} from '../ZingMp3';
+import FileSystem from '../FileSystem';
 
 interface Props {}
 

@@ -15,7 +15,7 @@ import {HeartIcon} from '../../icons/HeartIcon';
 import {ShareIcon} from '../../icons/ShareIcon';
 import {PanGestureHandler, ScrollView} from 'react-native-gesture-handler';
 import {COLORS} from '../../constants';
-import {ZingMp3} from '../../zingmp3';
+import {ZingMp3} from '../../ZingMp3';
 
 const screenWidth = Dimensions.get('window').width;
 

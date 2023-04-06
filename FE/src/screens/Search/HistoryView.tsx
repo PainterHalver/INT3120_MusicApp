@@ -7,17 +7,16 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import {RootStackParamList} from '../../../App';
 import SongBottomSheet from '../../components/SongBottomSheet';
 import {COLORS} from '../../constants';
-import {useDatabase} from '../../contexts/DatabaseContext';
 import {useLoadingModal} from '../../contexts/LoadingModalContext';
 import {usePlayer} from '../../contexts/PlayerContext';
 import {Song} from '../../types';
-import {ZingMp3} from '../../zingmp3';
+import {ZingMp3} from '../../ZingMp3';
+import Database from './../../Database';
 
 interface Props {}
 
 const HistoryView = ({}: Props) => {
   const {setSelectedSong} = usePlayer();
-  const {getTopSongSearchHistory} = useDatabase();
   const {setLoading} = useLoadingModal();
   const songBottonSheetRef = React.useRef<BottomSheetModal>(null);
   const [historySongs, setHistorySongs] = React.useState<Song[]>([]);
@@ -26,7 +25,7 @@ const HistoryView = ({}: Props) => {
 
   useEffect(() => {
     (async () => {
-      const songs = await getTopSongSearchHistory(10);
+      const songs = await Database.getTopSongSearchHistory(10);
       setHistorySongs(songs);
     })();
   }, []);

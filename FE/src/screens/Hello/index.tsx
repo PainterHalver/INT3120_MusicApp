@@ -10,7 +10,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {BottomTabParamList, RootStackParamList} from '../../../App';
 import {useLoadingModal} from '../../contexts/LoadingModalContext';
 import {PlayPauseLottieIcon} from '../Player/PlayPauseLottieIcon';
-import FileSystem from '../../filesystem';
+import FileSystem from '../../FileSystem';
 
 // Prop 1 là prop gần nhất, 2 là của parent
 type Props = CompositeScreenProps<

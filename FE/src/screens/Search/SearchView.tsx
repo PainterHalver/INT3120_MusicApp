@@ -8,18 +8,17 @@ import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {RootStackParamList} from '../../../App';
 import SongBottomSheet from '../../components/SongBottomSheet';
 import {COLORS} from '../../constants';
-import {useDatabase} from '../../contexts/DatabaseContext';
 import {usePlayer} from '../../contexts/PlayerContext';
 import {Song, songsToTracks} from '../../types';
-import {ZingMp3} from '../../zingmp3';
+import {ZingMp3} from '../../ZingMp3';
 import {useLoadingModal} from '../../contexts/LoadingModalContext';
+import Database from './../../Database';
 
 interface Props {
   searchValue: string;
 }
 
 const SearchView = ({searchValue}: Props) => {
-  const {saveSongSearchHistory} = useDatabase();
   const {setSelectedSong} = usePlayer();
   const {setLoading} = useLoadingModal();
   const songBottonSheetRef = React.useRef<BottomSheetModal>(null);
@@ -74,7 +73,7 @@ const SearchView = ({searchValue}: Props) => {
       await TrackPlayer.play();
 
       // Lưu bài hát vào lịch sử tìm kiếm
-      saveSongSearchHistory(song);
+      Database.saveSongSearchHistory(song);
     } catch (error) {
       console.log('PLAY SONG: ', error);
     } finally {

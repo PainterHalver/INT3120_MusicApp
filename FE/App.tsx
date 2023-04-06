@@ -140,25 +140,24 @@ function App(): JSX.Element {
   return (
     <SafeAreaProvider>
       <PlayerProvider>
-        <DatabaseProvider>
-          <LoadingModalProvider>
-            <GestureHandlerRootView style={{flex: 1}}>
-              <BottomSheetModalProvider>
-                <NavigationContainer
-                  theme={{
-                    dark: false,
-                    colors: {
-                      primary: 'rgb(0, 122, 255)',
-                      background: COLORS.BACKGROUND_PRIMARY,
-                      card: 'rgb(255, 255, 255)',
-                      text: COLORS.TEXT_PRIMARY,
-                      border: 'rgb(216, 216, 216)',
-                      notification: 'rgb(255, 59, 48)',
-                    },
-                  }}>
-                  <Stack.Navigator>
-                    <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
-                    {/* <Stack.Screen
+        <LoadingModalProvider>
+          <GestureHandlerRootView style={{flex: 1}}>
+            <BottomSheetModalProvider>
+              <NavigationContainer
+                theme={{
+                  dark: false,
+                  colors: {
+                    primary: 'rgb(0, 122, 255)',
+                    background: COLORS.BACKGROUND_PRIMARY,
+                    card: 'rgb(255, 255, 255)',
+                    text: COLORS.TEXT_PRIMARY,
+                    border: 'rgb(216, 216, 216)',
+                    notification: 'rgb(255, 59, 48)',
+                  },
+                }}>
+                <Stack.Navigator>
+                  <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
+                  {/* <Stack.Screen
             name="PlaylistDetail"
             component={PlaylistDetail}
             options={{
@@ -167,23 +166,22 @@ function App(): JSX.Element {
               ...TransitionPresets.ModalSlideFromBottomIOS,
             }}
           /> */}
-                    <Stack.Screen
-                      name="Player"
-                      component={Player}
-                      options={{
-                        headerShown: false,
-                        // gestureEnabled: true,
-                        // gestureResponseDistance: 100,
-                        // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
-                        ...TransitionPresets.ModalSlideFromBottomIOS,
-                      }}
-                    />
-                  </Stack.Navigator>
-                </NavigationContainer>
-              </BottomSheetModalProvider>
-            </GestureHandlerRootView>
-          </LoadingModalProvider>
-        </DatabaseProvider>
+                  <Stack.Screen
+                    name="Player"
+                    component={Player}
+                    options={{
+                      headerShown: false,
+                      // gestureEnabled: true,
+                      // gestureResponseDistance: 100,
+                      // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
+                      ...TransitionPresets.ModalSlideFromBottomIOS,
+                    }}
+                  />
+                </Stack.Navigator>
+              </NavigationContainer>
+            </BottomSheetModalProvider>
+          </GestureHandlerRootView>
+        </LoadingModalProvider>
       </PlayerProvider>
     </SafeAreaProvider>
   );

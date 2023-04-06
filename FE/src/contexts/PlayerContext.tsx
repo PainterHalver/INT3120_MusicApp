@@ -13,7 +13,7 @@ import TrackPlayer, {
 import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
 
 import {Song} from '../types';
-import {ZingMp3} from '../zingmp3';
+import {ZingMp3} from '../ZingMp3';
 
 export type PlayerContextType = {
   currentTrack: Track;

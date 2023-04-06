@@ -11,7 +11,7 @@ import TrackPlayer, {Track} from 'react-native-track-player';
 import {BottomTabParamList, RootStackParamList} from '../../../App';
 import {COLORS} from '../../constants';
 import {useLoadingModal} from '../../contexts/LoadingModalContext';
-import FileSystem from '../../filesystem';
+import FileSystem from '../../FileSystem';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'Downloaded'>,
