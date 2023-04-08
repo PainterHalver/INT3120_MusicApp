@@ -10,4 +10,6 @@ export const COLORS = {
   BOTTOM_BAR: '#FAFAFA',
 
   RIPPLE: '#cccccc55',
+
+  RED_PRIMARY: '#f43a5a',
 };

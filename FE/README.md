@@ -28,8 +28,14 @@
 ## Todos:
 
 - [ ] Ngăn Trackplayer stop khi hết queue
-- [ ] Default src cho img khi không có src
+- [x] Default src cho img khi không có src
 - [ ] Tìm kiếm, thêm nhạc vào queue hoặc sửa queue khi đang phát
-- [ ] Thêm option vào ellipsis trong player (Download nhạc, Favorite, Share)
+- [ ] Thêm option vào ellipsis trong player (Download nhạc, Favorite, Share), sửa menu cho nhạc tải về đang phát trong player
 - [ ] Shuffle
-- [ ] Lyrics và Recommend screen trong player
+- [ ] Chia sẻ link track
+- [ ] Lyrics và recommend/playlist screen trong player
+- [x] Hiện nhạc và artwork đang phát và điều khiển nhạc từ notification
+- [x] Tìm kiếm nhạc, play nhạc từ server Zing
+- [x] Lịch sử tìm kiếm
+- [x] Quay đĩa khi nhạc phát, đồng bộ rotation giữa player và miniplayer
+- [x] Tải nhạc về máy, quét nhạc có sẵn trong máy, extract artwork và metadata từ file nhạc offline

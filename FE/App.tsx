@@ -63,7 +63,7 @@ function App(): JSX.Element {
           );
         }}
         screenOptions={{
-          tabBarActiveTintColor: '#f43a5a',
+          tabBarActiveTintColor: COLORS.RED_PRIMARY,
           headerShown: false,
           tabBarStyle: {
             backgroundColor: COLORS.BOTTOM_BAR,

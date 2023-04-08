@@ -48,7 +48,7 @@ const MiniPlayer = () => {
       <View style={{backgroundColor: '#22222233', height: 2}}>
         <View
           style={{
-            backgroundColor: PRIMARY_COLOR,
+            backgroundColor: COLORS.RED_PRIMARY,
             height: '100%',
             width: `${progress.duration !== 0 ? (progress.position / progress.duration) * 100 : 0}%`,
           }}
@@ -80,7 +80,7 @@ const MiniPlayer = () => {
               onPress={toggleFavorite}>
               <View>
                 {isFavorite ? (
-                  <HeartIcon size={25} color={PRIMARY_COLOR} fill={PRIMARY_COLOR} />
+                  <HeartIcon size={25} color={COLORS.RED_PRIMARY} fill={COLORS.RED_PRIMARY} />
                 ) : (
                   <HeartIcon size={25} color="#000" />
                 )}
@@ -109,7 +109,6 @@ const MiniPlayer = () => {
   );
 };
 
-const PRIMARY_COLOR = '#f43a5a';
 const RIPPLE_COLOR = '#ccc';
 
 export default MiniPlayer;
