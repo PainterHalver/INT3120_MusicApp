@@ -14,10 +14,10 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import Hello from './src/screens/Hello';
+import Test from './src/screens/Test';
 import NewApp from './src/screens/NewApp';
 import Player from './src/screens/Player';
-// import PlaylistDetail from './src/screens/PlaylistDetail';
+import PlaylistDetail from './src/screens/PlaylistDetail';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import MiniPlayer from './src/components/MiniPlayer';
 import {COLORS} from './src/constants';
@@ -28,24 +28,26 @@ import {DownloadIcon} from './src/icons/DownloadIcon';
 import {SearchIcon} from './src/icons/SearchIcon';
 import Downloaded from './src/screens/Downloaded';
 import Search from './src/screens/Search';
+import ChartDetail from './src/screens/ChartDetail';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
 
 // https://reactnavigation.org/docs/typescript/#type-checking-screens
 export type BottomTabParamList = {
-  Hello: undefined;
+  Test: undefined;
   Search: {
     shouldFocusSearchBar?: boolean;
   };
   Welcome: undefined;
   Downloaded: undefined;
+  PlaylistDetail: undefined;
+  ChartDetail: undefined;
 };
 
 export type RootStackParamList = {
   Home: NavigatorScreenParams<BottomTabParamList>;
   Player: undefined;
-  PlaylistDetail: undefined;
 };
 
 function App(): JSX.Element {
@@ -110,6 +112,26 @@ function App(): JSX.Element {
           }}
         />
         <BottomTab.Screen
+          name="PlaylistDetail"
+          component={PlaylistDetail}
+          options={{
+            title: 'Playlist',
+            tabBarIcon: ({focused, color, size}) => (
+              <DownloadIcon size={size} color={color} strokeWidth={15} />
+            ),
+          }}
+        />
+        <BottomTab.Screen
+          name="ChartDetail"
+          component={ChartDetail}
+          options={{
+            title: 'Chart',
+            tabBarIcon: ({focused, color, size}) => (
+              <DownloadIcon size={size} color={color} strokeWidth={15} />
+            ),
+          }}
+        />
+        <BottomTab.Screen
           name="Downloaded"
           component={Downloaded}
           options={{
@@ -120,8 +142,8 @@ function App(): JSX.Element {
           }}
         />
         <BottomTab.Screen
-          name="Hello"
-          component={Hello}
+          name="Test"
+          component={Test}
           options={{
             title: 'Hello',
             tabBarIcon: ({focused, color, size}) => (
@@ -153,15 +175,6 @@ function App(): JSX.Element {
                 }}>
                 <Stack.Navigator>
                   <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
-                  {/* <Stack.Screen
-            name="PlaylistDetail"
-            component={PlaylistDetail}
-            options={{
-              headerShown: false,
-              // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
-              ...TransitionPresets.ModalSlideFromBottomIOS,
-            }}
-          /> */}
                   <Stack.Screen
                     name="Player"
                     component={Player}

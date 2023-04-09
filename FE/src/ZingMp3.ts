@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Crypto from 'react-native-quick-crypto';
 import {Buffer} from 'buffer';
-import {Song, Lyrics} from './types';
+import {Song, Lyrics, Playlist} from './types';
 
 class ZingMp3Api {
   public VERSION: string;
@@ -129,10 +129,10 @@ class ZingMp3Api {
       });
 
       // print http url every request, incluing query in a single line
-      client.interceptors.request.use((req: any) => {
-        console.log(req.method + ' ' + req.url + ' ' + JSON.stringify(req.params));
-        return req;
-      });
+      // client.interceptors.request.use((req: any) => {
+      //   console.log(req.method + ' ' + req.url + ' ' + JSON.stringify(req.params));
+      //   return req;
+      // });
 
       client.interceptors.response.use((res: any) => res.data); // setting axios response data
 
@@ -181,14 +181,14 @@ class ZingMp3Api {
   }
 
   // getDetailPlaylist
-  public getDetailPlaylist(playlistId: string): Promise<any> {
+  public getDetailPlaylist(playlistId: string): Promise<Playlist> {
     return new Promise<any>((resolve, rejects) => {
       this.requestZingMp3('/api/v2/page/get/playlist', {
         id: playlistId,
         sig: this.hashParam('/api/v2/page/get/playlist', playlistId),
       })
         .then(res => {
-          resolve(res);
+          resolve(res.data);
         })
         .catch(err => {
           rejects(err);

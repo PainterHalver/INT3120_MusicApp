@@ -7,6 +7,17 @@ export type Album = {
   thumbnail: string;
 };
 
+export type Artist = {
+  id: string;
+  name: string;
+  spotlight: boolean;
+  alias: string;
+  thumbnail: string;
+  thumbnailM: string;
+  playlistId: string;
+  totalFollow: number;
+};
+
 export type Song = {
   encodeId: string;
   title: string;
@@ -14,6 +25,23 @@ export type Song = {
   thumbnail: string;
   thumbnailM: string;
   album?: Album;
+};
+
+export type Playlist = {
+  encodeId: string;
+  title: string;
+  thumbnail: string;
+  thumbnailM: string;
+  sortDescription: string;
+  artistsNames: string;
+  description: string;
+  aliasTitle: string;
+  artists: Artist[];
+  song: {
+    total: number;
+    totalDuration: number;
+    items: Song[];
+  };
 };
 
 export type Lyrics = {

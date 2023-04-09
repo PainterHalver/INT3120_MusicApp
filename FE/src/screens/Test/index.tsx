@@ -14,7 +14,7 @@ import FileSystem from '../../FileSystem';
 
 // Prop 1 là prop gần nhất, 2 là của parent
 type Props = CompositeScreenProps<
-  BottomTabScreenProps<BottomTabParamList, 'Hello'>,
+  BottomTabScreenProps<BottomTabParamList, 'Test'>,
   StackScreenProps<RootStackParamList>
 >;
 

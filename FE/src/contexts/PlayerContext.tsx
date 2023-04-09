@@ -155,7 +155,8 @@ export const PlayerProvider = ({children}: any) => {
   }, []);
 
   useEffect(() => {
-    addEventListener(Event.PlaybackActiveTrackChanged, async () => {
+    const playerListener = addEventListener(Event.PlaybackActiveTrackChanged, async () => {
+      console.log('TRACK ACTIVELY CHANGED');
       let track = await TrackPlayer.getActiveTrack();
       if (track) {
         setTrack(track);
@@ -180,12 +181,17 @@ export const PlayerProvider = ({children}: any) => {
       setLyrics(await getLyricSentences(track));
     });
 
-    AppState.addEventListener('change', async appState => {
+    const nativeEventListener = AppState.addEventListener('change', async appState => {
       if (appState === 'active') {
         const state = await TrackPlayer.getState();
         setIsPlaying(state === State.Playing);
       }
     });
+
+    return () => {
+      playerListener.remove();
+      nativeEventListener.remove();
+    };
   }, []);
 
   return (

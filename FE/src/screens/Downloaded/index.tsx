@@ -65,8 +65,12 @@ const Downloaded = ({navigation}: Props) => {
       navigation.navigate('Player');
 
       await TrackPlayer.reset();
-      await TrackPlayer.add(downloadedTracks);
-      await TrackPlayer.skip(track.index);
+
+      // Thêm track cần play rồi thêm các track còn lại vào trước và sau track cần play
+      await TrackPlayer.add(downloadedTracks[track.index]);
+      await TrackPlayer.add(downloadedTracks.slice(0, track.index), 0);
+      await TrackPlayer.add(downloadedTracks.slice(track.index + 1, downloadedTracks.length));
+
       await TrackPlayer.play();
     } catch (error) {
       console.log(error);
