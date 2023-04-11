@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, ScrollView, Text, StatusBar, Platform} from 'react-native';
+import {View, ScrollView, Text, StatusBar, Platform, TouchableNativeFeedback} from 'react-native';
 import Chart from '../../components/Chart';
 import axios from 'axios';
 import {ImageBackground} from 'react-native';
@@ -10,15 +10,19 @@ import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {BottomTabParamList, RootStackParamList} from '../../../App';
 import {ZingMp3} from '../../ZingMp3';
+import {Song, songsToTracks} from '../../types';
+import {useLoadingModal} from '../../contexts/LoadingModalContext';
+import TrackPlayer from 'react-native-track-player';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'ChartDetail'>,
   StackScreenProps<RootStackParamList>
 >;
 
-const ChartDetail = ({}: Props) => {
+const ChartDetail = ({navigation}: Props) => {
+  const {setLoading} = useLoadingModal();
   const [chartData, setChartData] = useState();
-  const [songs, setSongs] = useState([]);
+  const [songs, setSongs] = useState<Song[]>([]);
   const [weekCharts, setWeekCharts] = useState({});
 
   useFocusEffect(
@@ -74,6 +78,28 @@ const ChartDetail = ({}: Props) => {
     };
     getData();
   }, []);
+
+  const playSongInPlaylist = async (track: Song, index: number) => {
+    try {
+      setLoading(true);
+      const tracks = songsToTracks(songs);
+
+      await TrackPlayer.reset();
+
+      // Thêm track cần play rồi thêm các track còn lại vào trước và sau track cần play
+      await TrackPlayer.add(tracks[index]);
+      await TrackPlayer.add(tracks.slice(0, index), 0);
+      await TrackPlayer.add(tracks.slice(index + 1, tracks.length));
+
+      navigation.navigate('Player');
+      await TrackPlayer.play();
+    } catch (error) {
+      console.log('playSongInPlaylist:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: 'rgba(32,19,53,0.9)'}}>
       <StatusBar
@@ -105,14 +131,15 @@ const ChartDetail = ({}: Props) => {
                 height: '100%',
               }}>
               {songs.map((song, index) => (
-                <VerticalItemSong
+                <TouchableNativeFeedback
                   key={index}
-                  pos={index}
-                  thumbnail={song.thumbnail}
-                  artistsNames={song.artistsNames}
-                  title={song.title}
-                  chart={true}
-                />
+                  onPress={() => {
+                    playSongInPlaylist(song, index);
+                  }}>
+                  <View>
+                    <VerticalItemSong key={index} pos={index} song={song} chart={true} />
+                  </View>
+                </TouchableNativeFeedback>
               ))}
               {weekCharts && (
                 <View

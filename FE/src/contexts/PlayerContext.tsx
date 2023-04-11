@@ -14,6 +14,9 @@ import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
 
 import {Song} from '../types';
 import {ZingMp3} from '../ZingMp3';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import SongBottomSheet from '../components/SongBottomSheet';
+import {BottomSheetModalMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
 
 export type PlayerContextType = {
   currentTrack: Track;
@@ -26,6 +29,7 @@ export type PlayerContextType = {
   lastArtwork: string;
   selectedSong: Song;
   lyrics: string[];
+  songBottomSheetRef: React.RefObject<BottomSheetModalMethods>;
 
   setIsPlaying: (isPlaying: boolean) => void;
   setPausedRotationValue: (pausedRotationValue: number) => void;
@@ -64,6 +68,7 @@ const PlayerContext = createContext<PlayerContextType>({
   lastArtwork: require('./../../assets/default.png'),
   selectedSong: {} as Song,
   lyrics: [],
+  songBottomSheetRef: {} as React.RefObject<BottomSheetModalMethods>,
   setIsPlaying: () => {},
   setPausedRotationValue: () => {},
   setIsRotating: () => {},
@@ -85,6 +90,7 @@ export const PlayerProvider = ({children}: any) => {
   );
   const [selectedSong, setSelectedSong] = React.useState<Song>(defaultSong);
   const [lyrics, setLyrics] = React.useState<string[]>([]);
+  const songBottomSheetRef = React.useRef<BottomSheetModal>(null);
 
   const getLyricSentences = async (track: Track | undefined): Promise<string[]> => {
     try {
@@ -156,7 +162,6 @@ export const PlayerProvider = ({children}: any) => {
 
   useEffect(() => {
     const playerListener = addEventListener(Event.PlaybackActiveTrackChanged, async () => {
-      console.log('TRACK ACTIVELY CHANGED');
       let track = await TrackPlayer.getActiveTrack();
       if (track) {
         setTrack(track);
@@ -207,6 +212,7 @@ export const PlayerProvider = ({children}: any) => {
         lastArtwork,
         selectedSong,
         lyrics,
+        songBottomSheetRef,
         setIsPlaying,
         setPausedRotationValue,
         setIsRotating,
@@ -215,6 +221,7 @@ export const PlayerProvider = ({children}: any) => {
         setLyrics,
       }}>
       {children}
+      <SongBottomSheet ref={songBottomSheetRef} />
     </PlayerContext.Provider>
   );
 };

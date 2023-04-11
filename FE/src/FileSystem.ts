@@ -19,6 +19,11 @@ class FileSystem {
   public downloadFileToExternalStorage = async (url: string, fileName: string) => {
     try {
       const path = this.BASE_PATH + fileName;
+      // Không tải nếu đã có file
+      if (await RNFS.exists(path)) {
+        return;
+      }
+
       const channelId = await notifee.createChannel({
         id: 'download_' + url,
         name: 'Download Channel',

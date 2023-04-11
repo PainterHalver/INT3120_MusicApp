@@ -1,24 +1,21 @@
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {Image, Keyboard, StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
 import TrackPlayer, {Track} from 'react-native-track-player';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import {RootStackParamList} from '../../../App';
-import SongBottomSheet from '../../components/SongBottomSheet';
+import {ZingMp3} from '../../ZingMp3';
 import {COLORS} from '../../constants';
 import {useLoadingModal} from '../../contexts/LoadingModalContext';
 import {usePlayer} from '../../contexts/PlayerContext';
 import {Song} from '../../types';
-import {ZingMp3} from '../../ZingMp3';
 import Database from './../../Database';
 
 interface Props {}
 
 const HistoryView = ({}: Props) => {
-  const {setSelectedSong} = usePlayer();
+  const {setSelectedSong, songBottomSheetRef} = usePlayer();
   const {setLoading} = useLoadingModal();
-  const songBottonSheetRef = React.useRef<BottomSheetModal>(null);
   const [historySongs, setHistorySongs] = React.useState<Song[]>([]);
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -105,7 +102,7 @@ const HistoryView = ({}: Props) => {
                     onPress={() => {
                       setSelectedSong(song);
                       Keyboard.dismiss();
-                      songBottonSheetRef.current?.present();
+                      songBottomSheetRef.current?.present();
                     }}>
                     <View>
                       <IonIcon name="ios-ellipsis-vertical" size={20} color={COLORS.TEXT_GRAY} />
@@ -116,7 +113,6 @@ const HistoryView = ({}: Props) => {
             );
           })}
       </View>
-      <SongBottomSheet ref={songBottonSheetRef} />
     </View>
   );
 };

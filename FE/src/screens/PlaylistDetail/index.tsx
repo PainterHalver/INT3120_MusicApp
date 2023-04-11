@@ -69,9 +69,7 @@ const PlaylistDetail = ({navigation}: Props) => {
       await TrackPlayer.add(tracks.slice(index + 1, tracks.length));
 
       navigation.navigate('Player');
-      console.log('first');
       await TrackPlayer.play();
-      console.log('second');
     } catch (error) {
       console.log('playSongInPlaylist:', error);
     } finally {
@@ -84,7 +82,7 @@ const PlaylistDetail = ({navigation}: Props) => {
       source={{uri: playlist.thumbnailM}}
       resizeMode="cover"
       onLoad={() => {
-        console.log('loaded player background image');
+        // console.log('loaded player background image');
       }}
       style={{width: '100%', height: '100%'}}
       blurRadius={4}>
@@ -115,11 +113,7 @@ const PlaylistDetail = ({navigation}: Props) => {
                   playSongInPlaylist(song, index);
                 }}>
                 <View>
-                  <VerticalItemSong
-                    thumbnail={song.thumbnail}
-                    title={song.title}
-                    artistsNames={song.artistsNames}
-                  />
+                  <VerticalItemSong song={song} />
                 </View>
               </TouchableNativeFeedback>
             );

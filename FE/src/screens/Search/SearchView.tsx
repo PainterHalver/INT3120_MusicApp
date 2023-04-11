@@ -4,14 +4,12 @@ import {Image, Keyboard, StyleSheet, Text, TouchableNativeFeedback, View} from '
 import TrackPlayer, {Track} from 'react-native-track-player';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {RootStackParamList} from '../../../App';
-import SongBottomSheet from '../../components/SongBottomSheet';
+import {ZingMp3} from '../../ZingMp3';
 import {COLORS} from '../../constants';
+import {useLoadingModal} from '../../contexts/LoadingModalContext';
 import {usePlayer} from '../../contexts/PlayerContext';
 import {Song, songsToTracks} from '../../types';
-import {ZingMp3} from '../../ZingMp3';
-import {useLoadingModal} from '../../contexts/LoadingModalContext';
 import Database from './../../Database';
 
 interface Props {
@@ -19,9 +17,8 @@ interface Props {
 }
 
 const SearchView = ({searchValue}: Props) => {
-  const {setSelectedSong} = usePlayer();
+  const {setSelectedSong, songBottomSheetRef} = usePlayer();
   const {setLoading} = useLoadingModal();
-  const songBottonSheetRef = React.useRef<BottomSheetModal>(null);
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [searchError, setSearchError] = React.useState<string | null>(null);
@@ -63,13 +60,11 @@ const SearchView = ({searchValue}: Props) => {
       const newQueue = songsToTracks(recommendedSongs);
       newQueue.unshift(track);
 
-      await TrackPlayer.reset();
-      await TrackPlayer.add(newQueue);
-
-      setLoading(false);
-
       // Hiện player trước rồi mới load bài hát
       navigation.navigate('Player');
+
+      await TrackPlayer.reset();
+      await TrackPlayer.add(newQueue);
       await TrackPlayer.play();
 
       // Lưu bài hát vào lịch sử tìm kiếm
@@ -121,7 +116,7 @@ const SearchView = ({searchValue}: Props) => {
                       onPress={() => {
                         setSelectedSong(song);
                         Keyboard.dismiss();
-                        songBottonSheetRef.current?.present();
+                        songBottomSheetRef.current?.present();
                       }}>
                       <View>
                         <IonIcon name="ios-ellipsis-vertical" size={20} color={COLORS.TEXT_GRAY} />
@@ -132,7 +127,6 @@ const SearchView = ({searchValue}: Props) => {
               );
             }))}
       </View>
-      <SongBottomSheet ref={songBottonSheetRef} />
     </View>
   );
 };

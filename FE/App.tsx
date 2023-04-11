@@ -157,10 +157,10 @@ function App(): JSX.Element {
 
   return (
     <SafeAreaProvider>
-      <PlayerProvider>
-        <LoadingModalProvider>
-          <GestureHandlerRootView style={{flex: 1}}>
-            <BottomSheetModalProvider>
+      <LoadingModalProvider>
+        <GestureHandlerRootView style={{flex: 1}}>
+          <BottomSheetModalProvider>
+            <PlayerProvider>
               <NavigationContainer
                 theme={{
                   dark: false,
@@ -188,10 +188,10 @@ function App(): JSX.Element {
                   />
                 </Stack.Navigator>
               </NavigationContainer>
-            </BottomSheetModalProvider>
-          </GestureHandlerRootView>
-        </LoadingModalProvider>
-      </PlayerProvider>
+            </PlayerProvider>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
+      </LoadingModalProvider>
     </SafeAreaProvider>
   );
 }
