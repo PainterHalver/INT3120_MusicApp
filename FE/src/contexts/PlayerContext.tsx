@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect} from 'react';
+import React, {createContext, useContext, useEffect, useMemo} from 'react';
 import {Animated, AppState} from 'react-native';
 import TrackPlayer, {
   AppKilledPlaybackBehavior,
@@ -27,15 +27,12 @@ export type PlayerContextType = {
   pausedRotationValue: number;
   isRotating: boolean;
   lastArtwork: string;
-  selectedSong: Song;
   lyrics: string[];
-  songBottomSheetRef: React.RefObject<BottomSheetModalMethods>;
 
   setIsPlaying: (isPlaying: boolean) => void;
   setPausedRotationValue: (pausedRotationValue: number) => void;
   setIsRotating: (isRotating: boolean) => void;
   setLastArtwork: (currentArtwork: string) => void;
-  setSelectedSong: (selectedSong: Song) => void;
   setLyrics: (lyrics: string[]) => void;
 };
 
@@ -66,14 +63,11 @@ const PlayerContext = createContext<PlayerContextType>({
   pausedRotationValue: 0,
   isRotating: false,
   lastArtwork: require('./../../assets/default.png'),
-  selectedSong: {} as Song,
   lyrics: [],
-  songBottomSheetRef: {} as React.RefObject<BottomSheetModalMethods>,
   setIsPlaying: () => {},
   setPausedRotationValue: () => {},
   setIsRotating: () => {},
   setLastArtwork: () => {},
-  setSelectedSong: () => {},
   setLyrics: () => {},
 });
 
@@ -88,9 +82,7 @@ export const PlayerProvider = ({children}: any) => {
   const [lastArtwork, setLastArtwork] = React.useState<string>(
     track.artwork || require('./../../assets/default.png'),
   );
-  const [selectedSong, setSelectedSong] = React.useState<Song>(defaultSong);
   const [lyrics, setLyrics] = React.useState<string[]>([]);
-  const songBottomSheetRef = React.useRef<BottomSheetModal>(null);
 
   const getLyricSentences = async (track: Track | undefined): Promise<string[]> => {
     try {
@@ -210,18 +202,14 @@ export const PlayerProvider = ({children}: any) => {
         pausedRotationValue,
         isRotating,
         lastArtwork,
-        selectedSong,
         lyrics,
-        songBottomSheetRef,
         setIsPlaying,
         setPausedRotationValue,
         setIsRotating,
         setLastArtwork,
-        setSelectedSong,
         setLyrics,
       }}>
       {children}
-      <SongBottomSheet ref={songBottomSheetRef} />
     </PlayerContext.Provider>
   );
 };

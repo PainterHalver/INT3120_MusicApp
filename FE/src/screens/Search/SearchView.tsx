@@ -11,13 +11,14 @@ import {useLoadingModal} from '../../contexts/LoadingModalContext';
 import {usePlayer} from '../../contexts/PlayerContext';
 import {Song, songsToTracks} from '../../types';
 import Database from './../../Database';
+import {useSongBottomSheetModalContext} from '../../contexts/SongBottomSheetModalContext';
 
 interface Props {
   searchValue: string;
 }
 
 const SearchView = ({searchValue}: Props) => {
-  const {setSelectedSong, songBottomSheetRef} = usePlayer();
+  const {setSelectedSong, songBottomSheetRef} = useSongBottomSheetModalContext();
   const {setLoading} = useLoadingModal();
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();

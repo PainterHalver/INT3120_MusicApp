@@ -38,6 +38,7 @@ import PlayingSongBottomSheet from './PlayingSongBottomSheet';
 import AnimatedLottieView from 'lottie-react-native';
 import {PlayPauseLottieIcon} from './PlayPauseLottieIcon';
 import PlayerScrollView from './PlayerScrollView';
+import {COLORS} from '../../constants';
 import Reanimated, {
   Extrapolate,
   interpolate,
@@ -185,7 +186,7 @@ const Player = ({navigation}: Props) => {
             </View>
             <TouchableNativeFeedback
               hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-              background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, 23)}
+              background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE, true, 23)}
               onPress={() => {
                 playingSongBottonSheetRef.current?.present();
               }}>
@@ -291,7 +292,7 @@ const Player = ({navigation}: Props) => {
           <Reanimated.View style={[styles.controlContainer, rControl]}>
             <TouchableNativeFeedback
               hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-              background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
+              background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleShuffleMode}>
               <View>
                 <ShuffleIcon size={25} color={isShuffleEnabled ? ICON_ACTIVATED_COLOR : '#ffffffaa'} />
@@ -300,7 +301,7 @@ const Player = ({navigation}: Props) => {
             <View style={styles.playbackControl}>
               <TouchableNativeFeedback
                 hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
-                background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
+                background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE, true, CONTROL_RIPPLE_RADIUS)}
                 onPress={skipToPrevious}>
                 <View>
                   <MaterialIcon name="skip-previous" size={55} color="#fff" />
@@ -308,7 +309,7 @@ const Player = ({navigation}: Props) => {
               </TouchableNativeFeedback>
               {/* <TouchableNativeFeedback
                 hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
-                background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
+                background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE, true, CONTROL_RIPPLE_RADIUS)}
                 onPress={() => {
                   togglePlayback();
                 }}>
@@ -323,7 +324,7 @@ const Player = ({navigation}: Props) => {
               <PlayPauseLottieIcon />
               <TouchableNativeFeedback
                 hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
-                background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
+                background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE, true, CONTROL_RIPPLE_RADIUS)}
                 onPress={skipToNext}>
                 <View>
                   <MaterialIcon name="skip-next" size={55} color="#fff" />
@@ -332,7 +333,7 @@ const Player = ({navigation}: Props) => {
             </View>
             <TouchableNativeFeedback
               hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-              background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
+              background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleRepeateMode}>
               <View>
                 {repeatMode == RepeatMode.Track ? (
@@ -357,7 +358,6 @@ const Player = ({navigation}: Props) => {
 };
 
 const NORMAL_ICON_SIZE = 28;
-const RIPPLE_COLOR = '#cccccc55';
 const CONTROL_RIPPLE_RADIUS = 45;
 const ICON_ACTIVATED_COLOR = '#f43a5a';
 

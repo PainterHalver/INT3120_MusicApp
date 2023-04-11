@@ -10,11 +10,12 @@ import {useLoadingModal} from '../../contexts/LoadingModalContext';
 import {usePlayer} from '../../contexts/PlayerContext';
 import {Song} from '../../types';
 import Database from './../../Database';
+import {useSongBottomSheetModalContext} from '../../contexts/SongBottomSheetModalContext';
 
 interface Props {}
 
 const HistoryView = ({}: Props) => {
-  const {setSelectedSong, songBottomSheetRef} = usePlayer();
+  const {setSelectedSong, songBottomSheetRef} = useSongBottomSheetModalContext();
   const {setLoading} = useLoadingModal();
   const [historySongs, setHistorySongs] = React.useState<Song[]>([]);
 

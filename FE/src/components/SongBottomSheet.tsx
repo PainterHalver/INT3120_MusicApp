@@ -13,11 +13,12 @@ import {ShareIcon} from '../icons/ShareIcon';
 import {Song} from '../types';
 import {ZingMp3} from '../ZingMp3';
 import FileSystem from '../FileSystem';
+import {useSongBottomSheetModalContext} from '../contexts/SongBottomSheetModalContext';
 
 interface Props {}
 
 const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
-  const {selectedSong} = usePlayer();
+  const {selectedSong} = useSongBottomSheetModalContext();
 
   const snapPoints = React.useMemo(() => ['50%', '90%'], []);
 
@@ -136,7 +137,6 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
     </BottomSheetModal>
   );
 });
-
 const ICON_SIZE = 25;
 
 const styles = StyleSheet.create({
