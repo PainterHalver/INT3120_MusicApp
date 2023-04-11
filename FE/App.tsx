@@ -8,6 +8,7 @@
 import {BottomTabBar, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer, NavigatorScreenParams} from '@react-navigation/native';
 import {TransitionPresets, createStackNavigator} from '@react-navigation/stack';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {Text, TouchableNativeFeedback, View} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -33,6 +34,7 @@ import {SongBottomSheetModalProvider} from './src/contexts/SongBottomSheetModalC
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
+// const Stack = createNativeStackNavigator<RootStackParamList>();
 
 // https://reactnavigation.org/docs/typescript/#type-checking-screens
 export type BottomTabParamList = {
@@ -186,6 +188,7 @@ function App(): JSX.Element {
                         // gestureResponseDistance: 100,
                         // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
                         ...TransitionPresets.ModalSlideFromBottomIOS,
+                        // animation: 'slide_from_bottom'
                       }}
                     />
                   </Stack.Navigator>

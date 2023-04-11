@@ -13,7 +13,7 @@ type Props = {
   pos?: number;
 };
 
-// Vì cái tml này dùng context nên mỗi khi context thay đổi thì nó sẽ render lại
+// Vì component này dùng context nên mỗi khi context thay đổi thì nó sẽ render lại
 // Dùng useMemo để không render lại nữa
 const VerticalItemSong = ({song, chart, pos}: Props) => {
   const {setSelectedSong, songBottomSheetRef} = useSongBottomSheetModalContext();

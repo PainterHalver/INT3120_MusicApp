@@ -61,11 +61,11 @@ const SearchView = ({searchValue}: Props) => {
       const newQueue = songsToTracks(recommendedSongs);
       newQueue.unshift(track);
 
-      // Hiện player trước rồi mới load bài hát
-      navigation.navigate('Player');
-
       await TrackPlayer.reset();
       await TrackPlayer.add(newQueue);
+
+      // Hiện player trước khi play
+      navigation.navigate('Player');
       await TrackPlayer.play();
 
       // Lưu bài hát vào lịch sử tìm kiếm

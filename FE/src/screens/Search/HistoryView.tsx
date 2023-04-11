@@ -41,11 +41,10 @@ const HistoryView = ({}: Props) => {
       };
 
       setLoading(false);
-
-      // Hiện player trước rồi mới load bài hát
-      navigation.navigate('Player');
-
       await TrackPlayer.load(track);
+
+      // Hiện player trước khi play
+      navigation.navigate('Player');
       await TrackPlayer.play();
     } catch (error) {
       console.log(error);
