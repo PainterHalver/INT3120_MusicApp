@@ -1,7 +1,15 @@
 // @refresh reset
 
 import React from 'react';
-import {Button, Platform, StatusBar, StyleSheet, TouchableNativeFeedback, View} from 'react-native';
+import {
+  Button,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  TouchableNativeFeedback,
+  View,
+  Text,
+} from 'react-native';
 
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
@@ -11,6 +19,7 @@ import {BottomTabParamList, RootStackParamList} from '../../../App';
 import {useLoadingModal} from '../../contexts/LoadingModalContext';
 import {PlayPauseLottieIcon} from '../Player/PlayPauseLottieIcon';
 import FileSystem from '../../FileSystem';
+import {useAuth} from '../../contexts/AuthContext';
 
 // Prop 1 là prop gần nhất, 2 là của parent
 type Props = CompositeScreenProps<
@@ -19,6 +28,8 @@ type Props = CompositeScreenProps<
 >;
 
 const Hello = ({navigation}: Props) => {
+  const {user, signInWithGoogle, signOut} = useAuth();
+
   React.useEffect(() => {
     (async () => {})();
   }, []);
@@ -32,18 +43,28 @@ const Hello = ({navigation}: Props) => {
   );
 
   const buttonHandler = async () => {
-    await FileSystem.downloadFileToExternalStorage(
-      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-      'SoundHelix-Song-1.mp3',
-    );
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      console.log('BUTTON HANDLER:', error);
+    }
   };
 
   return (
     <View style={styles.containerWrapper}>
       <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
       <View style={styles.container}>
-        <Button title="Download" onPress={buttonHandler} />
+        <Button title="Sign In" onPress={buttonHandler} />
       </View>
+      <View style={styles.container}>
+        <Button
+          title="Sign Out"
+          onPress={async () => {
+            await signOut();
+          }}
+        />
+      </View>
+      <Text>{user?.displayName || ''}</Text>
       <TouchableNativeFeedback
         background={TouchableNativeFeedback.Ripple('#000', true, 500)}
         useForeground>
