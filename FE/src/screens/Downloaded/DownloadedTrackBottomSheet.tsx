@@ -44,6 +44,26 @@ const DownloadedTrackBottomSheet = forwardRef<BottomSheetModal, Props>(
       }
     };
 
+    const pushTrackToQueue = async (track: Track) => {
+      try {
+        await TrackPlayer.add(track);
+        ToastAndroid.show('Đã thêm vào queue', ToastAndroid.SHORT);
+      } catch (error) {
+        console.log(error);
+        ToastAndroid.show('Có lỗi xảy ra khi thêm vào queue', ToastAndroid.SHORT);
+      }
+    };
+
+    const pushTrackToNext = async (track: Track) => {
+      try {
+        await TrackPlayer.add(track, ((await TrackPlayer.getActiveTrackIndex()) || 0) + 1);
+        ToastAndroid.show('Đã thêm vào kế tiếp', ToastAndroid.SHORT);
+      } catch (error) {
+        console.log(error);
+        ToastAndroid.show('Có lỗi xảy ra khi thêm vào queue', ToastAndroid.SHORT);
+      }
+    };
+
     return (
       <BottomSheetModal
         enablePanDownToClose
@@ -105,19 +125,31 @@ const DownloadedTrackBottomSheet = forwardRef<BottomSheetModal, Props>(
           <View style={styles.hr} />
         </View>
         <View style={styles.options}>
-          <TouchableNativeFeedback onPress={handleDeleteTrack}>
+          <TouchableNativeFeedback
+            onPress={() => {
+              handleDeleteTrack();
+              ((ref as any).current as any).close();
+            }}>
             <View style={styles.option}>
               <TrashIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
               <Text style={styles.optionText}>Xóa file trên thiết bị</Text>
             </View>
           </TouchableNativeFeedback>
-          <TouchableNativeFeedback>
+          <TouchableNativeFeedback
+            onPress={() => {
+              pushTrackToQueue(selectedTrack);
+              ((ref as any).current as any).close();
+            }}>
             <View style={styles.option}>
               <AddToPlayingIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
               <Text style={styles.optionText}>Thêm vào danh sách phát</Text>
             </View>
           </TouchableNativeFeedback>
-          <TouchableNativeFeedback>
+          <TouchableNativeFeedback
+            onPress={() => {
+              pushTrackToNext(selectedTrack);
+              ((ref as any).current as any).close();
+            }}>
             <View style={styles.option}>
               <PlayNextIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
               <Text style={styles.optionText}>Phát kế tiếp</Text>

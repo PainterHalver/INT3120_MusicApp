@@ -40,7 +40,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
   const signInWithGoogle = async () => {
     try {
       // Get the Google user data
-      const {idToken} = await GoogleSignin.signIn({loginHint: 'google go'});
+      const {idToken} = await GoogleSignin.signIn();
 
       // Create a Firebase credential with the Google ID token
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);

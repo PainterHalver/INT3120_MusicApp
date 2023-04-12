@@ -10,10 +10,11 @@ import {DownloadIcon} from '../icons/DownloadIcon';
 import {HeartIcon} from '../icons/HeartIcon';
 import {PlayNextIcon} from '../icons/PlayNextIcon';
 import {ShareIcon} from '../icons/ShareIcon';
-import {Song} from '../types';
+import {Song, songsToTracks} from '../types';
 import {ZingMp3} from '../ZingMp3';
 import FileSystem from '../FileSystem';
 import {useSongBottomSheetModalContext} from '../contexts/SongBottomSheetModalContext';
+import TrackPlayer from 'react-native-track-player';
 
 interface Props {}
 
@@ -35,6 +36,28 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
     } catch (error) {
       console.log(error);
       ToastAndroid.show('Có lỗi xảy ra khi tải về', ToastAndroid.SHORT);
+    }
+  };
+
+  const pushSongToQueue = async (song: Song) => {
+    try {
+      const track = songsToTracks([song])[0];
+      await TrackPlayer.add(track);
+      ToastAndroid.show('Đã thêm vào queue', ToastAndroid.SHORT);
+    } catch (error) {
+      console.log(error);
+      ToastAndroid.show('Có lỗi xảy ra khi thêm vào queue', ToastAndroid.SHORT);
+    }
+  };
+
+  const pushSongToNext = async (song: Song) => {
+    try {
+      const track = songsToTracks([song])[0];
+      await TrackPlayer.add(track, ((await TrackPlayer.getActiveTrackIndex()) || 0) + 1);
+      ToastAndroid.show('Đã thêm vào kế tiếp', ToastAndroid.SHORT);
+    } catch (error) {
+      console.log(error);
+      ToastAndroid.show('Có lỗi xảy ra khi thêm vào queue', ToastAndroid.SHORT);
     }
   };
 
@@ -121,13 +144,21 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
             <Text style={styles.optionText}>Thêm vào playlist</Text>
           </View>
         </TouchableNativeFeedback>
-        <TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress={() => {
+            pushSongToQueue(selectedSong);
+            ((ref as any).current as any).close();
+          }}>
           <View style={styles.option}>
             <AddToPlayingIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
             <Text style={styles.optionText}>Thêm vào danh sách phát</Text>
           </View>
         </TouchableNativeFeedback>
-        <TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress={() => {
+            pushSongToNext(selectedSong);
+            ((ref as any).current as any).close();
+          }}>
           <View style={styles.option}>
             <PlayNextIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
             <Text style={styles.optionText}>Phát kế tiếp</Text>
