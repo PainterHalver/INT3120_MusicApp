@@ -11,41 +11,30 @@ import {
 } from 'react-native';
 import TrackPlayer, {Track} from 'react-native-track-player';
 
-import FileSystem from '../../FileSystem';
-import {COLORS} from '../../constants';
-import {useLoadingModal} from '../../contexts/LoadingModalContext';
-import {AddToPlayingIcon} from '../../icons/AddToPlayingIcon';
-import {PlayNextIcon} from '../../icons/PlayNextIcon';
-import {ShareIcon} from '../../icons/ShareIcon';
-import {TrashIcon} from '../../icons/TrashIcon';
+import {COLORS} from '../../../../constants';
+import {useLoadingModal} from '../../../../contexts/LoadingModalContext';
+import {DownloadIcon} from '../../../../icons/DownloadIcon';
+import {ShareIcon} from '../../../../icons/ShareIcon';
+import {TrashIcon} from '../../../../icons/TrashIcon';
+import FileSystem from '../../../../FileSystem';
+import {ZingMp3} from '../../../../ZingMp3';
 
 interface Props {
   selectedTrack: Track;
-  setDownloadedTracks: React.Dispatch<React.SetStateAction<Track[]>>;
+  tracks: Track[];
+  setTracks: (tracks: Track[]) => void;
 }
 
-const DownloadedTrackBottomSheet = forwardRef<BottomSheetModal, Props>(
-  ({selectedTrack, setDownloadedTracks}, ref) => {
+export const TrackBottomSheet = forwardRef<BottomSheetModal, Props>(
+  ({selectedTrack, tracks, setTracks}, ref) => {
     const {setLoading} = useLoadingModal();
     const snapPoints = React.useMemo(() => ['50%', '90%'], []);
 
-    const handleDeleteTrack = async () => {
+    const handleRemoveTrackFromQueue = async () => {
       try {
-        setLoading(true);
-
-        // Xử lý khi xóa bài đang hát hoặc có trong queue
         const queue = await TrackPlayer.getQueue();
-        if (queue.some(track => track.id === selectedTrack.id)) {
-          await TrackPlayer.remove([queue.findIndex(track => track.id === selectedTrack.id)]);
-        }
-
-        if (typeof selectedTrack.url === 'number') {
-          throw new Error('selectedTrack bị lỗi url');
-        }
-
-        (ref as any).current.close();
-        await FileSystem.deleteFile(selectedTrack.url);
-        setDownloadedTracks(await FileSystem.getMusicFiles());
+        await TrackPlayer.remove([queue.findIndex(track => track.id === selectedTrack.id)]);
+        setTracks(queue.filter(track => track.id !== selectedTrack.id));
         ToastAndroid.show('Xóa thành công', ToastAndroid.SHORT);
       } catch (error) {
         console.log('handleDeleteTrack', error);
@@ -55,25 +44,26 @@ const DownloadedTrackBottomSheet = forwardRef<BottomSheetModal, Props>(
       }
     };
 
-    const pushTrackToQueue = async (track: Track) => {
+    const handledownloadTrack = async (track: Track) => {
       try {
-        await TrackPlayer.add(track);
-        DeviceEventEmitter.emit('queue-updated');
-        ToastAndroid.show('Đã thêm vào queue', ToastAndroid.SHORT);
-      } catch (error) {
-        console.log(error);
-        ToastAndroid.show('Có lỗi xảy ra khi thêm vào queue', ToastAndroid.SHORT);
-      }
-    };
+        // URL gọi từ ZingMp3 nếu đang là '' còn nếu là bài offline thì throw error
+        let url;
 
-    const pushTrackToNext = async (track: Track) => {
-      try {
-        await TrackPlayer.add(track, ((await TrackPlayer.getActiveTrackIndex()) || 0) + 1);
-        DeviceEventEmitter.emit('queue-updated');
-        ToastAndroid.show('Đã thêm vào kế tiếp', ToastAndroid.SHORT);
+        if (String(track.url).includes('http')) {
+          url = track.url;
+        } else if (!track.url) {
+          const data = await ZingMp3.getSong(track.id);
+          url = data.data['128'];
+        } else {
+          throw new Error('URL bị lỗi, hoặc là bài hát offline');
+        }
+
+        ToastAndroid.show('Đang tải ' + track.title, ToastAndroid.SHORT);
+        await FileSystem.downloadFileToExternalStorage(url, track.id + '.mp3');
+        ToastAndroid.show('Đã tải ' + track.title, ToastAndroid.SHORT);
       } catch (error) {
         console.log(error);
-        ToastAndroid.show('Có lỗi xảy ra khi thêm vào queue', ToastAndroid.SHORT);
+        ToastAndroid.show('Có lỗi xảy ra khi tải về', ToastAndroid.SHORT);
       }
     };
 
@@ -100,14 +90,15 @@ const DownloadedTrackBottomSheet = forwardRef<BottomSheetModal, Props>(
             }}>
             <View style={{position: 'relative', width: 45, height: 45}}>
               <Image
-                source={require('./../../../assets/default_song_thumbnail.png')}
+                source={require('./../../../../../assets/default_song_thumbnail.png')}
                 style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
               />
               <Image
                 source={
                   (typeof selectedTrack.artwork === 'string'
                     ? {uri: selectedTrack.artwork}
-                    : selectedTrack.artwork) || require('./../../../assets/default_song_thumbnail.png')
+                    : selectedTrack.artwork) ||
+                  require('./../../../../../assets/default_song_thumbnail.png')
                 }
                 style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
               />
@@ -140,32 +131,22 @@ const DownloadedTrackBottomSheet = forwardRef<BottomSheetModal, Props>(
         <View style={styles.options}>
           <TouchableNativeFeedback
             onPress={() => {
-              handleDeleteTrack();
+              handledownloadTrack(selectedTrack);
+              ((ref as any).current as any).close();
+            }}>
+            <View style={styles.option}>
+              <DownloadIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
+              <Text style={styles.optionText}>Tải về</Text>
+            </View>
+          </TouchableNativeFeedback>
+          <TouchableNativeFeedback
+            onPress={() => {
+              handleRemoveTrackFromQueue();
               ((ref as any).current as any).close();
             }}>
             <View style={styles.option}>
               <TrashIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
-              <Text style={styles.optionText}>Xóa file trên thiết bị</Text>
-            </View>
-          </TouchableNativeFeedback>
-          <TouchableNativeFeedback
-            onPress={() => {
-              pushTrackToQueue(selectedTrack);
-              ((ref as any).current as any).close();
-            }}>
-            <View style={styles.option}>
-              <AddToPlayingIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
-              <Text style={styles.optionText}>Thêm vào danh sách phát</Text>
-            </View>
-          </TouchableNativeFeedback>
-          <TouchableNativeFeedback
-            onPress={() => {
-              pushTrackToNext(selectedTrack);
-              ((ref as any).current as any).close();
-            }}>
-            <View style={styles.option}>
-              <PlayNextIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
-              <Text style={styles.optionText}>Phát kế tiếp</Text>
+              <Text style={styles.optionText}>Xóa bài hát khỏi danh sách phát</Text>
             </View>
           </TouchableNativeFeedback>
         </View>
@@ -198,5 +179,3 @@ const styles = StyleSheet.create({
     color: COLORS.TEXT_PRIMARY,
   },
 });
-
-export default DownloadedTrackBottomSheet;

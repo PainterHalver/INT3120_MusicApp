@@ -37,7 +37,7 @@ export type PlayerContextType = {
 };
 
 // TODO: Do something with this
-const defaultTrack: Track = {
+export const defaultTrack: Track = {
   id: 'ZUIIIBWU',
   title: 'Default Track Title',
   artist: 'Default Track Artist',
@@ -46,7 +46,7 @@ const defaultTrack: Track = {
   artwork: require('./../../assets/default.png'),
 };
 
-const defaultSong: Song = {
+export const defaultSong: Song = {
   encodeId: '',
   title: 'Default Song Title',
   artistsNames: 'Default Song Artist',
