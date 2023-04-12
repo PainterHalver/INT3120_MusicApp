@@ -1,6 +1,14 @@
 import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
 import React, {forwardRef} from 'react';
-import {Image, StyleSheet, Text, ToastAndroid, TouchableNativeFeedback, View} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  TouchableNativeFeedback,
+  View,
+  DeviceEventEmitter,
+} from 'react-native';
 import TrackPlayer, {Track} from 'react-native-track-player';
 
 import FileSystem from '../../FileSystem';
@@ -47,6 +55,7 @@ const DownloadedTrackBottomSheet = forwardRef<BottomSheetModal, Props>(
     const pushTrackToQueue = async (track: Track) => {
       try {
         await TrackPlayer.add(track);
+        DeviceEventEmitter.emit('queue-updated');
         ToastAndroid.show('Đã thêm vào queue', ToastAndroid.SHORT);
       } catch (error) {
         console.log(error);
@@ -57,6 +66,7 @@ const DownloadedTrackBottomSheet = forwardRef<BottomSheetModal, Props>(
     const pushTrackToNext = async (track: Track) => {
       try {
         await TrackPlayer.add(track, ((await TrackPlayer.getActiveTrackIndex()) || 0) + 1);
+        DeviceEventEmitter.emit('queue-updated');
         ToastAndroid.show('Đã thêm vào kế tiếp', ToastAndroid.SHORT);
       } catch (error) {
         console.log(error);

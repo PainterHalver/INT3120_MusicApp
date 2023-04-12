@@ -1,6 +1,14 @@
 import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
 import React, {forwardRef} from 'react';
-import {Image, StyleSheet, Text, ToastAndroid, TouchableNativeFeedback, View} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  TouchableNativeFeedback,
+  View,
+  DeviceEventEmitter,
+} from 'react-native';
 
 import {COLORS} from '../constants';
 import {usePlayer} from '../contexts/PlayerContext';
@@ -43,6 +51,7 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
     try {
       const track = songsToTracks([song])[0];
       await TrackPlayer.add(track);
+      DeviceEventEmitter.emit('queue-updated');
       ToastAndroid.show('Đã thêm vào queue', ToastAndroid.SHORT);
     } catch (error) {
       console.log(error);
@@ -54,6 +63,7 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
     try {
       const track = songsToTracks([song])[0];
       await TrackPlayer.add(track, ((await TrackPlayer.getActiveTrackIndex()) || 0) + 1);
+      DeviceEventEmitter.emit('queue-updated');
       ToastAndroid.show('Đã thêm vào kế tiếp', ToastAndroid.SHORT);
     } catch (error) {
       console.log(error);

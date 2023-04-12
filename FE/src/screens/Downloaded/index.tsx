@@ -24,6 +24,7 @@ import {useLoadingModal} from '../../contexts/LoadingModalContext';
 import FileSystem from '../../FileSystem';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import DownloadedTrackBottomSheet from './DownloadedTrackBottomSheet';
+import ItemDownloadedTrackResult from './ItemDownloadedTrackResult';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'Downloaded'>,
@@ -61,10 +62,8 @@ const Downloaded = ({navigation}: Props) => {
     }, []),
   );
 
-  const playSong = async (track: Track) => {
+  const playDownloadedTrack = async (track: Track) => {
     try {
-      navigation.navigate('Player');
-
       await TrackPlayer.reset();
 
       // Thêm track cần play rồi thêm các track còn lại vào trước và sau track cần play
@@ -72,6 +71,7 @@ const Downloaded = ({navigation}: Props) => {
       await TrackPlayer.add(downloadedTracks.slice(0, track.index), 0);
       await TrackPlayer.add(downloadedTracks.slice(track.index + 1, downloadedTracks.length));
 
+      navigation.navigate('Player');
       await TrackPlayer.play();
     } catch (error) {
       console.log(error);
@@ -139,53 +139,14 @@ const Downloaded = ({navigation}: Props) => {
                     return (
                       <TouchableNativeFeedback
                         key={index}
-                        background={TouchableNativeFeedback.Ripple('#00000011', false)}
-                        onPress={() => playSong(track)}>
-                        <View
-                          style={{
-                            paddingHorizontal: 15,
-                            paddingVertical: 7,
-                            flexDirection: 'row',
-                            gap: 10,
-                            alignItems: 'center',
-                          }}>
-                          <View style={{position: 'relative', width: 45, height: 45}}>
-                            <Image
-                              source={require('../../../assets/default_song_thumbnail.png')}
-                              style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
-                            />
-                            <Image
-                              source={
-                                track.artwork
-                                  ? {uri: track.artwork}
-                                  : require('../../../assets/default_song_thumbnail.png')
-                              }
-                              style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
-                            />
-                          </View>
-                          <View style={{marginRight: 'auto'}}>
-                            <Text style={{fontSize: 13, color: COLORS.TEXT_PRIMARY}}>
-                              {track.title && track.title.length > 40
-                                ? track.title.substring(0, 40) + '...'
-                                : track.title}
-                            </Text>
-                            <Text style={{fontSize: 13, color: COLORS.TEXT_GRAY}}>
-                              {track.artist && track.artist.length > 40
-                                ? track.artist.substring(0, 40) + '...'
-                                : track.artist}
-                            </Text>
-                          </View>
-                          <TouchableNativeFeedback
-                            hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                            background={TouchableNativeFeedback.Ripple('#00000011', true, 30)}
-                            onPress={() => {
-                              setSelectedTrack(track);
-                              downloadedTrackBottomSheetRef.current?.present();
-                            }}>
-                            <View>
-                              <IonIcon name="ios-ellipsis-vertical" size={20} color={COLORS.TEXT_GRAY} />
-                            </View>
-                          </TouchableNativeFeedback>
+                        background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
+                        onPress={() => playDownloadedTrack(track)}>
+                        <View>
+                          <ItemDownloadedTrackResult
+                            track={track}
+                            downloadedTrackBottomSheetRef={downloadedTrackBottomSheetRef}
+                            setSelectedTrack={setSelectedTrack}
+                          />
                         </View>
                       </TouchableNativeFeedback>
                     );

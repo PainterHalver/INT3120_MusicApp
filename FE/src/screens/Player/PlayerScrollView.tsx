@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, View, Dimensions, TouchableNativeFeedback, Text} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  View,
+  Dimensions,
+  TouchableNativeFeedback,
+  Text,
+  DeviceEventEmitter,
+} from 'react-native';
 import {usePlayer} from '../../contexts/PlayerContext';
 import Animated, {
   runOnJS,
@@ -16,6 +24,10 @@ import {ShareIcon} from '../../icons/ShareIcon';
 import {PanGestureHandler, ScrollView} from 'react-native-gesture-handler';
 import {COLORS} from '../../constants';
 import {ZingMp3} from '../../ZingMp3';
+import TrackPlayer, {Event, Track} from 'react-native-track-player';
+import {Song, tracksToSongs} from '../../types';
+import ItemSongResult from '../../components/ItemSongResult';
+import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -95,8 +107,8 @@ const PlayerScrollView = ({translateX}: Props) => {
   return (
     <PanGestureHandler onGestureEvent={onGestureEvent} activeOffsetX={[-10, 10]}>
       <Animated.View style={[styles.scrollView, rTranslateX]}>
-        {/* PAGE 1 */}
-        <View style={{width: screenWidth, backgroundColor: 'cyan'}}></View>
+        {/* PAGE 1: Current playing queue */}
+        <QueuePage />
 
         {/* PAGE 2 */}
         <View style={{width: screenWidth}}>
@@ -144,6 +156,65 @@ const PlayerScrollView = ({translateX}: Props) => {
         <LyricsPage />
       </Animated.View>
     </PanGestureHandler>
+  );
+};
+
+const QueuePage = () => {
+  const [songs, setSongs] = useState<Song[]>([]);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+  // FIXME: Không dùng song mà dùng track
+  const getQueue = async () => {
+    const tracks = await TrackPlayer.getQueue();
+    setSongs(tracksToSongs(tracks));
+    const index = await TrackPlayer.getActiveTrackIndex();
+    setCurrentIndex(index || 0);
+    console.log(index);
+  };
+
+  useEffect(() => {
+    getQueue();
+  }, []);
+
+  useEffect(() => {
+    const playerListener = addEventListener(Event.PlaybackActiveTrackChanged, getQueue);
+    const deviceEventListener = DeviceEventEmitter.addListener('queue-updated', getQueue);
+
+    return () => {
+      playerListener.remove();
+      deviceEventListener.remove();
+    };
+  }, []);
+
+  return (
+    <View style={{width: screenWidth, paddingVertical: 15, paddingHorizontal: 5}}>
+      <Text
+        style={{
+          fontSize: 16,
+          fontWeight: '600',
+          color: COLORS.TEXT_WHITE_PRIMARY,
+          paddingBottom: 7,
+          paddingHorizontal: 15,
+        }}>
+        Danh sách phát
+      </Text>
+      <ScrollView contentContainerStyle={{paddingBottom: 20}} showsVerticalScrollIndicator={false}>
+        {songs.map((song, index) => {
+          return (
+            <TouchableNativeFeedback
+              key={index}
+              background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
+              onPress={() => {
+                TrackPlayer.skip(index);
+              }}>
+              <View>
+                <ItemSongResult song={song} variant="text-light" playing={index === currentIndex} />
+              </View>
+            </TouchableNativeFeedback>
+          );
+        })}
+      </ScrollView>
+    </View>
   );
 };
 

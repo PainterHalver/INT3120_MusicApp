@@ -1,24 +1,21 @@
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
-import {Image, Keyboard, StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
+import {StyleSheet, TouchableNativeFeedback, View} from 'react-native';
 import TrackPlayer, {Track} from 'react-native-track-player';
-import IonIcon from 'react-native-vector-icons/Ionicons';
 
 import {RootStackParamList} from '../../../App';
 import {ZingMp3} from '../../ZingMp3';
+import ItemSongResult from '../../components/ItemSongResult';
 import {COLORS} from '../../constants';
 import {useLoadingModal} from '../../contexts/LoadingModalContext';
-import {usePlayer} from '../../contexts/PlayerContext';
 import {Song, songsToTracks} from '../../types';
 import Database from './../../Database';
-import {useSongBottomSheetModalContext} from '../../contexts/SongBottomSheetModalContext';
 
 interface Props {
   searchValue: string;
 }
 
 const SearchView = ({searchValue}: Props) => {
-  const {setSelectedSong, songBottomSheetRef} = useSongBottomSheetModalContext();
   const {setLoading} = useLoadingModal();
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -86,43 +83,10 @@ const SearchView = ({searchValue}: Props) => {
               return (
                 <TouchableNativeFeedback
                   key={song.encodeId}
-                  background={TouchableNativeFeedback.Ripple('#00000011', false)}
+                  background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
                   onPress={() => playSong(song)}>
-                  <View style={styles.songResult}>
-                    <View style={{position: 'relative', width: 45, height: 45}}>
-                      <Image
-                        source={require('../../../assets/default_song_thumbnail.png')}
-                        style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
-                      />
-                      <Image
-                        source={{uri: song.thumbnail}}
-                        style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
-                      />
-                    </View>
-                    <View style={{marginRight: 'auto'}}>
-                      <Text style={{fontSize: 13, color: COLORS.TEXT_PRIMARY}}>
-                        {song.title && song.title.length > 40
-                          ? song.title.substring(0, 40) + '...'
-                          : song.title}
-                      </Text>
-                      <Text style={{fontSize: 13, color: COLORS.TEXT_GRAY}}>
-                        {song.artistsNames && song.artistsNames.length > 40
-                          ? song.artistsNames.substring(0, 40) + '...'
-                          : song.artistsNames}
-                      </Text>
-                    </View>
-                    <TouchableNativeFeedback
-                      hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                      background={TouchableNativeFeedback.Ripple('#00000011', true, 30)}
-                      onPress={() => {
-                        setSelectedSong(song);
-                        Keyboard.dismiss();
-                        songBottomSheetRef.current?.present();
-                      }}>
-                      <View>
-                        <IonIcon name="ios-ellipsis-vertical" size={20} color={COLORS.TEXT_GRAY} />
-                      </View>
-                    </TouchableNativeFeedback>
+                  <View>
+                    <ItemSongResult song={song} />
                   </View>
                 </TouchableNativeFeedback>
               );
@@ -138,13 +102,6 @@ const styles = StyleSheet.create({
   },
   resultContainer: {
     paddingTop: 10,
-  },
-  songResult: {
-    paddingHorizontal: 15,
-    paddingVertical: 7,
-    flexDirection: 'row',
-    gap: 10,
-    alignItems: 'center',
   },
 });
 

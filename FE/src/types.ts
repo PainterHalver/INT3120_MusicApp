@@ -65,3 +65,13 @@ export const songsToTracks = (songs: Song[]): Track[] => {
     artwork: song.thumbnailM,
   }));
 };
+
+export const tracksToSongs = (tracks: Track[]): Song[] => {
+  return tracks.map(track => ({
+    encodeId: track.id,
+    title: track.title as string,
+    artistsNames: track.artist as string,
+    thumbnail: track.artwork as string,
+    thumbnailM: track.artwork as string,
+  }));
+};
