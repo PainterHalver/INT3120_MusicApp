@@ -21,7 +21,7 @@ import {Song, tracksToSongs} from '../../../types';
 import ItemSongResult from '../../../components/ItemSongResult';
 import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
 import {LyricsPage} from './LyricsPage';
-import {QueuePage} from './QueuePage';
+import {MemoizedQueuePage, QueuePage} from './QueuePage';
 import {MainPage} from './MainPage';
 
 interface Props {
@@ -93,7 +93,7 @@ const PlayerScrollView = ({translateX}: Props) => {
     <PanGestureHandler onGestureEvent={onGestureEvent} activeOffsetX={[-10, 10]}>
       <Animated.View style={[styles.scrollView, rTranslateX]}>
         {/* PAGE 1: Current playing queue */}
-        <QueuePage />
+        <MemoizedQueuePage />
 
         {/* PAGE 2 */}
         <MainPage />

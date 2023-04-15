@@ -30,8 +30,9 @@ export const TrackItem = ({
 
   if (!track) return null;
 
-  return useMemo(
-    () => (
+  return useMemo(() => {
+    console.log('TrackItem render');
+    return (
       <View
         style={{
           paddingHorizontal: 15,
@@ -76,7 +77,6 @@ export const TrackItem = ({
           </View>
         </TouchableNativeFeedback>
       </View>
-    ),
-    [track, playing],
-  );
+    );
+  }, [track, playing]);
 };

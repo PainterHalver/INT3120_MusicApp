@@ -1,5 +1,5 @@
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   DeviceEventEmitter,
   Dimensions,
@@ -12,7 +12,7 @@ import TrackPlayer, {Event, Track} from 'react-native-track-player';
 import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
 import {COLORS, SIZES} from '../../../../constants';
 import {defaultTrack} from '../../../../contexts/PlayerContext';
-import {TrackBottomSheet} from './TrackBottomSheet';
+import {MemoizedTrackBottomSheet, TrackBottomSheet} from './TrackBottomSheet';
 import {TrackItem} from './TrackItem';
 
 export const QueuePage = () => {
@@ -21,16 +21,20 @@ export const QueuePage = () => {
   const [selectedTrack, setSelectedTrack] = useState<Track>(defaultTrack);
   const trackBottomSheetRef = useRef<BottomSheetModal>(null);
 
-  const getQueue = async () => {
-    const tracks = await TrackPlayer.getQueue();
+  const getQueue = useCallback(async () => {
+    const queueTracks = await TrackPlayer.getQueue();
     const index = await TrackPlayer.getActiveTrackIndex();
-    setTracks(tracks);
+    setTracks(queueTracks);
     setCurrentIndex(index || 0);
-  };
+  }, []);
 
   useEffect(() => {
     getQueue();
   }, []);
+
+  useEffect(() => {
+    console.log('QUEUE PAGE RENDERED');
+  });
 
   useEffect(() => {
     const playerListener = addEventListener(Event.PlaybackActiveTrackChanged, getQueue);
@@ -76,7 +80,7 @@ export const QueuePage = () => {
           );
         })}
       </ScrollView>
-      <TrackBottomSheet
+      <MemoizedTrackBottomSheet
         selectedTrack={selectedTrack}
         ref={trackBottomSheetRef}
         tracks={tracks}
@@ -85,3 +89,5 @@ export const QueuePage = () => {
     </View>
   );
 };
+
+export const MemoizedQueuePage = React.memo(QueuePage);

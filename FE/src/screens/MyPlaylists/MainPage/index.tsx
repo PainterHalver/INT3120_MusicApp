@@ -36,18 +36,19 @@ const MainPage: React.FC<Props> = ({navigation}) => {
         </Shadow>
 
         {user ? (
-          <View></View>
+          <View>
+            <Button
+              title="to playlist"
+              onPress={() => {
+                navigation.navigate('PlaylistPage');
+              }}
+            />
+          </View>
         ) : (
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <GoogleFirebaseSigninButton />
           </View>
         )}
-        <Button
-          title="to playlist"
-          onPress={() => {
-            navigation.navigate('PlaylistPage');
-          }}
-        />
       </View>
     </View>
   );

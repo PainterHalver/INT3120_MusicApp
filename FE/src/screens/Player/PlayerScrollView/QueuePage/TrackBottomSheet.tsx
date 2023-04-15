@@ -1,5 +1,5 @@
 import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
-import React, {forwardRef} from 'react';
+import React, {forwardRef, useEffect} from 'react';
 import {
   Image,
   StyleSheet,
@@ -154,6 +154,8 @@ export const TrackBottomSheet = forwardRef<BottomSheetModal, Props>(
     );
   },
 );
+
+export const MemoizedTrackBottomSheet = React.memo(TrackBottomSheet);
 
 const ICON_SIZE = 25;
 
