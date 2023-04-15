@@ -32,6 +32,7 @@ import Search from './src/screens/Search';
 import ChartDetail from './src/screens/ChartDetail';
 import {SongBottomSheetModalProvider} from './src/contexts/SongBottomSheetModalContext';
 import {AuthProvider} from './src/contexts/AuthContext';
+import MyPlaylists from './src/screens/MyPlaylists';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -47,6 +48,7 @@ export type BottomTabParamList = {
   Downloaded: undefined;
   PlaylistDetail: undefined;
   ChartDetail: undefined;
+  MyPlaylists: undefined;
 };
 
 export type RootStackParamList = {
@@ -142,6 +144,16 @@ function App(): JSX.Element {
             title: 'Đã tải',
             tabBarIcon: ({focused, color, size}) => (
               <DownloadIcon size={size} color={color} strokeWidth={15} />
+            ),
+          }}
+        />
+        <BottomTab.Screen
+          name="MyPlaylists"
+          component={MyPlaylists}
+          options={{
+            title: 'Playlists',
+            tabBarIcon: ({focused, color, size}) => (
+              <FontAwesomeIcon name="sun-o" size={size} color={color} />
             ),
           }}
         />

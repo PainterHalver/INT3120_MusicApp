@@ -174,7 +174,7 @@ export const PlayerProvider = ({children}: any) => {
       }
 
       // Clear lyrics
-      console.log('Lấy Lyrics');
+      setLyrics([]);
       setLyrics(await getLyricSentences(track));
     });
 
