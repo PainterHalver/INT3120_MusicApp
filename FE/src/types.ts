@@ -47,6 +47,7 @@ export type Playlist = {
 export type MyPlaylist = {
   id: string;
   name: string;
+  uid: string;
 };
 
 export type Lyrics = {
