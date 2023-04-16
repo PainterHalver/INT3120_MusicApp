@@ -1,6 +1,7 @@
-import {StyleSheet, View, Image, Text, ScrollView, Dimensions} from 'react-native';
-import {usePlayer} from '../../../contexts/PlayerContext';
+import {Image, StyleSheet, Text, View} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {COLORS, SIZES} from '../../../constants';
+import {usePlayer} from '../../../contexts/PlayerContext';
 
 export const LyricsPage = () => {
   const {currentTrack, lyrics} = usePlayer();
