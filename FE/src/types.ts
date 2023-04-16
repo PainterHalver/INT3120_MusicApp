@@ -44,6 +44,11 @@ export type Playlist = {
   };
 };
 
+export type MyPlaylist = {
+  id: string;
+  name: string;
+};
+
 export type Lyrics = {
   file: string;
   sentences: {

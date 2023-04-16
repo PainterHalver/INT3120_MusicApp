@@ -7,6 +7,7 @@ import {BottomTabParamList, RootStackParamList} from '../../../App';
 import MainPage from './MainPage';
 import PlaylistPage from './PlaylistPage';
 import {StatusBar} from 'react-native';
+import {MyPlaylist} from '../../types';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'MyPlaylists'>,
@@ -15,7 +16,7 @@ type Props = CompositeScreenProps<
 
 export type MyPlaylistsStackParamList = {
   MainPage: undefined;
-  PlaylistPage: undefined;
+  PlaylistPage: {playlist: MyPlaylist};
 };
 
 const MyPlaylistsStack = createNativeStackNavigator<MyPlaylistsStackParamList>();

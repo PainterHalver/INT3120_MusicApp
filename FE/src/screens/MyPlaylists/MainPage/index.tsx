@@ -1,16 +1,45 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React from 'react';
-import {Button, Platform, StatusBar, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  ActivityIndicator,
+  Button,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  TouchableNativeFeedback,
+  Image,
+} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
+import firestore from '@react-native-firebase/firestore';
+import IonIcon from 'react-native-vector-icons/Ionicons';
+
 import {MyPlaylistsStackParamList} from '..';
 import GoogleFirebaseSigninButton from '../../../components/GoogleFirebaseSigninButton';
 import {COLORS} from '../../../constants';
 import {useAuth} from '../../../contexts/AuthContext';
+import {MyPlaylist} from '../../../types';
 
 type Props = StackScreenProps<MyPlaylistsStackParamList, 'MainPage'>;
 
 const MainPage: React.FC<Props> = ({navigation}) => {
   const {user} = useAuth();
+  const [playlists, setPlaylists] = React.useState<MyPlaylist[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const playlists = await firestore().collection('playlists').get();
+      const myPlaylists = playlists.docs.map(doc => {
+        return {
+          id: doc.id,
+          ...doc.data(),
+        } as MyPlaylist;
+      });
+      setPlaylists(myPlaylists);
+    })();
+  }, []);
 
   return (
     <View style={styles.containerWrapper}>
@@ -36,13 +65,51 @@ const MainPage: React.FC<Props> = ({navigation}) => {
         </Shadow>
 
         {user ? (
-          <View>
-            <Button
-              title="to playlist"
-              onPress={() => {
-                navigation.navigate('PlaylistPage');
-              }}
-            />
+          <View style={{paddingVertical: 15}}>
+            <ScrollView contentContainerStyle={{paddingBottom: 20}}>
+              {playlists.length < 1 ? (
+                <ActivityIndicator size="large" color={COLORS.RED_PRIMARY} />
+              ) : (
+                playlists.map((playlist, index) => {
+                  return (
+                    <TouchableNativeFeedback
+                      key={index}
+                      background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
+                      onPress={() => {
+                        navigation.navigate('PlaylistPage', {playlist});
+                      }}>
+                      <View
+                        style={{
+                          paddingHorizontal: 15,
+                          paddingVertical: 7,
+                          flexDirection: 'row',
+                          gap: 10,
+                          alignItems: 'center',
+                        }}>
+                        <Image
+                          source={require('../../../../assets/default_song_thumbnail.png')}
+                          style={{width: 45, height: 45, borderRadius: 7}}
+                        />
+                        <View style={{marginRight: 'auto'}}>
+                          <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 16}}>{playlist.name}</Text>
+                        </View>
+                        <TouchableNativeFeedback
+                          hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+                          background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, true, 30)}
+                          onPress={() => {
+                            // setSelectedTrack(track);
+                            // downloadedTrackBottomSheetRef.current?.present();
+                          }}>
+                          <View>
+                            <IonIcon name="ios-ellipsis-vertical" size={20} color={COLORS.TEXT_GRAY} />
+                          </View>
+                        </TouchableNativeFeedback>
+                      </View>
+                    </TouchableNativeFeedback>
+                  );
+                })
+              )}
+            </ScrollView>
           </View>
         ) : (
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
