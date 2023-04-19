@@ -13,7 +13,7 @@ import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
 import {COLORS, SIZES} from '../../../../constants';
 import {defaultTrack} from '../../../../contexts/PlayerContext';
 import {MemoizedTrackBottomSheet, TrackBottomSheet} from './TrackBottomSheet';
-import {TrackItem} from './TrackItem';
+import {MemoizedTrackItem, TrackItem} from './TrackItem';
 
 export const QueuePage = () => {
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -68,7 +68,7 @@ export const QueuePage = () => {
                 TrackPlayer.skip(index);
               }}>
               <View>
-                <TrackItem
+                <MemoizedTrackItem
                   track={track}
                   variant="text-light"
                   playing={index === currentIndex}
