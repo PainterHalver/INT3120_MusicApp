@@ -9,6 +9,7 @@ import {
   View,
   DeviceEventEmitter,
 } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
 
 import {COLORS} from '../constants';
 import {usePlayer} from '../contexts/PlayerContext';
@@ -23,13 +24,37 @@ import {ZingMp3} from '../ZingMp3';
 import FileSystem from '../FileSystem';
 import {useBottomSheet} from '../contexts/BottomSheetContext';
 import TrackPlayer from 'react-native-track-player';
+import {RemoveFromPlaylistIcon} from '../icons/RemoveFromPlaylistIcon';
+import {useLoadingModal} from '../contexts/LoadingModalContext';
 
 interface Props {}
 
 const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
+  const {setLoading} = useLoadingModal();
   const {selectedSong, playlistBottomSheetRef} = useBottomSheet();
 
   const snapPoints = React.useMemo(() => ['50%', '90%'], []);
+
+  const removeSelectedSongFromFirebasePlaylist = async () => {
+    try {
+      setLoading(true);
+      await firestore()
+        .collection('playlists')
+        .doc(selectedSong.firebasePlaylistId)
+        .collection('songs')
+        .where('encodeId', '==', selectedSong.encodeId)
+        .get()
+        .then(querySnapshot => {
+          querySnapshot.docs[0].ref.delete();
+        });
+      ToastAndroid.show('Đã xóa bài hát', ToastAndroid.SHORT);
+    } catch (error) {
+      console.log(error);
+      ToastAndroid.show('Có lỗi xảy ra khi xóa bài hát', ToastAndroid.SHORT);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const downloadSong = async (song: Song) => {
     try {
@@ -133,6 +158,18 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
         <View style={styles.hr} />
       </View>
       <View style={styles.options}>
+        {selectedSong.firebasePlaylistId && (
+          <TouchableNativeFeedback
+            onPress={() => {
+              removeSelectedSongFromFirebasePlaylist();
+              ((ref as any).current as any).close();
+            }}>
+            <View style={styles.option}>
+              <RemoveFromPlaylistIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
+              <Text style={styles.optionText}>Xóa khỏi Playlist này</Text>
+            </View>
+          </TouchableNativeFeedback>
+        )}
         <TouchableNativeFeedback
           onPress={() => {
             downloadSong(selectedSong);

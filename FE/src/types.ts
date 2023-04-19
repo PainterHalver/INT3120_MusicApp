@@ -25,6 +25,7 @@ export type Song = {
   thumbnail: string;
   thumbnailM: string;
   album?: Album;
+  firebasePlaylistId?: string;
 };
 
 export type Playlist = {

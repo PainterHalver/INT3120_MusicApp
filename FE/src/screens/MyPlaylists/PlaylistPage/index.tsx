@@ -43,22 +43,32 @@ const PlaylistPage: React.FC<Props> = ({navigation, route}) => {
   const [songs, setSongs] = React.useState<Song[]>([]);
 
   useEffect(() => {
-    (async () => {
-      try {
-        setLoadingSongs(true);
-        const songSnapshot = await firestore()
-          .collection('playlists')
-          .doc(playlist.id)
-          .collection('songs')
-          .get();
-        setSongs(songSnapshot.docs.map(doc => doc.data() as Song));
-      } catch (error) {
-        console.log('PlaylistPage:', error);
-        ToastAndroid.show('Có lỗi khi tải danh sách bài hát', ToastAndroid.SHORT);
-      } finally {
+    const subscriber = firestore()
+      .collection('playlists')
+      .doc(playlist.id)
+      .collection('songs')
+      .onSnapshot(snapshot => {
+        setSongs(snapshot.docs.map(doc => doc.data() as Song));
         setLoadingSongs(false);
-      }
-    })();
+      });
+
+    return () => subscriber();
+
+    // (async () => {
+    //   try {
+    //     const songSnapshot = await firestore()
+    //       .collection('playlists')
+    //       .doc(playlist.id)
+    //       .collection('songs')
+    //       .get();
+    //     setSongs(songSnapshot.docs.map(doc => doc.data() as Song));
+    //   } catch (error) {
+    //     console.log('PlaylistPage:', error);
+    //     ToastAndroid.show('Có lỗi khi tải danh sách bài hát', ToastAndroid.SHORT);
+    //   } finally {
+    //     setLoadingSongs(false);
+    //   }
+    // })();
   }, []);
 
   const playSongInPlaylist = async (track: Song, index: number) => {

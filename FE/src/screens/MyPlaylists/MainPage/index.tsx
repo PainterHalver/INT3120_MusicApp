@@ -1,6 +1,5 @@
-import firestore from '@react-native-firebase/firestore';
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {
   ActivityIndicator,
   Platform,
@@ -8,7 +7,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  ToastAndroid,
   TouchableNativeFeedback,
   View,
 } from 'react-native';
@@ -16,17 +14,17 @@ import {Shadow} from 'react-native-shadow-2';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {MyPlaylistsStackParamList} from '..';
 import GoogleFirebaseSigninButton from '../../../components/GoogleFirebaseSigninButton';
 import {COLORS} from '../../../constants';
 import {useAuth} from '../../../contexts/AuthContext';
+import {usePlaylist} from '../../../contexts/PlaylistContext';
 import {MyPlaylist} from '../../../types';
 import {CreatePlaylistModal} from './CreatePlaylistModal';
-import {MemoizedPlaylistItem, PlaylistItem} from './PlaylistItem';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {PlaylistBottomSheet} from './PlaylistBottomSheet';
 import {EditPlaylistMopdal as EditPlaylistModal} from './EditPlaylistModal';
-import {usePlaylist} from '../../../contexts/PlaylistContext';
+import {PlaylistBottomSheet} from './PlaylistBottomSheet';
+import {PlaylistItem} from './PlaylistItem';
 
 type Props = StackScreenProps<MyPlaylistsStackParamList, 'MainPage'>;
 

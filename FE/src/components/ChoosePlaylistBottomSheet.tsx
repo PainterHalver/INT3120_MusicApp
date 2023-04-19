@@ -14,7 +14,7 @@ import firestore from '@react-native-firebase/firestore';
 import {COLORS} from '../constants';
 import {useBottomSheet} from '../contexts/BottomSheetContext';
 import {usePlaylist} from '../contexts/PlaylistContext';
-import {MyPlaylist} from '../types';
+import {MyPlaylist, Song} from '../types';
 import {useLoadingModal} from '../contexts/LoadingModalContext';
 
 interface Props {}
@@ -39,7 +39,15 @@ export const ChoosePlaylistBottomSheet = forwardRef<BottomSheetModal, Props>(({}
         .get();
 
       if (querySnapshot.empty) {
-        await firestore().collection('playlists').doc(playlist.id).collection('songs').add(selectedSong);
+        const filteredSong: Song = {
+          artistsNames: selectedSong.artistsNames,
+          encodeId: selectedSong.encodeId,
+          thumbnail: selectedSong.thumbnail,
+          thumbnailM: selectedSong.thumbnailM,
+          title: selectedSong.title,
+          firebasePlaylistId: playlist.id,
+        };
+        await firestore().collection('playlists').doc(playlist.id).collection('songs').add(filteredSong);
         ToastAndroid.show('Đã thêm bài hát vào playlist', ToastAndroid.SHORT);
       } else {
         ToastAndroid.show('Bài hát đã tồn tại trong playlist', ToastAndroid.SHORT);
