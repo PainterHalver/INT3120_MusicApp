@@ -30,9 +30,10 @@ import {SearchIcon} from './src/icons/SearchIcon';
 import Downloaded from './src/screens/Downloaded';
 import Search from './src/screens/Search';
 import ChartDetail from './src/screens/ChartDetail';
-import {SongBottomSheetModalProvider} from './src/contexts/SongBottomSheetModalContext';
+import {BottomSheetProvider} from './src/contexts/BottomSheetContext';
 import {AuthProvider} from './src/contexts/AuthContext';
 import MyPlaylists from './src/screens/MyPlaylists';
+import {PlaylistProvider} from './src/contexts/PlaylistContext';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -175,42 +176,44 @@ function App(): JSX.Element {
     <SafeAreaProvider>
       <AuthProvider>
         <PlayerProvider>
-          <LoadingModalProvider>
-            <GestureHandlerRootView style={{flex: 1}}>
-              <BottomSheetModalProvider>
-                <SongBottomSheetModalProvider>
-                  <NavigationContainer
-                    theme={{
-                      dark: false,
-                      colors: {
-                        primary: 'rgb(0, 122, 255)',
-                        background: COLORS.BACKGROUND_PRIMARY,
-                        card: 'rgb(255, 255, 255)',
-                        text: COLORS.TEXT_PRIMARY,
-                        border: 'rgb(216, 216, 216)',
-                        notification: 'rgb(255, 59, 48)',
-                      },
-                    }}>
-                    <Stack.Navigator>
-                      <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
-                      <Stack.Screen
-                        name="Player"
-                        component={Player}
-                        options={{
-                          headerShown: false,
-                          // gestureEnabled: true,
-                          // gestureResponseDistance: 100,
-                          // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
-                          ...TransitionPresets.ModalSlideFromBottomIOS,
-                          // animation: 'slide_from_bottom'
-                        }}
-                      />
-                    </Stack.Navigator>
-                  </NavigationContainer>
-                </SongBottomSheetModalProvider>
-              </BottomSheetModalProvider>
-            </GestureHandlerRootView>
-          </LoadingModalProvider>
+          <PlaylistProvider>
+            <LoadingModalProvider>
+              <GestureHandlerRootView style={{flex: 1}}>
+                <BottomSheetModalProvider>
+                  <BottomSheetProvider>
+                    <NavigationContainer
+                      theme={{
+                        dark: false,
+                        colors: {
+                          primary: 'rgb(0, 122, 255)',
+                          background: COLORS.BACKGROUND_PRIMARY,
+                          card: 'rgb(255, 255, 255)',
+                          text: COLORS.TEXT_PRIMARY,
+                          border: 'rgb(216, 216, 216)',
+                          notification: 'rgb(255, 59, 48)',
+                        },
+                      }}>
+                      <Stack.Navigator>
+                        <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
+                        <Stack.Screen
+                          name="Player"
+                          component={Player}
+                          options={{
+                            headerShown: false,
+                            // gestureEnabled: true,
+                            // gestureResponseDistance: 100,
+                            // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
+                            ...TransitionPresets.ModalSlideFromBottomIOS,
+                            // animation: 'slide_from_bottom'
+                          }}
+                        />
+                      </Stack.Navigator>
+                    </NavigationContainer>
+                  </BottomSheetProvider>
+                </BottomSheetModalProvider>
+              </GestureHandlerRootView>
+            </LoadingModalProvider>
+          </PlaylistProvider>
         </PlayerProvider>
       </AuthProvider>
     </SafeAreaProvider>

@@ -8,16 +8,17 @@ import {useLoadingModal} from '../../../contexts/LoadingModalContext';
 import {EditIcon} from '../../../icons/EditIcon';
 import {TrashIcon} from '../../../icons/TrashIcon';
 import {MyPlaylist} from '../../../types';
+import {usePlaylist} from '../../../contexts/PlaylistContext';
 
 interface Props {
   selectedPlaylist: MyPlaylist;
-  setPlaylists: React.Dispatch<React.SetStateAction<MyPlaylist[]>>;
   setEditPlaylistModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const PlaylistBottomSheet = forwardRef<BottomSheetModal, Props>(
-  ({selectedPlaylist, setPlaylists, setEditPlaylistModalVisible}, ref) => {
+  ({selectedPlaylist, setEditPlaylistModalVisible}, ref) => {
     const {setLoading} = useLoadingModal();
+    const {setPlaylists} = usePlaylist();
     const snapPoints = React.useMemo(() => ['50%', '90%'], []);
 
     const handleDeletePlaylist = async () => {

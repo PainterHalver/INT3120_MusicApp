@@ -4,7 +4,7 @@ import Svg, {Text as Stroke} from 'react-native-svg';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import {usePlayer} from '../contexts/PlayerContext';
 import {Song} from '../types';
-import {useSongBottomSheetModalContext} from '../contexts/SongBottomSheetModalContext';
+import {useBottomSheet} from '../contexts/BottomSheetContext';
 import {COLORS} from '../constants';
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
 // Vì component này dùng context nên mỗi khi context thay đổi thì nó sẽ render lại
 // Dùng useMemo để không render lại nữa
 const VerticalItemSong = ({song, chart, pos}: Props) => {
-  const {setSelectedSong, songBottomSheetRef} = useSongBottomSheetModalContext();
+  const {setSelectedSong, songBottomSheetRef} = useBottomSheet();
 
   useEffect(() => {
     // console.log('VerticalItemSong RERENDERED');

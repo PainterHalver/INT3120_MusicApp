@@ -21,13 +21,13 @@ import {ShareIcon} from '../icons/ShareIcon';
 import {Song, songsToTracks} from '../types';
 import {ZingMp3} from '../ZingMp3';
 import FileSystem from '../FileSystem';
-import {useSongBottomSheetModalContext} from '../contexts/SongBottomSheetModalContext';
+import {useBottomSheet} from '../contexts/BottomSheetContext';
 import TrackPlayer from 'react-native-track-player';
 
 interface Props {}
 
 const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
-  const {selectedSong} = useSongBottomSheetModalContext();
+  const {selectedSong, playlistBottomSheetRef} = useBottomSheet();
 
   const snapPoints = React.useMemo(() => ['50%', '90%'], []);
 
@@ -73,6 +73,7 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
 
   return (
     <BottomSheetModal
+      name="SongBottomSheet"
       enablePanDownToClose
       ref={ref}
       index={0}
@@ -148,7 +149,11 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
             <Text style={styles.optionText}>Yêu thích</Text>
           </View>
         </TouchableNativeFeedback>
-        <TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress={() => {
+            (ref as any).current.dismiss();
+            (playlistBottomSheetRef as any).current.present();
+          }}>
           <View style={styles.option}>
             <AddToPlaylistIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
             <Text style={styles.optionText}>Thêm vào playlist</Text>

@@ -3,7 +3,7 @@ import {useMemo} from 'react';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import {Song} from '../../types';
 import {COLORS} from '../../constants';
-import {useSongBottomSheetModalContext} from '../../contexts/SongBottomSheetModalContext';
+import {useBottomSheet} from '../../contexts/BottomSheetContext';
 import {Track} from 'react-native-track-player';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 

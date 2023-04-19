@@ -22,17 +22,17 @@ import {COLORS} from '../../../constants';
 import {useAuth} from '../../../contexts/AuthContext';
 import {MyPlaylist} from '../../../types';
 import {CreatePlaylistModal} from './CreatePlaylistModal';
-import {MemoizedPlaylistItem} from './PlaylistItem';
+import {MemoizedPlaylistItem, PlaylistItem} from './PlaylistItem';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {PlaylistBottomSheet} from './PlaylistBottomSheet';
 import {EditPlaylistMopdal as EditPlaylistModal} from './EditPlaylistModal';
+import {usePlaylist} from '../../../contexts/PlaylistContext';
 
 type Props = StackScreenProps<MyPlaylistsStackParamList, 'MainPage'>;
 
 const MainPage: React.FC<Props> = ({navigation}) => {
   const {user} = useAuth();
-  const [playlists, setPlaylists] = React.useState<MyPlaylist[]>([]);
-  const [loadingPlaylists, setLoadingPlaylists] = React.useState<boolean>(true);
+  const {loadingPlaylists, playlists} = usePlaylist();
   const [createPlaylistModalVisible, setCreatePlaylistModalVisible] = React.useState(false);
   const playlistBottomSheetRef = React.useRef<BottomSheetModal>(null);
   const [selectedPlaylist, setSelectedPlaylist] = React.useState<MyPlaylist>({
@@ -41,29 +41,6 @@ const MainPage: React.FC<Props> = ({navigation}) => {
     uid: 'default',
   });
   const [editPlaylistModalVisible, setEditPlaylistModalVisible] = React.useState(false);
-
-  useEffect(() => {
-    if (!user) return;
-
-    (async () => {
-      try {
-        setLoadingPlaylists(true);
-        const playlists = await firestore().collection('playlists').where('uid', '==', user.uid).get();
-        const myPlaylists = playlists.docs.map(doc => {
-          return {
-            id: doc.id,
-            ...doc.data(),
-          } as MyPlaylist;
-        });
-        setPlaylists(myPlaylists);
-      } catch (error) {
-        console.log(error);
-        ToastAndroid.show('Có lỗi khi tải danh sách playlist', ToastAndroid.SHORT);
-      } finally {
-        setLoadingPlaylists(false);
-      }
-    })();
-  }, [user]);
 
   return (
     <View style={styles.containerWrapper}>
@@ -102,8 +79,8 @@ const MainPage: React.FC<Props> = ({navigation}) => {
         </Shadow>
 
         {user ? (
-          <View style={{paddingVertical: 15}}>
-            <ScrollView contentContainerStyle={{paddingBottom: 20}}>
+          <View style={{flex: 1}}>
+            <ScrollView contentContainerStyle={{paddingVertical: 15}}>
               <TouchableNativeFeedback
                 background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
                 onPress={() => {
@@ -146,7 +123,7 @@ const MainPage: React.FC<Props> = ({navigation}) => {
                         navigation.navigate('PlaylistPage', {playlist});
                       }}>
                       <View>
-                        <MemoizedPlaylistItem
+                        <PlaylistItem
                           playlist={playlist}
                           setSelectedPlaylist={setSelectedPlaylist}
                           playlistBottomSheetRef={playlistBottomSheetRef}
@@ -167,16 +144,13 @@ const MainPage: React.FC<Props> = ({navigation}) => {
       <CreatePlaylistModal
         visible={createPlaylistModalVisible}
         onDismiss={() => setCreatePlaylistModalVisible(false)}
-        setPlaylists={setPlaylists}
       />
       <EditPlaylistModal
         visible={editPlaylistModalVisible}
         onDismiss={() => setEditPlaylistModalVisible(false)}
-        setPlaylists={setPlaylists}
         selectedPlaylist={selectedPlaylist}
       />
       <PlaylistBottomSheet
-        setPlaylists={setPlaylists}
         selectedPlaylist={selectedPlaylist}
         ref={playlistBottomSheetRef}
         setEditPlaylistModalVisible={setEditPlaylistModalVisible}

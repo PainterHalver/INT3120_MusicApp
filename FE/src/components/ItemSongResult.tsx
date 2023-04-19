@@ -3,7 +3,7 @@ import {useMemo} from 'react';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import {Song} from '../types';
 import {COLORS} from '../constants';
-import {useSongBottomSheetModalContext} from '../contexts/SongBottomSheetModalContext';
+import {useBottomSheet} from '../contexts/BottomSheetContext';
 
 type Props = {
   song: Song;
@@ -12,7 +12,7 @@ type Props = {
   playing?: boolean;
 };
 const ItemSongResult = ({song, imageSize = 45, variant = 'text-dark', playing = false}: Props) => {
-  const {setSelectedSong, songBottomSheetRef} = useSongBottomSheetModalContext();
+  const {setSelectedSong, songBottomSheetRef} = useBottomSheet();
 
   const textPrimaryColor =
     variant === 'text-dark'

@@ -23,11 +23,11 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
+import {usePlaylist} from '../../../contexts/PlaylistContext';
 
 interface Props {
   visible: boolean;
   onDismiss: () => void;
-  setPlaylists: React.Dispatch<React.SetStateAction<MyPlaylist[]>>;
   selectedPlaylist: MyPlaylist;
 }
 
@@ -40,8 +40,9 @@ const springOptions: WithSpringConfig = {
   stiffness: 100,
 };
 
-export const EditPlaylistMopdal = ({visible, onDismiss, setPlaylists, selectedPlaylist}: Props) => {
+export const EditPlaylistMopdal = ({visible, onDismiss, selectedPlaylist}: Props) => {
   const {user} = useAuth();
+  const {setPlaylists} = usePlaylist();
   const {setLoading} = useLoadingModal();
   const [playlistName, setPlaylistName] = useState<string>('');
   const inputRef = useRef<TextInput>(null);

@@ -2,35 +2,41 @@ import {BottomSheetModalMethods} from '@gorhom/bottom-sheet/lib/typescript/types
 import {Song} from '../types';
 import React, {createContext} from 'react';
 import SongBottomSheet from '../components/SongBottomSheet';
+import ChoosePlaylistBottomSheet from '../components/ChoosePlaylistBottomSheet';
 
-export type SongBottomSheetModalContextType = {
+export type BottomSheetContextType = {
   selectedSong: Song;
   songBottomSheetRef: React.RefObject<BottomSheetModalMethods>;
+  playlistBottomSheetRef: React.RefObject<BottomSheetModalMethods>;
 
   setSelectedSong: (selectedSong: Song) => void;
 };
 
-const SongBottomSheetModalContext = createContext<SongBottomSheetModalContextType>({
+const BottomSheetContext = createContext<BottomSheetContextType>({
   selectedSong: {} as Song,
   songBottomSheetRef: {} as React.RefObject<BottomSheetModalMethods>,
+  playlistBottomSheetRef: {} as React.RefObject<BottomSheetModalMethods>,
   setSelectedSong: () => {},
 });
 
-export const SongBottomSheetModalProvider = ({children}: any) => {
+export const BottomSheetProvider = ({children}: any) => {
   const [selectedSong, setSelectedSong] = React.useState<Song>({} as Song);
   const songBottomSheetRef = React.useRef<BottomSheetModalMethods>(null);
+  const playlistBottomSheetRef = React.useRef<BottomSheetModalMethods>(null);
 
   return (
-    <SongBottomSheetModalContext.Provider
+    <BottomSheetContext.Provider
       value={{
         selectedSong,
         songBottomSheetRef,
+        playlistBottomSheetRef,
         setSelectedSong,
       }}>
       <SongBottomSheet ref={songBottomSheetRef} />
+      <ChoosePlaylistBottomSheet ref={playlistBottomSheetRef} />
       {children}
-    </SongBottomSheetModalContext.Provider>
+    </BottomSheetContext.Provider>
   );
 };
 
-export const useSongBottomSheetModalContext = () => React.useContext(SongBottomSheetModalContext);
+export const useBottomSheet = () => React.useContext(BottomSheetContext);
