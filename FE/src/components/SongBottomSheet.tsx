@@ -145,7 +145,7 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
         <TouchableNativeFeedback>
           <View style={styles.option}>
             <HeartIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
-            <Text style={styles.optionText}>Thêm vào thư viện</Text>
+            <Text style={styles.optionText}>Yêu thích</Text>
           </View>
         </TouchableNativeFeedback>
         <TouchableNativeFeedback>

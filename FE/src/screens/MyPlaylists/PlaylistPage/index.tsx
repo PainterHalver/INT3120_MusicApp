@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   TouchableNativeFeedback,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
 import OctIcon from 'react-native-vector-icons/Octicons';
@@ -38,16 +39,25 @@ type Props = CompositeScreenProps<
 const PlaylistPage: React.FC<Props> = ({navigation, route}) => {
   const {playlist} = route.params;
   const {setLoading} = useLoadingModal();
+  const [loadingSongs, setLoadingSongs] = React.useState<boolean>(true);
   const [songs, setSongs] = React.useState<Song[]>([]);
 
   useEffect(() => {
     (async () => {
-      const songSnapshot = await firestore()
-        .collection('playlists')
-        .doc(playlist.id)
-        .collection('songs')
-        .get();
-      setSongs(songSnapshot.docs.map(doc => doc.data() as Song));
+      try {
+        setLoadingSongs(true);
+        const songSnapshot = await firestore()
+          .collection('playlists')
+          .doc(playlist.id)
+          .collection('songs')
+          .get();
+        setSongs(songSnapshot.docs.map(doc => doc.data() as Song));
+      } catch (error) {
+        console.log('PlaylistPage:', error);
+        ToastAndroid.show('Có lỗi khi tải danh sách bài hát', ToastAndroid.SHORT);
+      } finally {
+        setLoadingSongs(false);
+      }
     })();
   }, []);
 
@@ -113,8 +123,12 @@ const PlaylistPage: React.FC<Props> = ({navigation, route}) => {
             }}>
             {playlist.name}
           </Text>
-          {songs.length < 1 ? (
+          {loadingSongs ? (
             <ActivityIndicator size={'large'} color={COLORS.RED_PRIMARY} />
+          ) : songs.length === 0 ? (
+            <View style={{paddingHorizontal: 15}}>
+              <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 15}}>Không có bài hát nào</Text>
+            </View>
           ) : (
             songs.map((song, index) => {
               return (

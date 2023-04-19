@@ -1,22 +1,20 @@
+import firestore from '@react-native-firebase/firestore';
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useEffect} from 'react';
 import {
   ActivityIndicator,
-  Button,
   Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  View,
+  ToastAndroid,
   TouchableNativeFeedback,
-  Image,
+  View,
 } from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
-import firestore from '@react-native-firebase/firestore';
-import IonIcon from 'react-native-vector-icons/Ionicons';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 import {MyPlaylistsStackParamList} from '..';
 import GoogleFirebaseSigninButton from '../../../components/GoogleFirebaseSigninButton';
@@ -24,26 +22,46 @@ import {COLORS} from '../../../constants';
 import {useAuth} from '../../../contexts/AuthContext';
 import {MyPlaylist} from '../../../types';
 import {CreatePlaylistModal} from './CreatePlaylistModal';
+import {MemoizedPlaylistItem} from './PlaylistItem';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {PlaylistBottomSheet} from './PlaylistBottomSheet';
+import {EditPlaylistMopdal as EditPlaylistModal} from './EditPlaylistModal';
 
 type Props = StackScreenProps<MyPlaylistsStackParamList, 'MainPage'>;
 
 const MainPage: React.FC<Props> = ({navigation}) => {
   const {user} = useAuth();
   const [playlists, setPlaylists] = React.useState<MyPlaylist[]>([]);
-  const [createPlaylistModalVisible, setCreatePlaylistModalVisible] = React.useState(true);
+  const [loadingPlaylists, setLoadingPlaylists] = React.useState<boolean>(true);
+  const [createPlaylistModalVisible, setCreatePlaylistModalVisible] = React.useState(false);
+  const playlistBottomSheetRef = React.useRef<BottomSheetModal>(null);
+  const [selectedPlaylist, setSelectedPlaylist] = React.useState<MyPlaylist>({
+    name: 'Default Playlist',
+    id: 'default',
+    uid: 'default',
+  });
+  const [editPlaylistModalVisible, setEditPlaylistModalVisible] = React.useState(false);
 
   useEffect(() => {
     if (!user) return;
 
     (async () => {
-      const playlists = await firestore().collection('playlists').where('uid', '==', user.uid).get();
-      const myPlaylists = playlists.docs.map(doc => {
-        return {
-          id: doc.id,
-          ...doc.data(),
-        } as MyPlaylist;
-      });
-      setPlaylists(myPlaylists);
+      try {
+        setLoadingPlaylists(true);
+        const playlists = await firestore().collection('playlists').where('uid', '==', user.uid).get();
+        const myPlaylists = playlists.docs.map(doc => {
+          return {
+            id: doc.id,
+            ...doc.data(),
+          } as MyPlaylist;
+        });
+        setPlaylists(myPlaylists);
+      } catch (error) {
+        console.log(error);
+        ToastAndroid.show('Có lỗi khi tải danh sách playlist', ToastAndroid.SHORT);
+      } finally {
+        setLoadingPlaylists(false);
+      }
     })();
   }, [user]);
 
@@ -116,7 +134,7 @@ const MainPage: React.FC<Props> = ({navigation}) => {
                 </View>
               </TouchableNativeFeedback>
 
-              {playlists.length < 1 ? (
+              {loadingPlaylists ? (
                 <ActivityIndicator size="large" color={COLORS.RED_PRIMARY} />
               ) : (
                 playlists.map((playlist, index) => {
@@ -127,32 +145,12 @@ const MainPage: React.FC<Props> = ({navigation}) => {
                       onPress={() => {
                         navigation.navigate('PlaylistPage', {playlist});
                       }}>
-                      <View
-                        style={{
-                          paddingHorizontal: 15,
-                          paddingVertical: 7,
-                          flexDirection: 'row',
-                          gap: 10,
-                          alignItems: 'center',
-                        }}>
-                        <Image
-                          source={require('../../../../assets/default_song_thumbnail.png')}
-                          style={{width: 45, height: 45, borderRadius: 7}}
+                      <View>
+                        <MemoizedPlaylistItem
+                          playlist={playlist}
+                          setSelectedPlaylist={setSelectedPlaylist}
+                          playlistBottomSheetRef={playlistBottomSheetRef}
                         />
-                        <View style={{marginRight: 'auto'}}>
-                          <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 16}}>{playlist.name}</Text>
-                        </View>
-                        <TouchableNativeFeedback
-                          hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                          background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, true, 30)}
-                          onPress={() => {
-                            // setSelectedTrack(track);
-                            // downloadedTrackBottomSheetRef.current?.present();
-                          }}>
-                          <View>
-                            <IonIcon name="ios-ellipsis-vertical" size={20} color={COLORS.TEXT_GRAY} />
-                          </View>
-                        </TouchableNativeFeedback>
                       </View>
                     </TouchableNativeFeedback>
                   );
@@ -170,6 +168,18 @@ const MainPage: React.FC<Props> = ({navigation}) => {
         visible={createPlaylistModalVisible}
         onDismiss={() => setCreatePlaylistModalVisible(false)}
         setPlaylists={setPlaylists}
+      />
+      <EditPlaylistModal
+        visible={editPlaylistModalVisible}
+        onDismiss={() => setEditPlaylistModalVisible(false)}
+        setPlaylists={setPlaylists}
+        selectedPlaylist={selectedPlaylist}
+      />
+      <PlaylistBottomSheet
+        setPlaylists={setPlaylists}
+        selectedPlaylist={selectedPlaylist}
+        ref={playlistBottomSheetRef}
+        setEditPlaylistModalVisible={setEditPlaylistModalVisible}
       />
     </View>
   );

@@ -28,6 +28,7 @@ interface Props {
   visible: boolean;
   onDismiss: () => void;
   setPlaylists: React.Dispatch<React.SetStateAction<MyPlaylist[]>>;
+  selectedPlaylist: MyPlaylist;
 }
 
 const springOptions: WithSpringConfig = {
@@ -39,27 +40,31 @@ const springOptions: WithSpringConfig = {
   stiffness: 100,
 };
 
-export const CreatePlaylistModal = ({visible, onDismiss, setPlaylists}: Props) => {
+export const EditPlaylistMopdal = ({visible, onDismiss, setPlaylists, selectedPlaylist}: Props) => {
   const {user} = useAuth();
   const {setLoading} = useLoadingModal();
   const [playlistName, setPlaylistName] = useState<string>('');
   const inputRef = useRef<TextInput>(null);
 
-  const createUserPlaylist = async () => {
+  const updateSelectedPlaylist = async (newName: string) => {
     try {
       if (!user) return ToastAndroid.show('Chưa tìm thấy user', ToastAndroid.SHORT);
 
       setLoading(true);
 
-      const playlist = await firestore().collection('playlists').add({
-        name: playlistName,
-        uid: user.uid,
+      await firestore().collection('playlists').doc(selectedPlaylist.id).update({
+        name: newName,
       });
-      setPlaylists((prev: MyPlaylist[]) => [
-        ...prev,
-        {id: playlist.id, name: playlistName, uid: user.uid},
-      ]);
-      ToastAndroid.show('Tạo playlist thành công', ToastAndroid.SHORT);
+
+      const updatedPlaylist = {...selectedPlaylist, name: newName};
+      setPlaylists((prev: MyPlaylist[]) => {
+        const newPlaylists = [...prev];
+        const index = newPlaylists.findIndex(playlist => playlist.id === selectedPlaylist.id);
+        newPlaylists[index] = updatedPlaylist;
+        return newPlaylists;
+      });
+
+      ToastAndroid.show('Sửa playlist thành công', ToastAndroid.SHORT);
     } catch (error) {
       console.log(error);
       ToastAndroid.show('Đã có lỗi xảy ra', ToastAndroid.SHORT);
@@ -108,7 +113,7 @@ export const CreatePlaylistModal = ({visible, onDismiss, setPlaylists}: Props) =
           <TouchableWithoutFeedback>
             <Animated.View style={[styles.modal, rTranslateY]}>
               <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 20, fontWeight: '500'}}>
-                Tạo Playlist
+                Chỉnh sửa Playlist: {selectedPlaylist.name}
               </Text>
               <View>
                 <TextInput
@@ -142,7 +147,7 @@ export const CreatePlaylistModal = ({visible, onDismiss, setPlaylists}: Props) =
                 <TouchableNativeFeedback
                   disabled={playlistName.length < 1}
                   onPress={() => {
-                    createUserPlaylist();
+                    updateSelectedPlaylist(playlistName);
                     onDismiss();
                   }}>
                   <View style={{height: 35, justifyContent: 'center', paddingHorizontal: 10}}>
