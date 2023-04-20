@@ -49,6 +49,7 @@ export type MyPlaylist = {
   id: string;
   name: string;
   uid: string;
+  isFavorite?: boolean;
 };
 
 export type Lyrics = {

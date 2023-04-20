@@ -7,6 +7,7 @@ export const HeartIcon: React.FC<IconProps> = ({
   size = 30,
   color = '#000',
   fill = 'none',
+  strokeWidth = 1.0,
 }: IconProps) => {
   return (
     <Svg
@@ -14,7 +15,7 @@ export const HeartIcon: React.FC<IconProps> = ({
       width={size}
       viewBox="0 0 24 24"
       stroke={color}
-      strokeWidth={1.0}
+      strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round">
       <Path

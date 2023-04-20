@@ -4,14 +4,21 @@ import React, {memo, useEffect} from 'react';
 import {COLORS} from '../../../constants';
 import {MyPlaylist} from '../../../types';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {HeartIcon} from '../../../icons/HeartIcon';
 
 interface Props {
   playlist: MyPlaylist;
   playlistBottomSheetRef: React.RefObject<BottomSheetModal>;
   setSelectedPlaylist: React.Dispatch<React.SetStateAction<MyPlaylist>>;
+  isFavorite?: boolean;
 }
 
-export const PlaylistItem = ({playlist, playlistBottomSheetRef, setSelectedPlaylist}: Props) => {
+export const PlaylistItem = ({
+  playlist,
+  playlistBottomSheetRef,
+  setSelectedPlaylist,
+  isFavorite = true,
+}: Props) => {
   return (
     <View
       style={{
@@ -21,24 +28,40 @@ export const PlaylistItem = ({playlist, playlistBottomSheetRef, setSelectedPlayl
         gap: 10,
         alignItems: 'center',
       }}>
-      <Image
-        source={require('../../../../assets/default_song_thumbnail.png')}
-        style={{width: 45, height: 45, borderRadius: 7}}
-      />
+      {isFavorite ? (
+        <View
+          style={{
+            height: 45,
+            width: 45,
+            borderRadius: 7,
+            backgroundColor: COLORS.BACKGROUND_PLAYLIST,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <HeartIcon size={25} color="#ffffff" strokeWidth={1.5} />
+        </View>
+      ) : (
+        <Image
+          source={require('../../../../assets/default_song_thumbnail.png')}
+          style={{width: 45, height: 45, borderRadius: 7}}
+        />
+      )}
       <View style={{marginRight: 'auto'}}>
         <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 16}}>{playlist.name}</Text>
       </View>
-      <TouchableNativeFeedback
-        hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-        background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, true, 30)}
-        onPress={() => {
-          setSelectedPlaylist(playlist);
-          playlistBottomSheetRef.current?.present();
-        }}>
-        <View>
-          <IonIcon name="ios-ellipsis-vertical" size={20} color={COLORS.TEXT_GRAY} />
-        </View>
-      </TouchableNativeFeedback>
+      {!isFavorite && (
+        <TouchableNativeFeedback
+          hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+          background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, true, 30)}
+          onPress={() => {
+            setSelectedPlaylist(playlist);
+            playlistBottomSheetRef.current?.present();
+          }}>
+          <View>
+            <IonIcon name="ios-ellipsis-vertical" size={20} color={COLORS.TEXT_GRAY} />
+          </View>
+        </TouchableNativeFeedback>
+      )}
     </View>
   );
 };

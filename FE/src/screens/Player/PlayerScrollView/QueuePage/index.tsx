@@ -7,6 +7,7 @@ import {
   Text,
   TouchableNativeFeedback,
   View,
+  ActivityIndicator,
 } from 'react-native';
 import TrackPlayer, {Event, Track} from 'react-native-track-player';
 import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
@@ -59,6 +60,7 @@ export const QueuePage = () => {
         Danh sách phát
       </Text>
       <ScrollView contentContainerStyle={{paddingBottom: 20}} showsVerticalScrollIndicator={false}>
+        {tracks.length === 0 && <ActivityIndicator size="large" color={COLORS.RED_PRIMARY} />}
         {tracks.map((track, index) => {
           return (
             <TouchableNativeFeedback

@@ -1,6 +1,13 @@
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React, {useCallback, useRef, useState} from 'react';
-import {StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableNativeFeedback,
+  View,
+  ActivityIndicator,
+  ToastAndroid,
+} from 'react-native';
 import TrackPlayer, {State, usePlaybackState} from 'react-native-track-player';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 
@@ -9,6 +16,7 @@ import {COLORS} from '../constants';
 import {usePlayer} from '../contexts/PlayerContext';
 import {HeartIcon} from '../icons/HeartIcon';
 import SpinningDisc from './SpinningDisc';
+import {PhoneIcon} from '../icons/PhoneIcon';
 
 const MiniPlayer = () => {
   const playbackState = usePlaybackState();
@@ -77,12 +85,24 @@ const MiniPlayer = () => {
             <TouchableNativeFeedback
               hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, 35)}
-              onPress={toggleFavorite}>
+              onPress={() => {
+                if (currentTrack.url.toString().startsWith('http')) {
+                  toggleFavorite();
+                } else {
+                  ToastAndroid.show('Nhạc Offline', ToastAndroid.SHORT);
+                }
+              }}>
               <View>
-                {isFavorite ? (
-                  <HeartIcon size={25} color={COLORS.RED_PRIMARY} fill={COLORS.RED_PRIMARY} />
+                {!currentTrack || !currentTrack.url ? (
+                  <ActivityIndicator size={26} color={COLORS.RED_PRIMARY} />
+                ) : currentTrack.url.toString().startsWith('http') ? (
+                  isFavorite ? (
+                    <HeartIcon size={25} color={COLORS.RED_PRIMARY} fill={COLORS.RED_PRIMARY} />
+                  ) : (
+                    <HeartIcon size={25} color={COLORS.TEXT_PRIMARY} />
+                  )
                 ) : (
-                  <HeartIcon size={25} color="#000" />
+                  <PhoneIcon size={25} color={COLORS.TEXT_PRIMARY} />
                 )}
               </View>
             </TouchableNativeFeedback>

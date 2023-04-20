@@ -101,7 +101,7 @@ const MainPage: React.FC<Props> = ({navigation}) => {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                    <AntDesignIcon name="plus" size={25} color="#00000077" style={{fontWeight: '200'}} />
+                    <AntDesignIcon name="plus" size={25} color="#ffffff" style={{fontWeight: '200'}} />
                   </View>
                   <View style={{marginRight: 'auto'}}>
                     <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 16}}>Tạo playlist mới</Text>
@@ -125,6 +125,7 @@ const MainPage: React.FC<Props> = ({navigation}) => {
                           playlist={playlist}
                           setSelectedPlaylist={setSelectedPlaylist}
                           playlistBottomSheetRef={playlistBottomSheetRef}
+                          isFavorite={index === 0}
                         />
                       </View>
                     </TouchableNativeFeedback>
