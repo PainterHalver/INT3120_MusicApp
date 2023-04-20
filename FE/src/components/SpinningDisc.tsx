@@ -8,6 +8,7 @@ import Reanimated, {
 } from 'react-native-reanimated';
 
 import {usePlayer} from '../contexts/PlayerContext';
+import {useSpinningDiscContext} from '../contexts/SpinningDiscContext';
 
 interface Props {
   size: number;
@@ -17,14 +18,11 @@ const SpinningDisc = ({size}: Props) => {
   const {
     currentTrack: {artwork},
     isPlaying,
-    rotation,
-    pausedRotationValue,
-    setPausedRotationValue,
-    isRotating,
-    setIsRotating,
     lastArtwork,
     setLastArtwork,
   } = usePlayer();
+  const {rotation, pausedRotationValue, setPausedRotationValue, isRotating, setIsRotating} =
+    useSpinningDiscContext();
 
   const DISC_DURATION = 20000; // 20 seconds
 

@@ -18,7 +18,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import TrackPlayer, {RepeatMode, State, usePlaybackState} from 'react-native-track-player';
+import TrackPlayer, {RepeatMode, State, usePlaybackState, useProgress} from 'react-native-track-player';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
@@ -53,7 +53,8 @@ type Props = StackScreenProps<RootStackParamList, 'Player'>;
 const Player = ({navigation}: Props) => {
   const playbackState = usePlaybackState();
   const isPlaying = playbackState.state === State.Playing;
-  const {currentTrack, progress} = usePlayer();
+  const {currentTrack} = usePlayer();
+  const progress = useProgress(250);
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [slidingSlider, setSlidingSlider] = useState<boolean>(false);
   const [repeatMode, setRepeatMode] = useState<RepeatMode>(RepeatMode.Off);

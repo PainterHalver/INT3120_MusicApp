@@ -21,18 +21,12 @@ export type PlayerContextType = {
   currentTrack: Track;
   isReady: boolean;
   isPlaying: boolean;
-  progress: Progress;
-  rotation: Animated.Value;
-  pausedRotationValue: number;
-  isRotating: boolean;
   lastArtwork: string;
   lyrics: string[];
   isLoadingFavorite: boolean;
   currentTrackIsFavorite: boolean;
 
   setIsPlaying: (isPlaying: boolean) => void;
-  setPausedRotationValue: (pausedRotationValue: number) => void;
-  setIsRotating: (isRotating: boolean) => void;
   setLastArtwork: (currentArtwork: string) => void;
   setLyrics: (lyrics: string[]) => void;
   setIsLoadingFavorite: (isLoadingFavorite: boolean) => void;
@@ -61,17 +55,11 @@ const PlayerContext = createContext<PlayerContextType>({
   currentTrack: defaultTrack,
   isReady: false,
   isPlaying: false,
-  progress: {buffered: 0, position: 0, duration: 0},
-  rotation: new Animated.Value(0),
-  pausedRotationValue: 0,
-  isRotating: false,
   lastArtwork: require('./../../assets/default.png'),
   lyrics: [],
   isLoadingFavorite: false,
   currentTrackIsFavorite: false,
   setIsPlaying: () => {},
-  setPausedRotationValue: () => {},
-  setIsRotating: () => {},
   setLastArtwork: () => {},
   setLyrics: () => {},
   setIsLoadingFavorite: () => {},
@@ -82,10 +70,6 @@ export const PlayerProvider = ({children}: any) => {
   const [track, setTrack] = React.useState<Track>(defaultTrack);
   const [isReady, setIsReady] = React.useState<boolean>(false);
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
-  const progress = useProgress(250);
-  const rotation = React.useRef(new Animated.Value(0)).current;
-  const [pausedRotationValue, setPausedRotationValue] = React.useState(0);
-  const [isRotating, setIsRotating] = React.useState(false);
   const [lastArtwork, setLastArtwork] = React.useState<string>(
     track.artwork || require('./../../assets/default.png'),
   );
@@ -225,17 +209,11 @@ export const PlayerProvider = ({children}: any) => {
         currentTrack: track,
         isReady,
         isPlaying,
-        progress,
-        rotation,
-        pausedRotationValue,
-        isRotating,
         lastArtwork,
         lyrics,
         isLoadingFavorite,
         currentTrackIsFavorite,
         setIsPlaying,
-        setPausedRotationValue,
-        setIsRotating,
         setLastArtwork,
         setLyrics,
         setIsLoadingFavorite,

@@ -34,6 +34,7 @@ import {BottomSheetProvider} from './src/contexts/BottomSheetContext';
 import {AuthProvider} from './src/contexts/AuthContext';
 import MyPlaylists from './src/screens/MyPlaylists';
 import {PlaylistProvider} from './src/contexts/PlaylistContext';
+import {SpinningDiscProvider} from './src/contexts/SpinningDiscContext';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -181,34 +182,36 @@ function App(): JSX.Element {
               <GestureHandlerRootView style={{flex: 1}}>
                 <BottomSheetModalProvider>
                   <BottomSheetProvider>
-                    <NavigationContainer
-                      theme={{
-                        dark: false,
-                        colors: {
-                          primary: 'rgb(0, 122, 255)',
-                          background: COLORS.BACKGROUND_PRIMARY,
-                          card: 'rgb(255, 255, 255)',
-                          text: COLORS.TEXT_PRIMARY,
-                          border: 'rgb(216, 216, 216)',
-                          notification: 'rgb(255, 59, 48)',
-                        },
-                      }}>
-                      <Stack.Navigator>
-                        <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
-                        <Stack.Screen
-                          name="Player"
-                          component={Player}
-                          options={{
-                            headerShown: false,
-                            // gestureEnabled: true,
-                            // gestureResponseDistance: 100,
-                            // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
-                            ...TransitionPresets.ModalSlideFromBottomIOS,
-                            // animation: 'slide_from_bottom'
-                          }}
-                        />
-                      </Stack.Navigator>
-                    </NavigationContainer>
+                    <SpinningDiscProvider>
+                      <NavigationContainer
+                        theme={{
+                          dark: false,
+                          colors: {
+                            primary: 'rgb(0, 122, 255)',
+                            background: COLORS.BACKGROUND_PRIMARY,
+                            card: 'rgb(255, 255, 255)',
+                            text: COLORS.TEXT_PRIMARY,
+                            border: 'rgb(216, 216, 216)',
+                            notification: 'rgb(255, 59, 48)',
+                          },
+                        }}>
+                        <Stack.Navigator>
+                          <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
+                          <Stack.Screen
+                            name="Player"
+                            component={Player}
+                            options={{
+                              headerShown: false,
+                              // gestureEnabled: true,
+                              // gestureResponseDistance: 100,
+                              // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
+                              ...TransitionPresets.ModalSlideFromBottomIOS,
+                              // animation: 'slide_from_bottom'
+                            }}
+                          />
+                        </Stack.Navigator>
+                      </NavigationContainer>
+                    </SpinningDiscProvider>
                   </BottomSheetProvider>
                 </BottomSheetModalProvider>
               </GestureHandlerRootView>

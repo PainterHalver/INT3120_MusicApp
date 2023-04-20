@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   ToastAndroid,
 } from 'react-native';
-import TrackPlayer, {State, usePlaybackState} from 'react-native-track-player';
+import TrackPlayer, {State, usePlaybackState, useProgress} from 'react-native-track-player';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
@@ -30,8 +30,8 @@ const MiniPlayer = () => {
     setIsLoadingFavorite,
     currentTrackIsFavorite,
     setCurrentTrackIsFavorite,
-    progress,
   } = usePlayer();
+  const progress = useProgress(250);
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 

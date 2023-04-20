@@ -1,4 +1,5 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
+import {useEffect} from 'react';
 import {ScrollView} from 'react-native-gesture-handler';
 import {COLORS, SIZES} from '../../../constants';
 import {usePlayer} from '../../../contexts/PlayerContext';
