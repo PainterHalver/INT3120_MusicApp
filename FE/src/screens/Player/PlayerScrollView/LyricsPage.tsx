@@ -13,14 +13,24 @@ const HEIGHTLINE = 24;
 export const LyricsPage = memo(() => {
   // const progress = useProgress(500);
   const { currentTrack, lyrics } = usePlayer();
-  // const [currentWord, setCurrentWord] = useState(1);
+  const [currentWord, setCurrentWord] = useState({ line: 0, index: 0 });
   // const currentTime = progress.position * 1000;
   const currentTime = 10000;
-  // console.log(progress)
-  // const position = useMemo(() => {
-  //   const time = useProgress(500);
-  // }, [])
 
+  const time = useProgress(500);
+
+  // useEffect(() => {
+  //   if (time.position * 1000 > lyrics[currentWord.line]) {
+
+  //   }
+  // }, [time]);
+
+  // const position = useMemo(() => {
+
+  //   console.log(`render ${time.position * 1000}`)
+
+  // }, [time])
+  // console.log(`rerender`)
   const animationWord = (word: word) => {
     const widthAnimation = new Animated.Value(0);
 
@@ -58,7 +68,7 @@ export const LyricsPage = memo(() => {
     </View>;
   };
 
-  console.log('render')
+
 
   return (
     <View style={styles.lyricsPage}>
