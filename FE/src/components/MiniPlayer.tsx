@@ -62,6 +62,8 @@ const MiniPlayer = () => {
       if (!favoritePlaylistId) {
         throw new Error('Async Storage không lưu favoritePlaylistId');
       }
+      const favoriteSongIds = JSON.parse((await AsyncStorage.getItem('favoriteSongEncodeIds')) || '[]');
+
       if (currentTrackIsFavorite) {
         await firestore()
           .collection('playlists')
@@ -72,6 +74,8 @@ const MiniPlayer = () => {
           .then(querySnapshot => {
             querySnapshot.docs[0].ref.delete();
           });
+        favoriteSongIds.splice(favoriteSongIds.indexOf(currentTrack.id), 1);
+        await AsyncStorage.setItem('favoriteSongEncodeIds', JSON.stringify(favoriteSongIds));
         ToastAndroid.show('Đã bỏ thích bài hát', ToastAndroid.SHORT);
       } else {
         await firestore()
@@ -79,6 +83,8 @@ const MiniPlayer = () => {
           .doc(favoritePlaylistId)
           .collection('songs')
           .add(tracksToSongs([currentTrack])[0]);
+        favoriteSongIds.push(currentTrack.id);
+        await AsyncStorage.setItem('favoriteSongEncodeIds', JSON.stringify(favoriteSongIds));
         ToastAndroid.show('Đã thích bài hát', ToastAndroid.SHORT);
       }
       setCurrentTrackIsFavorite(!currentTrackIsFavorite);

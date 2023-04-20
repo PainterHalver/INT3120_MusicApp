@@ -1,13 +1,13 @@
 import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
 import React, {forwardRef} from 'react';
 import {
+  DeviceEventEmitter,
   Image,
   StyleSheet,
   Text,
   ToastAndroid,
   TouchableNativeFeedback,
   View,
-  DeviceEventEmitter,
 } from 'react-native';
 import TrackPlayer, {Track} from 'react-native-track-player';
 
@@ -16,7 +16,6 @@ import {COLORS} from '../../constants';
 import {useLoadingModal} from '../../contexts/LoadingModalContext';
 import {AddToPlayingIcon} from '../../icons/AddToPlayingIcon';
 import {PlayNextIcon} from '../../icons/PlayNextIcon';
-import {ShareIcon} from '../../icons/ShareIcon';
 import {TrashIcon} from '../../icons/TrashIcon';
 
 interface Props {
@@ -123,16 +122,6 @@ const DownloadedTrackBottomSheet = forwardRef<BottomSheetModal, Props>(
                   ? selectedTrack.artist.substring(0, 40) + '...'
                   : selectedTrack.artist}
               </Text>
-            </View>
-            <View style={{marginRight: 10}}>
-              <TouchableNativeFeedback
-                hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                background={TouchableNativeFeedback.Ripple('#00000022', true, 30)}
-                useForeground>
-                <View>
-                  <ShareIcon size={21} color={COLORS.TEXT_PRIMARY} />
-                </View>
-              </TouchableNativeFeedback>
             </View>
           </View>
           <View style={styles.hr} />

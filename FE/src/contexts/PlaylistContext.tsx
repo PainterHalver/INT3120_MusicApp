@@ -62,6 +62,19 @@ export const PlaylistProvider = ({children}: {children: React.ReactNode}) => {
           });
 
         setPlaylists(myPlaylists);
+        setLoadingPlaylists(false);
+
+        // Cache lại favorite songs id trong AsyncStorage
+        const favSongEncodeIds = await firestore()
+          .collection('playlists')
+          .doc(myPlaylists[0].id)
+          .collection('songs')
+          .get()
+          .then(querySnapshot => {
+            return querySnapshot.docs.map(doc => doc.data().encodeId);
+          });
+
+        await AsyncStorage.setItem('favoriteSongEncodeIds', JSON.stringify(favSongEncodeIds));
       } catch (error) {
         console.log(error);
         ToastAndroid.show('Có lỗi khi tải danh sách playlist', ToastAndroid.SHORT);

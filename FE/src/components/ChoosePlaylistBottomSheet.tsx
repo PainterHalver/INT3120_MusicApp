@@ -87,6 +87,7 @@ export const ChoosePlaylistBottomSheet = forwardRef<BottomSheetModal, Props>(({}
             <ActivityIndicator size="large" color={COLORS.RED_PRIMARY} />
           ) : (
             playlists.map((playlist, index) => {
+              if (index === 0) return;
               return (
                 <TouchableNativeFeedback
                   key={index}

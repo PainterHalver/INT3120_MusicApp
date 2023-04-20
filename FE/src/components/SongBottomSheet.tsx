@@ -26,12 +26,15 @@ import {useBottomSheet} from '../contexts/BottomSheetContext';
 import TrackPlayer from 'react-native-track-player';
 import {RemoveFromPlaylistIcon} from '../icons/RemoveFromPlaylistIcon';
 import {useLoadingModal} from '../contexts/LoadingModalContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Props {}
 
 const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
   const {setLoading} = useLoadingModal();
-  const {selectedSong, playlistBottomSheetRef} = useBottomSheet();
+  const {selectedSong, playlistBottomSheetRef, selectedSongIsFavorite, setSelectedSongIsFavorite} =
+    useBottomSheet();
+  const {currentTrack, setCurrentTrackIsFavorite} = usePlayer();
 
   const snapPoints = React.useMemo(() => ['50%', '90%'], []);
 
@@ -53,6 +56,50 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
       ToastAndroid.show('Có lỗi xảy ra khi xóa bài hát', ToastAndroid.SHORT);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const toggleFavoriteSelectedSong = async () => {
+    try {
+      const favoritePlaylistId = await AsyncStorage.getItem('favoritePlaylistId');
+      if (!favoritePlaylistId) {
+        throw new Error('Async Storage không lưu favoritePlaylistId');
+      }
+      await firestore()
+        .collection('playlists')
+        .doc(favoritePlaylistId)
+        .collection('songs')
+        .where('encodeId', '==', selectedSong.encodeId)
+        .get()
+        .then(async querySnapshot => {
+          const favoriteSongIds = JSON.parse(
+            (await AsyncStorage.getItem('favoriteSongEncodeIds')) || '[]',
+          );
+          if (querySnapshot.docs.length === 0) {
+            await firestore()
+              .collection('playlists')
+              .doc(favoritePlaylistId)
+              .collection('songs')
+              .add(selectedSong);
+            favoriteSongIds.push(selectedSong.encodeId);
+            await AsyncStorage.setItem('favoriteSongEncodeIds', JSON.stringify(favoriteSongIds));
+            ToastAndroid.show('Đã thích bài hát', ToastAndroid.SHORT);
+          } else {
+            querySnapshot.docs[0].ref.delete();
+            favoriteSongIds.splice(favoriteSongIds.indexOf(selectedSong.encodeId), 1);
+            await AsyncStorage.setItem('favoriteSongEncodeIds', JSON.stringify(favoriteSongIds));
+            ToastAndroid.show('Đã bỏ thích bài hát', ToastAndroid.SHORT);
+          }
+        });
+      setSelectedSongIsFavorite(!selectedSongIsFavorite);
+
+      // Nếu là bài đang phát
+      if (currentTrack.id === selectedSong.encodeId) {
+        setCurrentTrackIsFavorite(!selectedSongIsFavorite);
+      }
+    } catch (error) {
+      console.log(error);
+      ToastAndroid.show('Có lỗi xảy ra khi thích/bỏ thích bài hát', ToastAndroid.SHORT);
     }
   };
 
@@ -180,9 +227,17 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
             <Text style={styles.optionText}>Tải về</Text>
           </View>
         </TouchableNativeFeedback>
-        <TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress={() => {
+            (ref as any).current.dismiss();
+            toggleFavoriteSelectedSong();
+          }}>
           <View style={styles.option}>
-            <HeartIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
+            {selectedSongIsFavorite ? (
+              <HeartIcon size={ICON_SIZE} color={COLORS.RED_PRIMARY} fill={COLORS.RED_PRIMARY} />
+            ) : (
+              <HeartIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
+            )}
             <Text style={styles.optionText}>Yêu thích</Text>
           </View>
         </TouchableNativeFeedback>
