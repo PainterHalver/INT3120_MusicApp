@@ -10,79 +10,81 @@ import { useProgress } from 'react-native-track-player';
 const HEIGHTLINE = 24;
 
 export const Lyrics = memo(() => {
-    const progress = useProgress(50);
+    const progress = useProgress(150);
     const { lyrics } = usePlayer();
     const [currentWord, setCurrentWord] = useState({ line: 0, index: 0 });
     const currentTime = progress.position * 1000;
+    const widthAnimation = new Animated.Value(0);
+
+    Animated.timing(widthAnimation, {
+        toValue: 1,
+        duration: lyrics && lyrics.length > 0 ? lyrics[currentWord.line].words[currentWord.index].endTime - lyrics[currentWord.line].words[currentWord.index].startTime : 0,
+        useNativeDriver: false,
+    }).start();
+
+    const animatedStyle = {
+        width: widthAnimation.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['0%', '100%'],
+        }),
+    };
+
+    console.log('change progress')
 
     useEffect(() => {
         if (lyrics && lyrics.length > 0) {
-
-            const j = lyrics[currentWord.line].words.length - 1;
             if (currentTime > lyrics[currentWord.line].words[currentWord.index].endTime) {
-                if (currentWord.index < j) {
-                    setCurrentWord({ line: currentWord.line, index: currentWord.index + 1 })
-                } else {
-                    setCurrentWord({ line: currentWord.line + 1, index: 0 })
+                let check = true;
+                for (let i = currentWord.line; i < lyrics.length; i++) {
+                    if (check === false) break
+                    const j = lyrics[i].words.length
+                    for (let k = 0; k < j; k++) {
+                        if (lyrics[i].words[k].endTime > currentTime && lyrics[i].words[k].startTime > currentTime) {
+                            setCurrentWord({ line: i, index: k })
+                            check = false
+                            break;
+                        }
+                    }
                 }
             }
         }
     }, [currentTime])
 
 
-    const animationWord = (word: word) => {
-        const widthAnimation = new Animated.Value(0);
-
-        Animated.timing(widthAnimation, {
-            toValue: 1,
-            duration: word.endTime - word.startTime,
-            useNativeDriver: false,
-        }).start();
-
-        const animatedStyle = {
-            width: widthAnimation.interpolate({
-                inputRange: [0, 1],
-                outputRange: ['0%', '100%'],
-            }),
-        };
-
-        return (
-            <View style={{ overflow: 'hidden', position: 'relative' }}>
-                <Text
-                    style={[
-                        styles.word,
-                        { color: word.endTime < currentTime ? COLORS.TEXT_YELLOW : COLORS.TEXT_WHITE_SECONDARY },
-                    ]}>
-                    {word.data}
-                </Text>
-                {word.startTime <= currentTime && word.endTime >= currentTime && (
-                    <Animated.View
-                        style={[animatedStyle, { height: HEIGHTLINE, overflow: 'hidden', position: 'absolute' }]}>
-                        <Text style={[styles.word, { position: 'absolute', color: COLORS.TEXT_YELLOW }]}>
-                            {word.data}
-                        </Text>
-                    </Animated.View>
-                )}
-            </View>
-        );
-    };
-
-    const LyricRender = ({ line, key }: { line: lineLyric; key: Number }) => {
-        return (
-            <View style={{ display: 'flex', flexDirection: 'row', gap: 5 }} key={String(key)}>
-                {line.words.map((word, index) => {
-                    return animationWord(word);
-                })}
-            </View>
-        );
-    };
-
     const LyricsRender = useMemo(() => {
-        console.log('rerender lyrics');
+        if (lyrics.length > 0) {
+            console.log(`rerender lyrics ${lyrics[currentWord.line].words[currentWord.index].data}`);
+        }
         return (
             <View style={{ width: '100%' }}>
-                {lyrics.map((lyric, index) => {
-                    return <View>{<LyricRender line={lyric} key={index} />}</View>;
+                {lyrics.map((lyric, i) => {
+                    return (
+                        <View>
+                            <View style={{ display: 'flex', flexDirection: 'row', gap: 5 }} key={String(i)}>
+                                {lyric.words.map((word, j) => {
+                                    return (
+                                        <View style={{ overflow: 'hidden', position: 'relative' }}>
+                                            <Text
+                                                style={[
+                                                    styles.word,
+                                                    { color: (i < currentWord.line || (i === currentWord.line && j < currentWord.index)) ? COLORS.TEXT_YELLOW : COLORS.TEXT_WHITE_SECONDARY },
+                                                ]}>
+                                                {word.data}
+                                            </Text>
+                                            {j === currentWord.index && i === currentWord.line && (
+                                                <Animated.View
+                                                    style={[animatedStyle, { height: HEIGHTLINE, overflow: 'hidden', position: 'absolute' }]}>
+                                                    <Text style={[styles.word, { position: 'absolute', color: COLORS.TEXT_YELLOW }]}>
+                                                        {word.data}
+                                                    </Text>
+                                                </Animated.View>
+                                            )}
+                                        </View>
+                                    );
+                                })}
+                            </View>
+                        </View>
+                    )
                 })}
             </View>
         );
