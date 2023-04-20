@@ -27,13 +27,15 @@
 
 ## Todos:
 
-- [ ] Ngăn Trackplayer stop khi hết queue
+- [x] Ngăn Trackplayer stop khi hết queue
 - [x] Default src cho img khi không có src
-- [ ] Tìm kiếm, thêm nhạc vào queue hoặc sửa queue khi đang phát
-- [ ] Thêm option vào ellipsis trong player (Download nhạc, Favorite, Share), sửa menu cho nhạc tải về đang phát trong player
-- [ ] Shuffle
+- [x] Tìm kiếm, thêm nhạc vào queue hoặc sửa queue khi đang phát
+- [x] Thêm option vào ellipsis trong player (Download nhạc, Favorite, Share), sửa menu cho nhạc tải về đang phát trong player
+- [ ] Yêu thích nhạc playlist firestore, cache bằng AsyncStorage
+- [ ] Shuffle không phải bật tắt mà ấn vào thì sẽ random lại queue
 - [ ] Chia sẻ link track
-- [ ] Lyrics và recommend/playlist screen trong player
+- [ ] Screen tìm kiếm theo bài hát, playlist, nghệ sĩ
+- [x] Lyrics và recommend/playlist screen trong player
 - [x] Hiện nhạc và artwork đang phát và điều khiển nhạc từ notification
 - [x] Tìm kiếm nhạc, play nhạc từ server Zing
 - [x] Lịch sử tìm kiếm
