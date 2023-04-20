@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {Animated, Easing, Image, StyleSheet} from 'react-native';
 import Reanimated, {
   runOnJS,
@@ -91,9 +91,8 @@ const SpinningDisc = ({size}: Props) => {
     });
   };
 
-  return (
-    <Animated.View
-      style={[{height: size, width: size}, {transform: [{rotate: spin}, {perspective: 1000}]}]}>
+  const image = useMemo(() => {
+    return (
       <Image
         source={
           (typeof artwork === 'string' ? {uri: artwork} : artwork) ||
@@ -106,6 +105,11 @@ const SpinningDisc = ({size}: Props) => {
           }
         }}
       />
+    );
+  }, [artwork, lastArtwork]);
+
+  const lastImage = useMemo(() => {
+    return (
       <Reanimated.Image
         source={
           (typeof lastArtwork === 'string' ? {uri: lastArtwork} : lastArtwork) ||
@@ -118,6 +122,14 @@ const SpinningDisc = ({size}: Props) => {
           }
         }}
       />
+    );
+  }, [artwork, lastArtwork]);
+
+  return (
+    <Animated.View
+      style={[{height: size, width: size}, {transform: [{rotate: spin}, {perspective: 1000}]}]}>
+      {image}
+      {lastImage}
     </Animated.View>
   );
 };

@@ -7,20 +7,58 @@ import {
   ActivityIndicator,
   ToastAndroid,
 } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
 import SpinningDisc from '../../../components/SpinningDisc';
 import {usePlayer} from '../../../contexts/PlayerContext';
 import {HeartIcon} from '../../../icons/HeartIcon';
 import {ShareIcon} from '../../../icons/ShareIcon';
 import {COLORS, SIZES} from '../../../constants';
 import {PhoneIcon} from '../../../icons/PhoneIcon';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {tracksToSongs} from '../../../types';
 
 export const MainPage = () => {
-  const {currentTrack} = usePlayer();
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const {
+    currentTrack,
+    isLoadingFavorite,
+    setIsLoadingFavorite,
+    currentTrackIsFavorite,
+    setCurrentTrackIsFavorite,
+  } = usePlayer();
 
-  // TODO: Implement this
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+  const toggleFavorite = async () => {
+    try {
+      setIsLoadingFavorite(true);
+      const favoritePlaylistId = await AsyncStorage.getItem('favoritePlaylistId');
+      if (!favoritePlaylistId) {
+        throw new Error('Async Storage không lưu favoritePlaylistId');
+      }
+      if (currentTrackIsFavorite) {
+        await firestore()
+          .collection('playlists')
+          .doc(favoritePlaylistId)
+          .collection('songs')
+          .where('encodeId', '==', currentTrack.id)
+          .get()
+          .then(querySnapshot => {
+            querySnapshot.docs[0].ref.delete();
+          });
+        ToastAndroid.show('Đã bỏ thích bài hát', ToastAndroid.SHORT);
+      } else {
+        await firestore()
+          .collection('playlists')
+          .doc(favoritePlaylistId)
+          .collection('songs')
+          .add(tracksToSongs([currentTrack])[0]);
+        ToastAndroid.show('Đã thích bài hát', ToastAndroid.SHORT);
+      }
+      setCurrentTrackIsFavorite(!currentTrackIsFavorite);
+    } catch (error) {
+      console.log(error);
+      ToastAndroid.show('Có lỗi xảy ra khi thích bài hát', ToastAndroid.SHORT);
+    } finally {
+      setIsLoadingFavorite(false);
+    }
   };
 
   return useMemo(() => {
@@ -68,10 +106,10 @@ export const MainPage = () => {
                 }
               }}>
               <View>
-                {!currentTrack || !currentTrack.url ? (
+                {!currentTrack || !currentTrack.url || isLoadingFavorite ? (
                   <ActivityIndicator size={26} color={COLORS.RED_PRIMARY} />
                 ) : currentTrack.url.toString().startsWith('http') ? (
-                  isFavorite ? (
+                  currentTrackIsFavorite ? (
                     <HeartIcon size={25} color={COLORS.RED_PRIMARY} fill={COLORS.RED_PRIMARY} />
                   ) : (
                     <HeartIcon size={25} color="#ffffffaa" />
@@ -85,7 +123,7 @@ export const MainPage = () => {
         </View>
       </View>
     );
-  }, [currentTrack, isFavorite]);
+  }, [currentTrack, currentTrackIsFavorite, isLoadingFavorite]);
 };
 
 const RIPPLE_COLOR = '#cccccc55';

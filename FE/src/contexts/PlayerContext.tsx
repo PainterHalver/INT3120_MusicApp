@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect, useMemo} from 'react';
+import React, {createContext, useContext, useEffect} from 'react';
 import {Animated, AppState} from 'react-native';
 import TrackPlayer, {
   AppKilledPlaybackBehavior,
@@ -11,12 +11,11 @@ import TrackPlayer, {
   useTrackPlayerEvents,
 } from 'react-native-track-player';
 import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
+import firestore from '@react-native-firebase/firestore';
 
-import {Song} from '../types';
 import {ZingMp3} from '../ZingMp3';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import SongBottomSheet from '../components/SongBottomSheet';
-import {BottomSheetModalMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
+import {Song} from '../types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type PlayerContextType = {
   currentTrack: Track;
@@ -28,12 +27,16 @@ export type PlayerContextType = {
   isRotating: boolean;
   lastArtwork: string;
   lyrics: string[];
+  isLoadingFavorite: boolean;
+  currentTrackIsFavorite: boolean;
 
   setIsPlaying: (isPlaying: boolean) => void;
   setPausedRotationValue: (pausedRotationValue: number) => void;
   setIsRotating: (isRotating: boolean) => void;
   setLastArtwork: (currentArtwork: string) => void;
   setLyrics: (lyrics: string[]) => void;
+  setIsLoadingFavorite: (isLoadingFavorite: boolean) => void;
+  setCurrentTrackIsFavorite: (currentTrackIsFavorite: boolean) => void;
 };
 
 // TODO: Do something with this
@@ -64,11 +67,15 @@ const PlayerContext = createContext<PlayerContextType>({
   isRotating: false,
   lastArtwork: require('./../../assets/default.png'),
   lyrics: [],
+  isLoadingFavorite: false,
+  currentTrackIsFavorite: false,
   setIsPlaying: () => {},
   setPausedRotationValue: () => {},
   setIsRotating: () => {},
   setLastArtwork: () => {},
   setLyrics: () => {},
+  setIsLoadingFavorite: () => {},
+  setCurrentTrackIsFavorite: () => {},
 });
 
 export const PlayerProvider = ({children}: any) => {
@@ -83,6 +90,8 @@ export const PlayerProvider = ({children}: any) => {
     track.artwork || require('./../../assets/default.png'),
   );
   const [lyrics, setLyrics] = React.useState<string[]>([]);
+  const [isLoadingFavorite, setIsLoadingFavorite] = React.useState(false);
+  const [currentTrackIsFavorite, setCurrentTrackIsFavorite] = React.useState(false);
 
   const getLyricSentences = async (track: Track | undefined): Promise<string[]> => {
     try {
@@ -143,7 +152,6 @@ export const PlayerProvider = ({children}: any) => {
           setIsReady(true);
         }
 
-        // TODO: Delete these
         await TrackPlayer.reset();
       } catch (e) {
         console.log(e);
@@ -155,6 +163,8 @@ export const PlayerProvider = ({children}: any) => {
   useEffect(() => {
     const playerListener = addEventListener(Event.PlaybackActiveTrackChanged, async () => {
       let track = await TrackPlayer.getActiveTrack();
+
+      // Một lần chuyển track có metadata, một lần nữa sau khi fetch được url
       if (track) {
         setTrack(track);
       } else {
@@ -171,6 +181,24 @@ export const PlayerProvider = ({children}: any) => {
           url,
         });
         return;
+      }
+
+      // Load favorite
+      setIsLoadingFavorite(true);
+      try {
+        const favPlaylistid = await AsyncStorage.getItem('favoritePlaylistId');
+        if (!favPlaylistid) return;
+        const isFavorite = await firestore()
+          .collection('playlists')
+          .doc(favPlaylistid)
+          .collection('songs')
+          .where('encodeId', '==', track.id)
+          .get();
+        setCurrentTrackIsFavorite(!isFavorite.empty);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoadingFavorite(false);
       }
 
       // Clear lyrics
@@ -203,11 +231,15 @@ export const PlayerProvider = ({children}: any) => {
         isRotating,
         lastArtwork,
         lyrics,
+        isLoadingFavorite,
+        currentTrackIsFavorite,
         setIsPlaying,
         setPausedRotationValue,
         setIsRotating,
         setLastArtwork,
         setLyrics,
+        setIsLoadingFavorite,
+        setCurrentTrackIsFavorite,
       }}>
       {children}
     </PlayerContext.Provider>

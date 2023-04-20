@@ -3,6 +3,7 @@ import {ToastAndroid} from 'react-native';
 import {MyPlaylist} from '../types';
 import {useAuth} from './AuthContext';
 import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type PlaylistContextType = {
   loadingPlaylists: boolean;
@@ -40,6 +41,9 @@ export const PlaylistProvider = ({children}: {children: React.ReactNode}) => {
             name: 'Yêu thích',
             isFavorite: true,
           });
+          await AsyncStorage.setItem('favoritePlaylistId', newFavPlaylist.id);
+        } else {
+          await AsyncStorage.setItem('favoritePlaylistId', favPlaylist.docs[0].id);
         }
 
         // Lấy tất cả playlist, cho favorite lên đầu
