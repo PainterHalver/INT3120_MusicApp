@@ -39,7 +39,7 @@ export const Lyrics = memo(() => {
                     if (check === false) break
                     const j = lyrics[i].words.length
                     for (let k = 0; k < j; k++) {
-                        if (lyrics[i].words[k].endTime > currentTime && lyrics[i].words[k].startTime > currentTime) {
+                        if (lyrics[i].words[k].endTime > currentTime && lyrics[i].words[k].startTime < currentTime) {
                             setCurrentWord({ line: i, index: k })
                             check = false
                             break;
