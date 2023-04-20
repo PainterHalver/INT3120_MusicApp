@@ -1,22 +1,25 @@
-import {View, Text} from 'react-native';
-import TrackPlayer, {useProgress} from 'react-native-track-player';
+import { View, Text } from 'react-native';
+import TrackPlayer, { useProgress } from 'react-native-track-player';
 import Slider from '@react-native-community/slider';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
+import { usePlayer } from '../../contexts/PlayerContext';
 
 export const SliderAndProgress = () => {
+  const { setProgress } = usePlayer();
   const progress = useProgress(250);
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [slidingSlider, setSlidingSlider] = useState<boolean>(false);
-
+  console.log(progress)
   useEffect(() => {
     if (!slidingSlider) {
       setSliderValue(progress.position);
     }
+    setProgress(progress)
   }, [progress]);
 
   return (
     <View>
-      <View style={{marginHorizontal: -15}}>
+      <View style={{ marginHorizontal: -15 }}>
         <Slider
           style={{
             height: 40,
@@ -38,8 +41,8 @@ export const SliderAndProgress = () => {
           onSlidingStart={() => setSlidingSlider(true)}
         />
       </View>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Text style={{color: '#ffffffcc'}}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={{ color: '#ffffffcc' }}>
           {Math.floor(sliderValue / 60)
             .toString()
             .padStart(2, '0') +
@@ -48,7 +51,7 @@ export const SliderAndProgress = () => {
               .toString()
               .padStart(2, '0')}
         </Text>
-        <Text style={{color: '#ffffffcc'}}>
+        <Text style={{ color: '#ffffffcc' }}>
           {Math.floor((progress.duration - sliderValue + 1) / 60)
             .toString()
             .padStart(2, '0') +

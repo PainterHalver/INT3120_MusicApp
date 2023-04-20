@@ -28,9 +28,9 @@ export const TrackItem = ({
   const textSecondaryColor = variant === 'text-dark' ? COLORS.TEXT_GRAY : COLORS.TEXT_WHITE_SECONDARY;
   const rippleColor = variant === 'text-dark' ? COLORS.RIPPLE_LIGHT : COLORS.RIPPLE;
 
-  useEffect(() => {
-    console.log('TrackItem render');
-  });
+  // useEffect(() => {
+  //   console.log('TrackItem render');
+  // });
 
   if (!track) return null;
   return (

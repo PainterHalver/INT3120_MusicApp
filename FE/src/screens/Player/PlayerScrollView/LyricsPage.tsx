@@ -1,11 +1,56 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
-import {useEffect} from 'react';
-import {ScrollView} from 'react-native-gesture-handler';
-import {COLORS, SIZES} from '../../../constants';
-import {usePlayer} from '../../../contexts/PlayerContext';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { COLORS, SIZES } from '../../../constants';
+import { lineLyric, usePlayer, word } from '../../../contexts/PlayerContext';
+import { Animated } from 'react-native';
+import { memo } from 'react';
+import { useEffect } from 'react';
 
-export const LyricsPage = () => {
-  const {currentTrack, lyrics} = usePlayer();
+
+const HEIGHTLINE = 24;
+
+export const LyricsPage = memo(() => {
+  const { currentTrack, lyrics, progress } = usePlayer();
+  const currentTime = progress.position * 1000;
+
+  const animationWord = (word: word) => {
+    const widthAnimation = new Animated.Value(0);
+
+    Animated.timing(widthAnimation, {
+      toValue: 1,
+      duration: (word.endTime - word.startTime),
+      useNativeDriver: false,
+    }).start();
+
+    const animatedStyle = {
+      width: widthAnimation.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0%', '100%'],
+      }),
+    };
+
+    return (
+      <View style={{ overflow: 'hidden', position: 'relative' }}>
+        <Text style={[styles.word, { color: word.endTime < currentTime ? COLORS.TEXT_YELLOW : COLORS.TEXT_WHITE_SECONDARY }]}>{word.data}</Text>
+        {word.startTime <= currentTime && word.endTime >= currentTime && (
+          <Animated.View
+            style={[animatedStyle, { height: HEIGHTLINE, overflow: 'hidden', position: 'absolute' }]}>
+            <Text style={[styles.word, { position: 'absolute', color: COLORS.TEXT_YELLOW }]}>{word.data}</Text>
+          </Animated.View>
+        )}
+      </View>
+    );
+  };
+
+  const LyricRender = ({ line, key }: { line: lineLyric, key: Number }) => {
+    return <View style={{ display: 'flex', flexDirection: 'row', gap: 5 }} key={String(key)} >
+      {line.words.map((word, index) => {
+        return animationWord(word)
+      })}
+    </View>;
+  };
+
+  console.log('render')
 
   return (
     <View style={styles.lyricsPage}>
@@ -18,23 +63,23 @@ export const LyricsPage = () => {
           gap: 10,
           alignItems: 'center',
         }}>
-        <View style={{position: 'relative', width: 45, height: 45}}>
+        <View style={{ position: 'relative', width: 45, height: 45 }}>
           <Image
             source={
               (typeof currentTrack.artwork === 'string'
-                ? {uri: currentTrack.artwork}
+                ? { uri: currentTrack.artwork }
                 : currentTrack.artwork) || require('./../../../../assets/default.png')
             }
-            style={{width: 45, height: 45, borderRadius: 7}}
+            style={{ width: 45, height: 45, borderRadius: 7 }}
           />
         </View>
-        <View style={{marginRight: 'auto'}}>
-          <Text style={{fontSize: 15, fontWeight: '500', color: COLORS.TEXT_WHITE_PRIMARY}}>
+        <View style={{ marginRight: 'auto' }}>
+          <Text style={{ fontSize: 15, fontWeight: '500', color: COLORS.TEXT_WHITE_PRIMARY }}>
             {currentTrack.title && currentTrack.title.length > 33
               ? currentTrack.title.substring(0, 33) + '...'
               : currentTrack.title}
           </Text>
-          <Text style={{fontSize: 14, color: COLORS.TEXT_WHITE_SECONDARY}}>
+          <Text style={{ fontSize: 14, color: COLORS.TEXT_WHITE_SECONDARY }}>
             {currentTrack.artist && currentTrack.artist.length > 40
               ? currentTrack.artist.substring(0, 40) + '...'
               : currentTrack.artist}
@@ -47,29 +92,40 @@ export const LyricsPage = () => {
           paddingVertical: 15,
           paddingHorizontal: 20,
         }}>
-        {lyrics.map((sentence, index) => {
-          return (
-            <Text
-              key={index}
-              style={{
-                color: COLORS.TEXT_WHITE_SECONDARY,
-                fontSize: 20,
-                paddingVertical: 10,
-                fontWeight: '600',
-              }}>
-              {sentence}
-            </Text>
-          );
-        })}
+        {lyrics.length === 0 ? (
+          <Text
+            style={{
+              color: COLORS.TEXT_WHITE_SECONDARY,
+              fontSize: 20,
+              paddingVertical: 10,
+              fontWeight: '600',
+            }}>
+            {'Không có lời '}
+          </Text>
+        ) : (
+          <View style={{ width: '100%' }}>
+            {lyrics.map((lyric, index) => {
+              return (<View>
+                {<LyricRender line={lyric} key={index} />}
+              </View>);
+            })}
+          </View>
+        )}
       </ScrollView>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   lyricsPage: {
     // backgroundColor: 'cyan',
     width: SIZES.SCREEN_WIDTH,
     paddingVertical: 15,
+  },
+  word: {
+    color: COLORS.TEXT_WHITE_SECONDARY,
+    fontSize: 20,
+    fontWeight: '600',
+    lineHeight: HEIGHTLINE,
   },
 });

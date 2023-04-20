@@ -1,5 +1,5 @@
-import React, {createContext, useContext, useEffect} from 'react';
-import {Animated, AppState} from 'react-native';
+import React, { createContext, useContext, useEffect } from 'react';
+import { Animated, AppState } from 'react-native';
 import TrackPlayer, {
   AppKilledPlaybackBehavior,
   Capability,
@@ -10,27 +10,48 @@ import TrackPlayer, {
   useProgress,
   useTrackPlayerEvents,
 } from 'react-native-track-player';
-import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
+import { addEventListener } from 'react-native-track-player/lib/trackPlayer';
 import firestore from '@react-native-firebase/firestore';
 
-import {ZingMp3} from '../ZingMp3';
-import {Song} from '../types';
+import { ZingMp3 } from '../ZingMp3';
+import { Song } from '../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import SongBottomSheet from '../components/SongBottomSheet';
+import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+
+export type word = {
+  data: string;
+  endTime: number;
+  startTime: number;
+}
+
+export type lineLyric = {
+  words: word[]
+}
+
+export type progress = {
+  buffered: number;
+  duration: number;
+  position: number;
+}
 
 export type PlayerContextType = {
   currentTrack: Track;
   isReady: boolean;
   isPlaying: boolean;
   lastArtwork: string;
-  lyrics: string[];
   isLoadingFavorite: boolean;
   currentTrackIsFavorite: boolean;
-
+  lyrics: lineLyric[];
+  progress: progress
   setIsPlaying: (isPlaying: boolean) => void;
   setLastArtwork: (currentArtwork: string) => void;
-  setLyrics: (lyrics: string[]) => void;
   setIsLoadingFavorite: (isLoadingFavorite: boolean) => void;
   setCurrentTrackIsFavorite: (currentTrackIsFavorite: boolean) => void;
+  setLyrics: (lyrics: lineLyric[]) => void;
+  setProgress: (progress: progress) => void;
 };
 
 // TODO: Do something with this
@@ -51,47 +72,50 @@ export const defaultSong: Song = {
   thumbnail: require('./../../assets/default_song_thumbnail.png'),
 };
 
+
+
 const PlayerContext = createContext<PlayerContextType>({
   currentTrack: defaultTrack,
   isReady: false,
   isPlaying: false,
   lastArtwork: require('./../../assets/default.png'),
   lyrics: [],
+  progress: { buffered: 0, duration: 0, position: 0 },
   isLoadingFavorite: false,
   currentTrackIsFavorite: false,
-  setIsPlaying: () => {},
-  setLastArtwork: () => {},
-  setLyrics: () => {},
-  setIsLoadingFavorite: () => {},
-  setCurrentTrackIsFavorite: () => {},
+  setIsPlaying: () => { },
+  setLastArtwork: () => { },
+  setLyrics: () => { },
+  setIsLoadingFavorite: () => { },
+  setCurrentTrackIsFavorite: () => { },
+  setProgress: () => { },
 });
 
-export const PlayerProvider = ({children}: any) => {
+export const PlayerProvider = ({ children }: any) => {
   const [track, setTrack] = React.useState<Track>(defaultTrack);
   const [isReady, setIsReady] = React.useState<boolean>(false);
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
+  const [progress, setProgress] = React.useState<progress>({ buffered: 0, duration: 0, position: 0 })
   const [lastArtwork, setLastArtwork] = React.useState<string>(
     track.artwork || require('./../../assets/default.png'),
   );
-  const [lyrics, setLyrics] = React.useState<string[]>([]);
   const [isLoadingFavorite, setIsLoadingFavorite] = React.useState(false);
   const [currentTrackIsFavorite, setCurrentTrackIsFavorite] = React.useState(false);
+  const [lyrics, setLyrics] = React.useState<lineLyric[]>([]);
 
-  const getLyricSentences = async (track: Track | undefined): Promise<string[]> => {
+  const getLyricSentences = async (track: Track | undefined): Promise<lineLyric[]> => {
     try {
-      if (!track) return ['Không tìm thấy lời bài hát'];
+      if (!track) return [];
 
       const data = await ZingMp3.getLyric(track.id);
 
-      if (!data) return ['Không tìm thấy lời bài hát'];
+      if (!data || !data.sentences || data.sentences.length === 0) return [];
+      console.log(data.sentences[0])
 
-      const lyricSentences = data.sentences.map(sentence => {
-        return sentence.words.map(word => word.data).join(' ');
-      });
-      return lyricSentences;
+      return data.sentences
     } catch (error) {
       console.log('PlayerContext/getLyricSentences:', error);
-      return ['Không tìm thấy lời bài hát'];
+      return [];
     }
   };
 
@@ -168,22 +192,25 @@ export const PlayerProvider = ({children}: any) => {
       }
 
       // Load favorite
-      setIsLoadingFavorite(true);
-      try {
-        const favPlaylistid = await AsyncStorage.getItem('favoritePlaylistId');
-        if (!favPlaylistid) return;
-        const isFavorite = await firestore()
-          .collection('playlists')
-          .doc(favPlaylistid)
-          .collection('songs')
-          .where('encodeId', '==', track.id)
-          .get();
-        setCurrentTrackIsFavorite(!isFavorite.empty);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoadingFavorite(false);
-      }
+      // setIsLoadingFavorite(true);
+      // try {
+      //   const favPlaylistid = await AsyncStorage.getItem('favoritePlaylistId');
+      //   console.log('favPlaylistid', favPlaylistid);
+      //   if (!favPlaylistid) return;
+      //   const isFavorite = await firestore()
+      //     .collection('playlists')
+      //     .doc(favPlaylistid)
+      //     .collection('songs')
+      //     .where('encodeId', '==', track.id)
+      //     .get();
+      //   setCurrentTrackIsFavorite(!isFavorite.empty);
+      // } catch (error) {
+      //   console.log(error);
+      // } finally {
+      //   setIsLoadingFavorite(false);
+      // }
+
+      console.log('getLyrics')
 
       // Clear lyrics
       setLyrics([]);
@@ -211,6 +238,7 @@ export const PlayerProvider = ({children}: any) => {
         isPlaying,
         lastArtwork,
         lyrics,
+        progress,
         isLoadingFavorite,
         currentTrackIsFavorite,
         setIsPlaying,
@@ -218,6 +246,7 @@ export const PlayerProvider = ({children}: any) => {
         setLyrics,
         setIsLoadingFavorite,
         setCurrentTrackIsFavorite,
+        setProgress,
       }}>
       {children}
     </PlayerContext.Provider>
