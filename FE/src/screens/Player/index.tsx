@@ -2,14 +2,12 @@
 // @refresh reset
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Slider from '@react-native-community/slider';
+
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useEffect, useState, useRef, useCallback} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Dimensions,
-  ImageBackground,
   Platform,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -18,34 +16,30 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import TrackPlayer, {RepeatMode, State, usePlaybackState, useProgress} from 'react-native-track-player';
+import TrackPlayer, {RepeatMode, State, usePlaybackState} from 'react-native-track-player';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
-import {RootStackParamList} from '../../../App';
-import {usePlayer} from '../../contexts/PlayerContext';
-import {HeartIcon} from '../../icons/HeartIcon';
-import {RepeatIcon} from '../../icons/RepeatIcon';
-import {RepeatOnceIcon} from '../../icons/RepeatOnceIcon';
-import {ShareIcon} from '../../icons/ShareIcon';
-import {ShuffleIcon} from '../../icons/ShuffleIcon';
-import SpinningDisc from '../../components/SpinningDisc';
-import PlayerBackground from './PlayerBackground';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import PlayingSongBottomSheet from './PlayingSongBottomSheet';
 import AnimatedLottieView from 'lottie-react-native';
-import {PlayPauseLottieIcon} from './PlayPauseLottieIcon';
-import PlayerScrollView from './PlayerScrollView';
-import {COLORS} from '../../constants';
 import Reanimated, {
   Extrapolate,
   interpolate,
   useAnimatedStyle,
-  useDerivedValue,
   useSharedValue,
 } from 'react-native-reanimated';
+import {RootStackParamList} from '../../../App';
+import {COLORS} from '../../constants';
+import {usePlayer} from '../../contexts/PlayerContext';
+import {RepeatIcon} from '../../icons/RepeatIcon';
+import {RepeatOnceIcon} from '../../icons/RepeatOnceIcon';
+import {ShuffleIcon} from '../../icons/ShuffleIcon';
+import {PlayPauseLottieIcon} from './PlayPauseLottieIcon';
+import PlayerBackground from './PlayerBackground';
+import PlayerScrollView from './PlayerScrollView';
+import PlayingSongBottomSheet from './PlayingSongBottomSheet';
+import {SliderAndProgress} from './SliderAndProgress';
 
 const {height, width: screenWidth} = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
@@ -54,9 +48,6 @@ const Player = ({navigation}: Props) => {
   const playbackState = usePlaybackState();
   const isPlaying = playbackState.state === State.Playing;
   const {currentTrack} = usePlayer();
-  const progress = useProgress(250);
-  const [sliderValue, setSliderValue] = useState<number>(0);
-  const [slidingSlider, setSlidingSlider] = useState<boolean>(false);
   const [repeatMode, setRepeatMode] = useState<RepeatMode>(RepeatMode.Off);
   const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
   const playingSongBottonSheetRef = React.useRef<BottomSheetModal>(null);
@@ -64,12 +55,6 @@ const Player = ({navigation}: Props) => {
 
   // Paging animation
   const translateX = useSharedValue(-screenWidth);
-
-  useEffect(() => {
-    if (!slidingSlider) {
-      setSliderValue(progress.position);
-    }
-  }, [progress]);
 
   useEffect(() => {
     // Set thông tin playback từ AsyncStorage
@@ -249,47 +234,11 @@ const Player = ({navigation}: Props) => {
             <PlayerScrollView translateX={translateX} />
           </View>
 
+          {/* SLIDER */}
           <Reanimated.View style={[styles.progressContainer, rProgress]}>
-            <View style={{marginHorizontal: -15}}>
-              <Slider
-                style={styles.slider}
-                minimumValue={0}
-                maximumValue={progress.duration}
-                value={sliderValue}
-                thumbTintColor="#fff"
-                minimumTrackTintColor="#fff"
-                maximumTrackTintColor="#ffffff"
-                onSlidingComplete={async value => {
-                  setSlidingSlider(false);
-                  await TrackPlayer.seekTo(value + 1); // +1 để để khớp với progress (đừng hỏi tại sao)
-                }}
-                onValueChange={value => {
-                  setSliderValue(value);
-                }}
-                onSlidingStart={() => setSlidingSlider(true)}
-              />
-            </View>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text style={{color: '#ffffffcc'}}>
-                {Math.floor(sliderValue / 60)
-                  .toString()
-                  .padStart(2, '0') +
-                  ':' +
-                  Math.floor(sliderValue % 60)
-                    .toString()
-                    .padStart(2, '0')}
-              </Text>
-              <Text style={{color: '#ffffffcc'}}>
-                {Math.floor((progress.duration - sliderValue + 1) / 60)
-                  .toString()
-                  .padStart(2, '0') +
-                  ':' +
-                  Math.floor((progress.duration - sliderValue + 1) % 60)
-                    .toString()
-                    .padStart(2, '0')}
-              </Text>
-            </View>
+            <SliderAndProgress />
           </Reanimated.View>
+
           <Reanimated.View style={[styles.controlContainer, rControl]}>
             <TouchableNativeFeedback
               hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
@@ -386,10 +335,6 @@ const styles = StyleSheet.create({
     flex: 1,
     // backgroundColor: '#712722',
     paddingHorizontal: 25,
-  },
-  slider: {
-    height: 40,
-    width: '100%',
   },
   controlContainer: {
     // flex: 1,
