@@ -45,13 +45,11 @@ export type PlayerContextType = {
   isLoadingFavorite: boolean;
   currentTrackIsFavorite: boolean;
   lyrics: lineLyric[];
-  progress: progress
   setIsPlaying: (isPlaying: boolean) => void;
   setLastArtwork: (currentArtwork: string) => void;
   setIsLoadingFavorite: (isLoadingFavorite: boolean) => void;
   setCurrentTrackIsFavorite: (currentTrackIsFavorite: boolean) => void;
   setLyrics: (lyrics: lineLyric[]) => void;
-  setProgress: (progress: progress) => void;
 };
 
 // TODO: Do something with this
@@ -80,7 +78,6 @@ const PlayerContext = createContext<PlayerContextType>({
   isPlaying: false,
   lastArtwork: require('./../../assets/default.png'),
   lyrics: [],
-  progress: { buffered: 0, duration: 0, position: 0 },
   isLoadingFavorite: false,
   currentTrackIsFavorite: false,
   setIsPlaying: () => { },
@@ -88,14 +85,12 @@ const PlayerContext = createContext<PlayerContextType>({
   setLyrics: () => { },
   setIsLoadingFavorite: () => { },
   setCurrentTrackIsFavorite: () => { },
-  setProgress: () => { },
 });
 
 export const PlayerProvider = ({ children }: any) => {
   const [track, setTrack] = React.useState<Track>(defaultTrack);
   const [isReady, setIsReady] = React.useState<boolean>(false);
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
-  const [progress, setProgress] = React.useState<progress>({ buffered: 0, duration: 0, position: 0 })
   const [lastArtwork, setLastArtwork] = React.useState<string>(
     track.artwork || require('./../../assets/default.png'),
   );
@@ -238,7 +233,6 @@ export const PlayerProvider = ({ children }: any) => {
         isPlaying,
         lastArtwork,
         lyrics,
-        progress,
         isLoadingFavorite,
         currentTrackIsFavorite,
         setIsPlaying,
@@ -246,7 +240,6 @@ export const PlayerProvider = ({ children }: any) => {
         setLyrics,
         setIsLoadingFavorite,
         setCurrentTrackIsFavorite,
-        setProgress,
       }}>
       {children}
     </PlayerContext.Provider>

@@ -3,15 +3,23 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { COLORS, SIZES } from '../../../constants';
 import { lineLyric, usePlayer, word } from '../../../contexts/PlayerContext';
 import { Animated } from 'react-native';
-import { memo } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { useEffect } from 'react';
+import { useProgress } from 'react-native-track-player';
 
 
 const HEIGHTLINE = 24;
 
 export const LyricsPage = memo(() => {
-  const { currentTrack, lyrics, progress } = usePlayer();
-  const currentTime = progress.position * 1000;
+  // const progress = useProgress(500);
+  const { currentTrack, lyrics } = usePlayer();
+  // const [currentWord, setCurrentWord] = useState(1);
+  // const currentTime = progress.position * 1000;
+  const currentTime = 10000;
+  // console.log(progress)
+  const position = useMemo(() => {
+    const time = useProgress(500);
+  }, [])
 
   const animationWord = (word: word) => {
     const widthAnimation = new Animated.Value(0);

@@ -5,16 +5,13 @@ import { useEffect, useState } from 'react';
 import { usePlayer } from '../../contexts/PlayerContext';
 
 export const SliderAndProgress = () => {
-  const { setProgress } = usePlayer();
   const progress = useProgress(250);
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [slidingSlider, setSlidingSlider] = useState<boolean>(false);
-  console.log(progress)
   useEffect(() => {
     if (!slidingSlider) {
       setSliderValue(progress.position);
     }
-    setProgress(progress)
   }, [progress]);
 
   return (
