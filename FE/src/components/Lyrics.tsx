@@ -32,10 +32,11 @@ export const Lyrics = memo(() => {
         }),
     };
 
-    console.log('change progress');
+    console.log(`change progress ${currentTime} currentLine ${currentWord.line}  currentWord ${currentWord.index}`);
 
     useEffect(() => {
         if (lyrics && lyrics.length > 0) {
+
             if (currentTime > lyrics[currentWord.line].words[currentWord.index].endTime) {
                 let check = true;
                 for (let i = currentWord.line; i < lyrics.length; i++) {
@@ -52,8 +53,24 @@ export const Lyrics = memo(() => {
                     }
                 }
             }
+            if (currentTime < lyrics[currentWord.line].words[currentWord.index].startTime) {
+                let check = true;
+                for (let i = currentWord.line; i >= 0; i--) {
+                    if (!check) {
+                        break;
+                    }
+                    const j = lyrics[i].words.length;
+                    for (let k = 0; k < j; k++) {
+                        if (lyrics[i].words[k].endTime > currentTime && lyrics[i].words[k].startTime < currentTime) {
+                            setCurrentWord({ line: i, index: k });
+                            check = false;
+                            break;
+                        }
+                    }
+                }
+            }
         }
-    }, [currentTime, currentWord.index, currentWord.line, lyrics]);
+    }, [currentTime, lyrics]);
 
     const LyricsRender = useMemo(() => {
         if (lyrics.length > 0) {
@@ -100,7 +117,7 @@ export const Lyrics = memo(() => {
                 })}
             </View>
         );
-    }, [animatedStyle, currentWord.index, currentWord.line, lyrics]);
+    }, [currentWord.line, currentWord.index, lyrics]);
 
     return (
         <ScrollView
@@ -127,11 +144,6 @@ export const Lyrics = memo(() => {
 });
 
 const styles = StyleSheet.create({
-    lyricsPage: {
-        // backgroundColor: 'cyan',
-        width: SIZES.SCREEN_WIDTH,
-        paddingVertical: 15,
-    },
     word: {
         color: COLORS.TEXT_WHITE_SECONDARY,
         fontSize: 20,
