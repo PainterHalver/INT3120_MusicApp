@@ -11,11 +11,11 @@ import { useProgress } from 'react-native-track-player';
 const HEIGHTLINE = 24;
 
 export const LyricsPage = memo(() => {
-  const progress = useProgress(500);
+  // const progress = useProgress(500);
   const { currentTrack, lyrics } = usePlayer();
   // const [currentWord, setCurrentWord] = useState(1);
-  const currentTime = progress.position * 1000;
-  // const currentTime = 10000;
+  // const currentTime = progress.position * 1000;
+  const currentTime = 10000;
   // console.log(progress)
   // const position = useMemo(() => {
   //   const time = useProgress(500);
