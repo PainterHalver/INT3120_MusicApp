@@ -1,6 +1,6 @@
 // @refresh reset
 
-import {memo, useCallback, useEffect, useMemo, useState} from 'react';
+import {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {
   FlatList,
@@ -33,6 +33,8 @@ export const Lyrics = memo(() => {
   const {lyrics} = usePlayer();
 
   const position = useSharedValue(0);
+  const [currentLineIndex, setCurrentLineIndex] = useState(0);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const setCurrentPosition = useCallback(() => {
     const p = progress.position;
@@ -51,7 +53,12 @@ export const Lyrics = memo(() => {
   useEffect(() => {
     clearTimeout(timeout);
     setCurrentPosition();
+    setCurrentLineIndex(
+      lyrics.findIndex(line => line.words[0].startTime / 1000 > progress.position) - 1,
+    );
   }, [progress]);
+
+  console.log(currentLineIndex);
 
   useEffect(() => {
     console.log('LYRICS CHANGED');
@@ -90,7 +97,7 @@ export const Lyrics = memo(() => {
           <Text
             style={{
               color: 'transparent',
-              fontSize: 23,
+              fontSize: 24,
               fontWeight: '600',
               letterSpacing: 0.5,
             }}>
@@ -105,43 +112,63 @@ export const Lyrics = memo(() => {
     return prev.word.data === next.word.data;
   });
 
-  const renderLine = useCallback(({item}: {item: LineLyric}) => {
-    return (
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'flex-start',
-          flexWrap: 'wrap',
-          marginVertical: 10,
-        }}>
-        {item.words.map((word, index) => {
-          return <MemoizedWord word={word} key={index} />;
-        })}
-      </View>
-    );
-  }, []);
-
-  const keyExtractor = useCallback(
-    (line: LineLyric, index: number) => line.words[0].data + 'line' + index,
-    [],
-  );
+  const MemoizedLine = ({line, lineIndex}: {line: LineLyric; lineIndex: number}) => {
+    return useMemo(() => {
+      console.log(line.words.map(word => word.data).join(' '));
+      return (
+        <View
+          onLayout={e => {
+            if (lineIndex === currentLineIndex) {
+              console.log(e.nativeEvent.layout);
+              scrollViewRef.current?.scrollTo({
+                y: e.nativeEvent.layout.y - 100,
+                animated: true,
+              });
+            }
+          }}
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            flexWrap: 'wrap',
+            marginVertical: 10,
+          }}>
+          {currentLineIndex === lineIndex ? (
+            line.words.map((word, index) => {
+              return <MemoizedWord word={word} key={index} />;
+            })
+          ) : (
+            <Text
+              style={{
+                color: '#DDDDDD55', // COLORS.TEXT_WHITE_SECONDARY
+                fontSize: 24,
+                fontWeight: '600',
+                letterSpacing: 0.5,
+                flexShrink: 1,
+              }}>
+              {line.words.map(word => word.data).join(' ')}
+            </Text>
+          )}
+        </View>
+      );
+    }, []);
+  };
 
   const MemoizedLyrics = useMemo(() => {
     console.log('LYRICS RENDER');
     return (
-      <ScrollView>
-        <FlashList
-          data={lyrics}
-          renderItem={renderLine}
-          keyExtractor={keyExtractor}
-          contentContainerStyle={{paddingHorizontal: 20, paddingVertical: 15}}
-          // estimatedListSize={{height: 1000, width: 380}}
-          estimatedItemSize={40}
-          scrollEnabled={false}
-        />
+      <ScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+        }}>
+        {lyrics.map((line, index) => {
+          return (
+            <MemoizedLine line={line} key={line.words[0].data + 'line' + index} lineIndex={index} />
+          );
+        })}
       </ScrollView>
     );
-  }, [lyrics]);
+  }, [lyrics, currentLineIndex]);
 
   return MemoizedLyrics;
 });
