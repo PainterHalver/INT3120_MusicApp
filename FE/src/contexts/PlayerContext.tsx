@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect } from 'react';
-import { Animated, AppState } from 'react-native';
+import React, {createContext, useContext, useEffect} from 'react';
+import {Animated, AppState} from 'react-native';
 import TrackPlayer, {
   AppKilledPlaybackBehavior,
   Capability,
@@ -10,32 +10,32 @@ import TrackPlayer, {
   useProgress,
   useTrackPlayerEvents,
 } from 'react-native-track-player';
-import { addEventListener } from 'react-native-track-player/lib/trackPlayer';
+import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
 import firestore from '@react-native-firebase/firestore';
 
-import { ZingMp3 } from '../ZingMp3';
-import { Song } from '../types';
+import {ZingMp3} from '../ZingMp3';
+import {Song} from '../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import SongBottomSheet from '../components/SongBottomSheet';
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import {BottomSheetModalMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
 
-export type word = {
+export type Word = {
   data: string;
   endTime: number;
   startTime: number;
-}
+};
 
-export type lineLyric = {
-  words: word[]
-}
+export type LineLyric = {
+  words: Word[];
+};
 
 export type progress = {
   buffered: number;
   duration: number;
   position: number;
-}
+};
 
 export type PlayerContextType = {
   currentTrack: Track;
@@ -44,12 +44,12 @@ export type PlayerContextType = {
   lastArtwork: string;
   isLoadingFavorite: boolean;
   currentTrackIsFavorite: boolean;
-  lyrics: lineLyric[];
+  lyrics: LineLyric[];
   setIsPlaying: (isPlaying: boolean) => void;
   setLastArtwork: (currentArtwork: string) => void;
   setIsLoadingFavorite: (isLoadingFavorite: boolean) => void;
   setCurrentTrackIsFavorite: (currentTrackIsFavorite: boolean) => void;
-  setLyrics: (lyrics: lineLyric[]) => void;
+  setLyrics: (lyrics: LineLyric[]) => void;
 };
 
 // TODO: Do something with this
@@ -70,8 +70,6 @@ export const defaultSong: Song = {
   thumbnail: require('./../../assets/default_song_thumbnail.png'),
 };
 
-
-
 const PlayerContext = createContext<PlayerContextType>({
   currentTrack: defaultTrack,
   isReady: false,
@@ -80,14 +78,14 @@ const PlayerContext = createContext<PlayerContextType>({
   lyrics: [],
   isLoadingFavorite: false,
   currentTrackIsFavorite: false,
-  setIsPlaying: () => { },
-  setLastArtwork: () => { },
-  setLyrics: () => { },
-  setIsLoadingFavorite: () => { },
-  setCurrentTrackIsFavorite: () => { },
+  setIsPlaying: () => {},
+  setLastArtwork: () => {},
+  setLyrics: () => {},
+  setIsLoadingFavorite: () => {},
+  setCurrentTrackIsFavorite: () => {},
 });
 
-export const PlayerProvider = ({ children }: any) => {
+export const PlayerProvider = ({children}: any) => {
   const [track, setTrack] = React.useState<Track>(defaultTrack);
   const [isReady, setIsReady] = React.useState<boolean>(false);
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
@@ -96,18 +94,18 @@ export const PlayerProvider = ({ children }: any) => {
   );
   const [isLoadingFavorite, setIsLoadingFavorite] = React.useState(false);
   const [currentTrackIsFavorite, setCurrentTrackIsFavorite] = React.useState(false);
-  const [lyrics, setLyrics] = React.useState<lineLyric[]>([]);
+  const [lyrics, setLyrics] = React.useState<LineLyric[]>([]);
 
-  const getLyricSentences = async (track: Track | undefined): Promise<lineLyric[]> => {
+  const getLyricSentences = async (track: Track | undefined): Promise<LineLyric[]> => {
     try {
       if (!track) return [];
 
       const data = await ZingMp3.getLyric(track.id);
 
       if (!data || !data.sentences || data.sentences.length === 0) return [];
-      console.log(data.sentences[0])
+      console.log(data.sentences[0]);
 
-      return data.sentences
+      return data.sentences;
     } catch (error) {
       console.log('PlayerContext/getLyricSentences:', error);
       return [];
@@ -205,7 +203,7 @@ export const PlayerProvider = ({ children }: any) => {
       //   setIsLoadingFavorite(false);
       // }
 
-      console.log('getLyrics')
+      console.log('getLyrics');
 
       // Clear lyrics
       setLyrics([]);
