@@ -26,9 +26,10 @@ import {MainPage} from './MainPage';
 
 interface Props {
   translateX: Animated.SharedValue<number>;
+  setCurrentPage: (page: number) => void;
 }
 
-const PlayerScrollView = ({translateX}: Props) => {
+const PlayerScrollView = ({translateX, setCurrentPage}: Props) => {
   // SCROLL HANDLING
   const pageCount = 3;
   const maxTranslateX = (pageCount - 1) * -SIZES.SCREEN_WIDTH;
@@ -56,6 +57,7 @@ const PlayerScrollView = ({translateX}: Props) => {
         const direction = event.velocityX > 0 ? 1 : -1;
         const nextPage = Math.round(translateX.value / SIZES.SCREEN_WIDTH) + direction;
         const targetTranslateX = Math.max(Math.min(nextPage * SIZES.SCREEN_WIDTH, 0), maxTranslateX); // clamp to bounds
+        runOnJS(setCurrentPage)(nextPage);
 
         translateX.value = withSpring(targetTranslateX, {
           overshootClamping: true,
@@ -69,6 +71,8 @@ const PlayerScrollView = ({translateX}: Props) => {
       } else {
         // Scroll không có momentum (drag)
         const clampedSnapPoint = Math.max(Math.min(snapPoint, 0), maxTranslateX); // clamp to bounds
+        const nextPage = Math.round(translateX.value / SIZES.SCREEN_WIDTH);
+        runOnJS(setCurrentPage)(nextPage);
 
         translateX.value = withSpring(clampedSnapPoint, {
           overshootClamping: true,

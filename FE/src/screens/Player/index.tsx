@@ -25,6 +25,9 @@ import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import AnimatedLottieView from 'lottie-react-native';
 import Reanimated, {
   Extrapolate,
+  FadeIn,
+  FadeOut,
+  Layout,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
@@ -52,6 +55,7 @@ const Player = ({navigation}: Props) => {
   const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
   const playingSongBottonSheetRef = React.useRef<BottomSheetModal>(null);
   const playButtonRef = useRef<AnimatedLottieView>(null);
+  const [currentPage, setCurrentPage] = useState<number>(-1); // 0 -1 -2
 
   // Paging animation
   const translateX = useSharedValue(-screenWidth);
@@ -167,8 +171,17 @@ const Player = ({navigation}: Props) => {
               <AntDesignIcon name="down" size={23} color="#fff" />
             </TouchableOpacity>
             <View style={{alignItems: 'center'}}>
-              <Text style={{color: '#ffffffaa', fontSize: 12}}>PHÁT TỪ</Text>
-              <Text style={{color: '#fff', fontSize: 13}}>...</Text>
+              {currentPage > -2 && (
+                <Reanimated.Text style={{color: '#ffffffaa', fontSize: 12}}>PHÁT TỪ</Reanimated.Text>
+              )}
+              {currentPage > -2 && (
+                <Reanimated.Text style={{color: '#fff', fontSize: 13}}>...</Reanimated.Text>
+              )}
+              {currentPage < -1 && (
+                <Reanimated.Text style={{color: '#ffffff', fontSize: 15, fontWeight: '500'}}>
+                  Lời bài hát
+                </Reanimated.Text>
+              )}
             </View>
             <TouchableNativeFeedback
               hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
@@ -231,7 +244,7 @@ const Player = ({navigation}: Props) => {
               })}
             </View>
             {/* ScrollView */}
-            <PlayerScrollView translateX={translateX} />
+            <PlayerScrollView translateX={translateX} setCurrentPage={setCurrentPage} />
           </View>
 
           {/* SLIDER */}

@@ -31,13 +31,15 @@
 - [x] Default src cho img khi không có src
 - [x] Tìm kiếm, thêm nhạc vào queue hoặc sửa queue khi đang phát
 - [x] Thêm option vào ellipsis trong player (Download nhạc, Favorite, Share), sửa menu cho nhạc tải về đang phát trong player
-- [ ] Yêu thích nhạc playlist firestore, cache bằng AsyncStorage
-- [ ] Shuffle
-- [ ] Chia sẻ link track
-- [ ] Screen tìm kiếm theo bài hát, playlist, nghệ sĩ
-- [x] Lyrics và recommend/playlist screen trong player
 - [x] Hiện nhạc và artwork đang phát và điều khiển nhạc từ notification
 - [x] Tìm kiếm nhạc, play nhạc từ server Zing
 - [x] Lịch sử tìm kiếm
 - [x] Quay đĩa khi nhạc phát, đồng bộ rotation giữa player và miniplayer
 - [x] Tải nhạc về máy, quét nhạc có sẵn trong máy, extract artwork và metadata từ file nhạc offline
+- [x] Yêu thích nhạc playlist firestore, cache bằng AsyncStorage
+- [ ] Shuffle
+- [ ] Chia sẻ link track
+- [ ] Screen tìm kiếm theo bài hát, playlist, nghệ sĩ
+- [ ] Screen user chứa nút đăng xuất và vài cài đặt
+- [ ] Title của player thay đổi theo từng page
+- [x] Lyrics Karaoke
