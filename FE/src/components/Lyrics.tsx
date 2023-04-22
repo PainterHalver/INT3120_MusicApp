@@ -2,7 +2,7 @@
 
 import MaskedView from '@react-native-masked-view/masked-view';
 import {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {Text, View} from 'react-native';
+import {Text, View, ActivityIndicator} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import Animated, {
   Easing,
@@ -203,19 +203,7 @@ export const Lyrics = memo(() => {
       contentContainerStyle={{
         paddingHorizontal: 20,
       }}>
-      {lyrics.length === 0 && (
-        <Text
-          style={{
-            color: COLORS.TEXT_WHITE_SECONDARY,
-            fontSize: 24,
-            fontWeight: '600',
-            letterSpacing: 0.5,
-            flexShrink: 1,
-            lineHeight: 33,
-          }}>
-          Không tìm thấy lời bài hát
-        </Text>
-      )}
+      {lyrics.length === 0 && <ActivityIndicator color={COLORS.RED_PRIMARY} size={'small'} />}
       {lyrics.map((line, index) => {
         return (
           <MemoizedLine

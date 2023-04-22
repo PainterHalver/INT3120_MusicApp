@@ -102,7 +102,9 @@ export const PlayerProvider = ({children}: any) => {
 
       const data = await ZingMp3.getLyric(track.id);
 
-      if (!data || !data.sentences || data.sentences.length === 0) return [];
+      if (!data || !data.sentences || data.sentences.length === 0) {
+        return [{words: [{data: 'Không tìm thấy lời bài hát', endTime: -1, startTime: -1}]}];
+      }
 
       return data.sentences;
     } catch (error) {
@@ -187,7 +189,6 @@ export const PlayerProvider = ({children}: any) => {
       setIsLoadingFavorite(true);
       try {
         const favPlaylistid = await AsyncStorage.getItem('favoritePlaylistId');
-        console.log('favPlaylistid', favPlaylistid);
         if (!favPlaylistid) return;
         const isFavorite = await firestore()
           .collection('playlists')
