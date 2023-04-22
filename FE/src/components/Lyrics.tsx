@@ -21,7 +21,15 @@ const HEIGHTLINE = 24;
 
 let timeout: any;
 
-const Word = ({word, position}: {word: WordType; position: Animated.SharedValue<number>}) => {
+const Word = ({
+  word,
+  position,
+  isLastInLine,
+}: {
+  word: WordType;
+  position: Animated.SharedValue<number>;
+  isLastInLine: boolean;
+}) => {
   const translateX = useDerivedValue(() => {
     const start = word.startTime / 1000;
     const end = word.endTime / 1000 + 0.1;
@@ -35,30 +43,36 @@ const Word = ({word, position}: {word: WordType; position: Animated.SharedValue<
     };
   });
 
-  // console.log('WORD:', word.data, word.startTime, word.endTime);
-
   return (
     <MaskedView
-      style={{backgroundColor: 'yellow', height: 30}}
+      style={{backgroundColor: 'yellow', height: 33}}
       maskElement={
         <Text
           style={{
             color: COLORS.TEXT_WHITE_SECONDARY,
             fontSize: 24,
             fontWeight: '600',
+            letterSpacing: 0.7,
           }}>
-          {word.data}{' '}
+          {word.data}
         </Text>
       }>
-      <Animated.View style={[{backgroundColor: COLORS.TEXT_WHITE_SECONDARY}, rStyle]}>
+      <Animated.View
+        style={[
+          {
+            backgroundColor: COLORS.TEXT_WHITE_SECONDARY,
+          },
+          rStyle,
+        ]}>
         <Text
           style={{
             color: 'transparent',
             fontSize: 24,
             fontWeight: '600',
-            letterSpacing: 0.5,
+            letterSpacing: 0.7,
+            marginLeft: 5.3,
           }}>
-          {word.data}{' '}
+          {word.data}
         </Text>
       </Animated.View>
     </MaskedView>
@@ -102,7 +116,34 @@ const MemoizedLine = ({
         }}>
         {currentLineIndex === lineIndex ? (
           line.words.map((word, index) => {
-            return <MemoizedWord word={word} key={index} position={position} />;
+            const test = word.data.split(' ');
+            const duration = word.endTime - word.startTime;
+            if (test.length > 1) {
+              return test.map((w, i) => {
+                return (
+                  // distribute evenly start and end time
+                  <MemoizedWord
+                    word={{
+                      data: w,
+                      startTime: word.startTime + (duration / test.length) * i,
+                      endTime: word.startTime + (duration / test.length) * (i + 1),
+                    }}
+                    key={i}
+                    position={position}
+                    isLastInLine={i === test.length - 1}
+                  />
+                );
+              });
+            }
+
+            return (
+              <MemoizedWord
+                word={word}
+                key={index}
+                position={position}
+                isLastInLine={index === line.words.length - 1}
+              />
+            );
           })
         ) : (
           <Text
@@ -112,6 +153,7 @@ const MemoizedLine = ({
               fontWeight: '600',
               letterSpacing: 0.5,
               flexShrink: 1,
+              lineHeight: 33,
             }}>
             {line.words.map(word => word.data).join(' ')}
           </Text>
@@ -150,8 +192,6 @@ export const Lyrics = memo(() => {
       lyrics.findIndex(line => line.words[0].startTime / 1000 > progress.position) - 1,
     );
   }, [progress]);
-
-  console.log(currentLineIndex);
 
   useEffect(() => {
     console.log('LYRICS CHANGED');
