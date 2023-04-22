@@ -15,6 +15,7 @@ import {COLORS, SIZES} from '../../../../constants';
 import {defaultTrack} from '../../../../contexts/PlayerContext';
 import {MemoizedTrackBottomSheet, TrackBottomSheet} from './TrackBottomSheet';
 import {MemoizedTrackItem, TrackItem} from './TrackItem';
+import {FlatList} from 'react-native-gesture-handler';
 
 export const QueuePage = () => {
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -47,6 +48,28 @@ export const QueuePage = () => {
     };
   }, []);
 
+  const keyExtractor = useCallback((item: Track, index: number) => item.id, []);
+
+  const renderItem = ({item, index}: {item: Track; index: number}) => {
+    return (
+      <TouchableNativeFeedback
+        background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
+        onPress={() => {
+          TrackPlayer.skip(index);
+        }}>
+        <View>
+          <MemoizedTrackItem
+            track={item}
+            variant="text-light"
+            playing={index === currentIndex}
+            trackBottomSheetRef={trackBottomSheetRef}
+            setSelectedTrack={setSelectedTrack}
+          />
+        </View>
+      </TouchableNativeFeedback>
+    );
+  };
+
   return (
     <View style={{width: SIZES.SCREEN_WIDTH, paddingVertical: 15, paddingHorizontal: 5}}>
       <Text
@@ -59,29 +82,14 @@ export const QueuePage = () => {
         }}>
         Danh sách phát
       </Text>
-      <ScrollView contentContainerStyle={{paddingBottom: 20}} showsVerticalScrollIndicator={false}>
-        {tracks.length === 0 && <ActivityIndicator size="large" color={COLORS.RED_PRIMARY} />}
-        {tracks.map((track, index) => {
-          return (
-            <TouchableNativeFeedback
-              key={index}
-              background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
-              onPress={() => {
-                TrackPlayer.skip(index);
-              }}>
-              <View>
-                <MemoizedTrackItem
-                  track={track}
-                  variant="text-light"
-                  playing={index === currentIndex}
-                  trackBottomSheetRef={trackBottomSheetRef}
-                  setSelectedTrack={setSelectedTrack}
-                />
-              </View>
-            </TouchableNativeFeedback>
-          );
-        })}
-      </ScrollView>
+      <FlatList
+        contentContainerStyle={{paddingBottom: 20}}
+        showsVerticalScrollIndicator={false}
+        data={tracks}
+        keyExtractor={keyExtractor}
+        ListEmptyComponent={<ActivityIndicator size="large" color={COLORS.RED_PRIMARY} />}
+        renderItem={renderItem}
+      />
       <MemoizedTrackBottomSheet
         selectedTrack={selectedTrack}
         ref={trackBottomSheetRef}
