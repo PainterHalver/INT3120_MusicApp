@@ -101,7 +101,7 @@ const MemoizedLine = ({
       <View
         onLayout={e => {
           if (lineIndex === currentLineIndex) {
-            console.log(e.nativeEvent.layout);
+            // console.log(e.nativeEvent.layout);
             scrollViewRef.current?.scrollTo({
               y: e.nativeEvent.layout.y - 100,
               animated: true,
@@ -203,6 +203,19 @@ export const Lyrics = memo(() => {
       contentContainerStyle={{
         paddingHorizontal: 20,
       }}>
+      {lyrics.length === 0 && (
+        <Text
+          style={{
+            color: COLORS.TEXT_WHITE_SECONDARY,
+            fontSize: 24,
+            fontWeight: '600',
+            letterSpacing: 0.5,
+            flexShrink: 1,
+            lineHeight: 33,
+          }}>
+          Không tìm thấy lời bài hát
+        </Text>
+      )}
       {lyrics.map((line, index) => {
         return (
           <MemoizedLine

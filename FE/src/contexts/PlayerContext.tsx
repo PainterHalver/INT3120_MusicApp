@@ -103,7 +103,6 @@ export const PlayerProvider = ({children}: any) => {
       const data = await ZingMp3.getLyric(track.id);
 
       if (!data || !data.sentences || data.sentences.length === 0) return [];
-      console.log(data.sentences[0]);
 
       return data.sentences;
     } catch (error) {
@@ -185,25 +184,23 @@ export const PlayerProvider = ({children}: any) => {
       }
 
       // Load favorite
-      // setIsLoadingFavorite(true);
-      // try {
-      //   const favPlaylistid = await AsyncStorage.getItem('favoritePlaylistId');
-      //   console.log('favPlaylistid', favPlaylistid);
-      //   if (!favPlaylistid) return;
-      //   const isFavorite = await firestore()
-      //     .collection('playlists')
-      //     .doc(favPlaylistid)
-      //     .collection('songs')
-      //     .where('encodeId', '==', track.id)
-      //     .get();
-      //   setCurrentTrackIsFavorite(!isFavorite.empty);
-      // } catch (error) {
-      //   console.log(error);
-      // } finally {
-      //   setIsLoadingFavorite(false);
-      // }
-
-      console.log('getLyrics');
+      setIsLoadingFavorite(true);
+      try {
+        const favPlaylistid = await AsyncStorage.getItem('favoritePlaylistId');
+        console.log('favPlaylistid', favPlaylistid);
+        if (!favPlaylistid) return;
+        const isFavorite = await firestore()
+          .collection('playlists')
+          .doc(favPlaylistid)
+          .collection('songs')
+          .where('encodeId', '==', track.id)
+          .get();
+        setCurrentTrackIsFavorite(!isFavorite.empty);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoadingFavorite(false);
+      }
 
       // Clear lyrics
       setLyrics([]);
