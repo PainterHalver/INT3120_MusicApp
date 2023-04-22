@@ -2,7 +2,7 @@
 
 import MaskedView from '@react-native-masked-view/masked-view';
 import {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {Text, View, ActivityIndicator} from 'react-native';
+import {Text, View, ActivityIndicator, Pressable} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import Animated, {
   Easing,
@@ -13,7 +13,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {useProgress} from 'react-native-track-player';
+import TrackPlayer, {useProgress} from 'react-native-track-player';
 import {COLORS} from '../constants';
 import {LineLyric, Word as WordType, usePlayer} from '../contexts/PlayerContext';
 
@@ -146,17 +146,22 @@ const MemoizedLine = ({
             );
           })
         ) : (
-          <Text
-            style={{
-              color: '#DDDDDD55', // COLORS.TEXT_WHITE_SECONDARY
-              fontSize: 24,
-              fontWeight: '600',
-              letterSpacing: 0.5,
-              flexShrink: 1,
-              lineHeight: 33,
+          <Pressable
+            onPress={async () => {
+              await TrackPlayer.seekTo(line.words[0].startTime / 1000 + 1);
             }}>
-            {line.words.map(word => word.data).join(' ')}
-          </Text>
+            <Text
+              style={{
+                color: '#DDDDDD55', // COLORS.TEXT_WHITE_SECONDARY
+                fontSize: 24,
+                fontWeight: '600',
+                letterSpacing: 0.5,
+                flexShrink: 1,
+                lineHeight: 33,
+              }}>
+              {line.words.map(word => word.data).join(' ')}
+            </Text>
+          </Pressable>
         )}
       </View>
     );
