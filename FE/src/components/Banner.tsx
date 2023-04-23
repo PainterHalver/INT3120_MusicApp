@@ -76,8 +76,9 @@ const Banner = memo(({ data, children }: Props): JSX.Element => {
 
   return (
     <SafeAreaView>
+
       <ImageBackground
-        source={{ uri: data[indexOffset]?.banner }}
+        source={{ uri: data[indexOffset]?.banner ? data[indexOffset].banner : 'https://photo-zmp3.zmdcdn.me/banner/a/d/a/4/ada41294a80feb2e51d65552835e7e81.jpg' }}
         style={{ backgroundColor: 'red' }}
         blurRadius={50}>
         <LinearGradient
@@ -108,8 +109,8 @@ const Banner = memo(({ data, children }: Props): JSX.Element => {
                         flexDirection: 'row',
                       }}
                       key={index}>
-                      <Animated.Image
-                        source={{ uri: item?.banner ? item.banner : '' }}
+                      {item?.banner !== '' ? <Animated.Image
+                        source={{ uri: item?.banner ? item.banner : 'cccc' }}
                         style={{
                           justifyContent: 'center',
                           alignItems: 'center',
@@ -118,7 +119,8 @@ const Banner = memo(({ data, children }: Props): JSX.Element => {
                           height: '100%',
                           borderRadius: 4,
                         }}
-                      />
+                      /> : null}
+
                     </View>
                   );
                 })}

@@ -16,14 +16,14 @@ const ItemAlbum = ({ description, image, size }: Props) => {
         width: size,
         marginHorizontal: 5,
       }}>
-      <Image
+      {image !== '' && image ? <Image
         source={{ uri: image }}
         style={{
           height: size,
           width: size,
           borderRadius: 10,
         }}
-      />
+      /> : null}
       <Text style={{ overflow: 'hidden', color: COLORS.TEXT_GRAY }}>{description}</Text>
     </View>
   );

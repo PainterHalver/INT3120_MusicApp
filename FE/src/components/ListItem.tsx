@@ -20,7 +20,7 @@ const ListItem = ({ data, name }: Props) => {
         showsHorizontalScrollIndicator={false}>
         {data && data.length > 0 ? (
           data.map((item, index) => {
-            return <ItemAlbum description={item.title} image={item.thumbnail} size={120} key={index} />;
+            return <ItemAlbum description={item.title} image={item?.thumbnail ? item.thumbnail : 'cccc'} size={120} key={index} />;
           })
         ) : (
           <View style={{ height: 120 }}>
