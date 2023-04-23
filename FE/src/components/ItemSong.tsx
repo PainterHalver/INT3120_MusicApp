@@ -8,7 +8,6 @@ type Props = {
   image: string;
   size: number;
   select?: boolean;
-  myKey?: string
 };
 const ItemSong = (props: Props) => {
   return (
@@ -18,7 +17,7 @@ const ItemSong = (props: Props) => {
         gap: 10,
         justifyContent: 'space-between',
         flex: 1,
-      }} key={props.myKey}>
+      }}>
       <View style={{ flexDirection: 'row', gap: 10, borderColor: 'black' }}>
         <View>
           <Image

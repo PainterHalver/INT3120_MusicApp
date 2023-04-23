@@ -34,16 +34,16 @@ export const NewRelease = memo(({ releases }: Props) => {
 
     }, [releases, type]);
 
-    const ColumnNewRelease = ({ items, keyId }: { items: Release[], keyId: string }) => {
+    const ColumnNewRelease = ({ items }: { items: Release[] }) => {
         return useMemo(() => {
             return (
                 <View
                     style={{ flexDirection: 'column', gap: 10, paddingTop: 10, width: screenWidth - 20 }}
-                    key={keyId}
+                    
                 >
                     {items &&
                         items.length > 0 &&
-                        items.map((item: Release) => {
+                        items.map((item: Release, index: number) => {
                             return (
                                 <ItemSong
                                     nameSong={item?.title}
@@ -51,7 +51,7 @@ export const NewRelease = memo(({ releases }: Props) => {
                                     image={item?.thumbnail}
                                     size={60}
                                     date="Hom nay"
-                                    myKey={item?.encodeId}
+                                    key={index}
                                 />
                             );
                         })}
@@ -87,7 +87,7 @@ export const NewRelease = memo(({ releases }: Props) => {
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     {data &&
                         data.map((item: Release[], index) => {
-                            return <ColumnNewRelease items={item} keyId={String(index)} />;
+                            return <ColumnNewRelease items={item} key={index} />;
                         })}
                 </View>
             </ScrollView>
