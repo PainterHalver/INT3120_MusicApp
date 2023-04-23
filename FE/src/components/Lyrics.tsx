@@ -148,7 +148,9 @@ const MemoizedLine = ({
         ) : (
           <Pressable
             onPress={async () => {
-              await TrackPlayer.seekTo(line.words[0].startTime / 1000 + 1);
+              if (line.words[0].startTime / 1000 > 0) {
+                await TrackPlayer.seekTo(line.words[0].startTime / 1000 + 1);
+              }
             }}>
             <Text
               style={{
