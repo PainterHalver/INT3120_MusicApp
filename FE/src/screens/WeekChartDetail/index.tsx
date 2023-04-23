@@ -9,11 +9,8 @@ import {
   StatusBar,
   TouchableNativeFeedback,
 } from 'react-native';
-import axios from 'axios';
 import {useState, useEffect} from 'react';
 import {ScrollView} from 'react-native-gesture-handler';
-import ItemAlbum from '../../components/ItemAlbum';
-import ItemArtist from '../../components/ItemArtist';
 import VerticalItemSong from '../../components/VerticalItemSong';
 import {StackScreenProps} from '@react-navigation/stack';
 import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
@@ -29,10 +26,8 @@ type Props = CompositeScreenProps<
   StackScreenProps<RootStackParamList>
 >;
 
-const PlaylistDetail = ({navigation}: Props) => {
+const WeekChartDetail = ({navigation, route}: Props) => {
   const {setLoading} = useLoadingModal();
-  const [playlist, setPlaylist] = useState<Playlist>();
-  const [recommends, setRecommends] = useState();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -42,24 +37,10 @@ const PlaylistDetail = ({navigation}: Props) => {
     }, []),
   );
 
-  useEffect(() => {
-    const getPlaylist = async () => {
-      const playlist = await ZingMp3.getDetailPlaylist('69IAZIWU');
-      //console.log(data.data.data.recommends);
-      setPlaylist(playlist);
-      // setRecommends((playlist as any).recommends.data[1].items);
-    };
-    getPlaylist();
-  }, []);
-
-  if (!playlist) {
-    return <View />;
-  }
-
   const playSongInPlaylist = async (track: Song, index: number) => {
     try {
       setLoading(true);
-      const tracks = songsToTracks(playlist.song.items);
+      const tracks = songsToTracks(route.params.weekChart.items);
 
       await TrackPlayer.reset();
 
@@ -79,33 +60,30 @@ const PlaylistDetail = ({navigation}: Props) => {
 
   return (
     <ImageBackground
-      source={{uri: playlist.thumbnailM}}
+      source={{uri: route.params.weekChart.banner}}
       resizeMode="cover"
-      onLoad={() => {
-        // console.log('loaded player background image');
-      }}
       style={{width: '100%', height: '100%'}}
       blurRadius={4}>
       <View style={styles.wrapper}>
         <View style={styles.playlistInfo}>
           <Image
             source={{
-              uri: playlist.thumbnail,
+              uri: route.params.weekChart.cover,
             }}
+            resizeMode="contain"
             style={{
               height: '60%',
               aspectRatio: 1,
               borderRadius: 15,
             }}
           />
-          <Text style={styles.title}>{playlist?.title}</Text>
-          <Text style={styles.normText}>{playlist?.artistsNames}</Text>
+          <Text style={styles.title}>{`Top ${route.params.weekChart.country}`}</Text>
         </View>
         <ScrollView
           style={{
             height: '50%',
           }}>
-          {playlist.song.items.map((song, index) => {
+          {route.params.weekChart.items.map((song, index) => {
             return (
               <TouchableNativeFeedback
                 key={index}
@@ -118,46 +96,6 @@ const PlaylistDetail = ({navigation}: Props) => {
               </TouchableNativeFeedback>
             );
           })}
-          {playlist && (
-            <View
-              style={{
-                marginTop: '8%',
-              }}>
-              <Text style={styles.partText}>Artists</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {playlist.artists.map((element, index) => {
-                  return (
-                    <ItemArtist
-                      key={index}
-                      description={element.name}
-                      image={element.thumbnail}
-                      size={130}
-                    />
-                  );
-                })}
-              </ScrollView>
-            </View>
-          )}
-          {/* {recommends && (
-            <View
-              style={{
-                marginTop: '8%',
-              }}>
-              <Text style={styles.partText}>Relating</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {recommends.map((element, index) => {
-                  return (
-                    <ItemAlbum
-                      key={index}
-                      description={element.title}
-                      image={element.thumbnail}
-                      size={130}
-                    />
-                  );
-                })}
-              </ScrollView>
-            </View>
-          )} */}
         </ScrollView>
       </View>
     </ImageBackground>
@@ -208,4 +146,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PlaylistDetail;
+export default WeekChartDetail;
