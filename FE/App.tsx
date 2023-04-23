@@ -36,6 +36,7 @@ import MyPlaylists from './src/screens/MyPlaylists';
 import {PlaylistProvider} from './src/contexts/PlaylistContext';
 import {SpinningDiscProvider} from './src/contexts/SpinningDiscContext';
 import WeekChartDetail from './src/screens/WeekChartDetail';
+import {ChartIcon} from './src/icons/ChartIcon';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -136,9 +137,7 @@ function App(): JSX.Element {
           component={ChartDetail}
           options={{
             title: 'Chart',
-            tabBarIcon: ({focused, color, size}) => (
-              <DownloadIcon size={size} color={color} strokeWidth={15} />
-            ),
+            tabBarIcon: ({focused, color, size}) => <ChartIcon size={size + 8} color={color} />,
           }}
         />
         <BottomTab.Screen
