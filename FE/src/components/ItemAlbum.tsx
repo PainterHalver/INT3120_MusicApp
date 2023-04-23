@@ -1,10 +1,12 @@
-import {View, Text, Image} from 'react-native';
+import { View, Text, Image } from 'react-native';
+import { COLORS } from '../constants';
+
 type Props = {
   description: string;
   image: string;
   size: number;
 };
-const ItemAlbum = ({description, image, size}: Props) => {
+const ItemAlbum = ({ description, image, size }: Props) => {
   return (
     <View
       style={{
@@ -15,14 +17,14 @@ const ItemAlbum = ({description, image, size}: Props) => {
         marginHorizontal: 5,
       }}>
       <Image
-        source={{uri: image}}
+        source={{ uri: image }}
         style={{
           height: size,
           width: size,
           borderRadius: 10,
         }}
       />
-      <Text style={{overflow: 'hidden', color: '#ddd'}}>{description}</Text>
+      <Text style={{ overflow: 'hidden', color: COLORS.TEXT_GRAY }}>{description}</Text>
     </View>
   );
 };

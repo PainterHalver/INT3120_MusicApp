@@ -13,7 +13,7 @@ import {
 import React, { memo, useState, useRef, useEffect } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 
-type banner = {
+export type banner = {
   type: number,
   link: string,
   banner: string,
@@ -77,7 +77,7 @@ const Banner = memo(({ data, children }: Props): JSX.Element => {
   return (
     <SafeAreaView>
       <ImageBackground
-        source={{ uri: data[indexOffset].banner }}
+        source={{ uri: data[indexOffset]?.banner }}
         style={{ backgroundColor: 'red' }}
         blurRadius={50}>
         <LinearGradient
