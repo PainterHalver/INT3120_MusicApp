@@ -20,6 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import SongBottomSheet from '../components/SongBottomSheet';
 import {BottomSheetModalMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
+import {useAuth} from './AuthContext';
 
 export type Word = {
   data: string;
@@ -95,6 +96,7 @@ export const PlayerProvider = ({children}: any) => {
   const [isLoadingFavorite, setIsLoadingFavorite] = React.useState(false);
   const [currentTrackIsFavorite, setCurrentTrackIsFavorite] = React.useState(false);
   const [lyrics, setLyrics] = React.useState<LineLyric[]>([]);
+  const {user} = useAuth();
 
   const getLyricSentences = async (track: Track | undefined): Promise<LineLyric[]> => {
     try {
@@ -186,21 +188,23 @@ export const PlayerProvider = ({children}: any) => {
       }
 
       // Load favorite
-      setIsLoadingFavorite(true);
-      try {
-        const favPlaylistid = await AsyncStorage.getItem('favoritePlaylistId');
-        if (!favPlaylistid) return;
-        const isFavorite = await firestore()
-          .collection('playlists')
-          .doc(favPlaylistid)
-          .collection('songs')
-          .where('encodeId', '==', track.id)
-          .get();
-        setCurrentTrackIsFavorite(!isFavorite.empty);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoadingFavorite(false);
+      if (user) {
+        setIsLoadingFavorite(true);
+        try {
+          const favPlaylistid = await AsyncStorage.getItem('favoritePlaylistId');
+          if (!favPlaylistid) return;
+          const isFavorite = await firestore()
+            .collection('playlists')
+            .doc(favPlaylistid)
+            .collection('songs')
+            .where('encodeId', '==', track.id)
+            .get();
+          setCurrentTrackIsFavorite(!isFavorite.empty);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsLoadingFavorite(false);
+        }
       }
 
       // Clear lyrics

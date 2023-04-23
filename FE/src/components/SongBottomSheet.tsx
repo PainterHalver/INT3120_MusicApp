@@ -27,6 +27,7 @@ import TrackPlayer from 'react-native-track-player';
 import {RemoveFromPlaylistIcon} from '../icons/RemoveFromPlaylistIcon';
 import {useLoadingModal} from '../contexts/LoadingModalContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useAuth} from '../contexts/AuthContext';
 
 interface Props {}
 
@@ -35,6 +36,7 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
   const {selectedSong, playlistBottomSheetRef, selectedSongIsFavorite, setSelectedSongIsFavorite} =
     useBottomSheet();
   const {currentTrack, setCurrentTrackIsFavorite} = usePlayer();
+  const {user} = useAuth();
 
   const snapPoints = React.useMemo(() => ['50%', '90%'], []);
 
@@ -230,7 +232,11 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
         <TouchableNativeFeedback
           onPress={() => {
             (ref as any).current.dismiss();
-            toggleFavoriteSelectedSong();
+            if (user) {
+              toggleFavoriteSelectedSong();
+            } else {
+              ToastAndroid.show('Bạn cần đăng nhập để sử dụng tính năng này', ToastAndroid.SHORT);
+            }
           }}>
           <View style={styles.option}>
             {selectedSongIsFavorite ? (
@@ -244,7 +250,11 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
         <TouchableNativeFeedback
           onPress={() => {
             (ref as any).current.dismiss();
-            (playlistBottomSheetRef as any).current.present();
+            if (user) {
+              (playlistBottomSheetRef as any).current.present();
+            } else {
+              ToastAndroid.show('Bạn cần đăng nhập để sử dụng tính năng này', ToastAndroid.SHORT);
+            }
           }}>
           <View style={styles.option}>
             <AddToPlaylistIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />

@@ -16,6 +16,7 @@ import {COLORS, SIZES} from '../../../constants';
 import {PhoneIcon} from '../../../icons/PhoneIcon';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {tracksToSongs} from '../../../types';
+import {useAuth} from '../../../contexts/AuthContext';
 
 export const MainPage = () => {
   const {
@@ -25,6 +26,7 @@ export const MainPage = () => {
     currentTrackIsFavorite,
     setCurrentTrackIsFavorite,
   } = usePlayer();
+  const {user} = useAuth();
 
   const toggleFavorite = async () => {
     try {
@@ -106,7 +108,11 @@ export const MainPage = () => {
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, CONTROL_RIPPLE_RADIUS)}
               onPress={() => {
                 if (currentTrack.url.toString().startsWith('http')) {
-                  toggleFavorite();
+                  if (user) {
+                    toggleFavorite();
+                  } else {
+                    ToastAndroid.show('Bạn cần đăng nhập để thích bài hát', ToastAndroid.SHORT);
+                  }
                 } else {
                   ToastAndroid.show('Nhạc Offline', ToastAndroid.SHORT);
                 }
