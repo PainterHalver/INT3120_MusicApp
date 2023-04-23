@@ -45,6 +45,18 @@ export type Playlist = {
   };
 };
 
+export type WeekChart = {
+  banner: string;
+  playlistId: string;
+  chartId: number;
+  cover: string;
+  country: string;
+  type: string;
+  link: string;
+  aliasTitle: string;
+  items: Song[];
+};
+
 export type MyPlaylist = {
   id: string;
   name: string;

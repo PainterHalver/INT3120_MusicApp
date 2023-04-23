@@ -35,6 +35,7 @@ import {AuthProvider} from './src/contexts/AuthContext';
 import MyPlaylists from './src/screens/MyPlaylists';
 import {PlaylistProvider} from './src/contexts/PlaylistContext';
 import {SpinningDiscProvider} from './src/contexts/SpinningDiscContext';
+import WeekChartDetail from './src/screens/WeekChartDetail';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -208,6 +209,13 @@ function App(): JSX.Element {
                               // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
                               ...TransitionPresets.ModalSlideFromBottomIOS,
                               // animation: 'slide_from_bottom'
+                            }}
+                          />
+                          <Stack.Screen
+                            name="WeekChartDetail"
+                            component={WeekChartDetail}
+                            options={{
+                              headerShown: false,
                             }}
                           />
                           <Stack.Screen

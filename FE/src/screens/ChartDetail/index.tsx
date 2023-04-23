@@ -61,6 +61,7 @@ const ChartDetail = ({navigation}: Props) => {
 
       Object.keys(weekChart).forEach(element => {
         weekChart[element].title = titles[i];
+        
         i++;
       });
       i = null;
@@ -164,7 +165,7 @@ const ChartDetail = ({navigation}: Props) => {
                     <TouchableOpacity
                       key={index}
                       onPress={() => {
-                        navigation.push('PlaylistDetail', {week_chart: weekCharts[element]});
+                        navigation.push('WeekChartDetail', {weekChart: weekCharts[element]});
                       }}>
                       <WeekChartItem
                         data={weekCharts[element].items.slice(0, 3)}
