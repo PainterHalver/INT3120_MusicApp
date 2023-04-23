@@ -56,6 +56,7 @@ export type BottomTabParamList = {
 export type RootStackParamList = {
   Home: NavigatorScreenParams<BottomTabParamList>;
   Player: undefined;
+  PlaylistDetail: undefined;
 };
 
 function App(): JSX.Element {
@@ -207,6 +208,13 @@ function App(): JSX.Element {
                               // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
                               ...TransitionPresets.ModalSlideFromBottomIOS,
                               // animation: 'slide_from_bottom'
+                            }}
+                          />
+                          <Stack.Screen
+                            name="PlaylistDetail"
+                            component={PlaylistDetail}
+                            options={{
+                              headerShown: false,
                             }}
                           />
                         </Stack.Navigator>

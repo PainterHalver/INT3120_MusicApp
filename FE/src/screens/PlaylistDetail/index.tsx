@@ -29,10 +29,12 @@ type Props = CompositeScreenProps<
   StackScreenProps<RootStackParamList>
 >;
 
-const PlaylistDetail = ({navigation}: Props) => {
+const PlaylistDetail = ({navigation, route}: Props) => {
   const {setLoading} = useLoadingModal();
   const [playlist, setPlaylist] = useState<Playlist>();
   const [recommends, setRecommends] = useState();
+
+  console.log(route?.params?.week_chart?.length);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -43,23 +45,27 @@ const PlaylistDetail = ({navigation}: Props) => {
   );
 
   useEffect(() => {
-    const getPlaylist = async () => {
-      const playlist = await ZingMp3.getDetailPlaylist('69IAZIWU');
-      //console.log(data.data.data.recommends);
-      setPlaylist(playlist);
-      // setRecommends((playlist as any).recommends.data[1].items);
-    };
-    getPlaylist();
-  }, []);
+    if (!route.params.week_chart) {
+      const getPlaylist = async () => {
+        const playlist = await ZingMp3.getDetailPlaylist('69IAZIWU');
+        //console.log(data.data.data.recommends);
+        setPlaylist(playlist);
+        // setRecommends((playlist as any).recommends.data[1].items);
+      };
+      getPlaylist();
+    }
+  }, [route.params.week_chart]);
 
-  if (!playlist) {
-    return <View />;
-  }
+  //if (!playlist) {
+  //return <View />;
+  //}
 
   const playSongInPlaylist = async (track: Song, index: number) => {
     try {
       setLoading(true);
-      const tracks = songsToTracks(playlist.song.items);
+      const tracks = songsToTracks(
+        route.params.week_chart ? route.params.week_chart.items : playlist.song.items,
+      );
 
       await TrackPlayer.reset();
 
@@ -79,7 +85,7 @@ const PlaylistDetail = ({navigation}: Props) => {
 
   return (
     <ImageBackground
-      source={{uri: playlist.thumbnailM}}
+      source={{uri: route.params.week_chart ? route.params.week_chart.banner : playlist.thumbnailM}}
       resizeMode="cover"
       onLoad={() => {
         // console.log('loaded player background image');
@@ -90,35 +96,53 @@ const PlaylistDetail = ({navigation}: Props) => {
         <View style={styles.playlistInfo}>
           <Image
             source={{
-              uri: playlist.thumbnail,
+              uri: route.params.week_chart ? route.params.week_chart.cover : playlist.thumbnail,
             }}
+            resizeMode="contain"
             style={{
               height: '60%',
+              width: '60%',
               aspectRatio: 1,
               borderRadius: 15,
             }}
           />
-          <Text style={styles.title}>{playlist?.title}</Text>
-          <Text style={styles.normText}>{playlist?.artistsNames}</Text>
+          <Text style={styles.title}>
+            {route.params.week_chart ? `Top ${route.params.week_chart.country}` : playlist?.title}
+          </Text>
+          {!route.params.week_chart && <Text style={styles.normText}>{playlist?.artistsNames}</Text>}
         </View>
         <ScrollView
           style={{
             height: '50%',
           }}>
-          {playlist.song.items.map((song, index) => {
-            return (
-              <TouchableNativeFeedback
-                key={index}
-                onPress={() => {
-                  playSongInPlaylist(song, index);
-                }}>
-                <View>
-                  <VerticalItemSong song={song} />
-                </View>
-              </TouchableNativeFeedback>
-            );
-          })}
-          {playlist && (
+          {!route.params.week_chart
+            ? playlist.song.items.map((song, index) => {
+                return (
+                  <TouchableNativeFeedback
+                    key={index}
+                    onPress={() => {
+                      playSongInPlaylist(song, index);
+                    }}>
+                    <View>
+                      <VerticalItemSong song={song} />
+                    </View>
+                  </TouchableNativeFeedback>
+                );
+              })
+            : route.params.week_chart.items.map((song, index) => {
+                return (
+                  <TouchableNativeFeedback
+                    key={index}
+                    onPress={() => {
+                      playSongInPlaylist(song, index);
+                    }}>
+                    <View>
+                      <VerticalItemSong song={song} pos={index} chart={true} />
+                    </View>
+                  </TouchableNativeFeedback>
+                );
+              })}
+          {!route.params.week_chart && playlist && (
             <View
               style={{
                 marginTop: '8%',
