@@ -109,7 +109,7 @@ const Banner = memo(({ data, children }: Props): JSX.Element => {
                       }}
                       key={index}>
                       <Animated.Image
-                        source={{ uri: item.banner }}
+                        source={{ uri: item?.banner ? item.banner : '' }}
                         style={{
                           justifyContent: 'center',
                           alignItems: 'center',
