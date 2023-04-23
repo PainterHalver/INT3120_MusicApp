@@ -1,13 +1,15 @@
-import {useFocusEffect} from '@react-navigation/native';
-import React from 'react';
-import {SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View} from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { memo, useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import Banner from '../../components/Banner';
 import BoxSearch from '../../components/BoxSearch';
 import ItemSong from '../../components/ItemSong';
 import ListItem from '../../components/ListItem';
 import LineChartBox from './LineChartBox';
+import { ZingMp3 } from '../../ZingMp3';
 
-const NewApp = () => {
+const NewApp = memo(() => {
+  const [banners, setBanners] = useState([])
   useFocusEffect(
     React.useCallback(() => {
       StatusBar.setBarStyle('light-content');
@@ -15,6 +17,20 @@ const NewApp = () => {
       StatusBar.setTranslucent(true);
     }, []),
   );
+
+  const getData = async () => {
+    const res = await ZingMp3.getHome();
+    const data = res.data.items;
+    const banner = data.filter(
+      (item: { sectionType: string; title: string; link?: string; items: object }) =>
+        (item.sectionType = 'banner'),
+    );
+    setBanners(banner[0]?.items ? banner[0].items : [])
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const dataRelease = [
     {
@@ -39,33 +55,19 @@ const NewApp = () => {
     },
   ];
 
-  const dataBanner = [
-    {
-      image: 'https://i.ytimg.com/vi/Sf9_daKZrnY/maxresdefault.jpg',
-    },
-    {
-      image: 'https://th.bing.com/th?id=OIF.kWsr%2bKuxY%2brRkg6tEeGWYQ&pid=ImgDet&rs=1',
-    },
-    {
-      image: 'https://th.bing.com/th/id/OIP.aif3Oh0GtBdSWyVzDYpC9AHaDt?w=321&h=175&c=7&r=0&o=5&pid=1.7',
-    },
-    {
-      image: 'https://th.bing.com/th/id/OIP.6FnRrun73kVMGhfQ6r2RdAAAAA?pid=ImgDet&rs=1',
-    },
-  ];
 
   const NewRelease = () => {
     return (
-      <View style={{flexDirection: 'column'}}>
+      <View style={{ flexDirection: 'column' }}>
         <View>
-          <Text style={{fontSize: 25, color: 'black'}}>Moi phat hanh</Text>
+          <Text style={{ fontSize: 25, color: 'black' }}>Moi phat hanh</Text>
         </View>
-        <View style={{flexDirection: 'row', gap: 10}}>
-          <Text style={[styles.chipButton, {backgroundColor: 'gray'}]}>Tat ca</Text>
+        <View style={{ flexDirection: 'row', gap: 10 }}>
+          <Text style={[styles.chipButton, { backgroundColor: 'gray' }]}>Tat ca</Text>
           <Text style={styles.chipButton}>Viet Nam</Text>
           <Text style={styles.chipButton}>Quoc Te</Text>
         </View>
-        <View style={{flexDirection: 'column', gap: 10, paddingTop: 10}}>
+        <View style={{ flexDirection: 'column', gap: 10, paddingTop: 10 }}>
           <ItemSong
             nameSong="Ten bai hat"
             artistName="Ha Anh Tuan"
@@ -102,8 +104,8 @@ const NewApp = () => {
   return (
     <SafeAreaView>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View style={{backgroundColor: 'transparent'}}>
-          <Banner data={dataBanner}>
+        <View style={{ backgroundColor: 'transparent' }}>
+          <Banner data={banners}>
             <View>
               <StatusBar
                 barStyle={'light-content'}
@@ -129,7 +131,7 @@ const NewApp = () => {
       </ScrollView>
     </SafeAreaView>
   );
-};
+});
 
 export default NewApp;
 
