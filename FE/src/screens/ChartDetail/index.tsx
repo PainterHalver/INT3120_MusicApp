@@ -13,6 +13,7 @@ import {ZingMp3} from '../../ZingMp3';
 import {Song, songsToTracks} from '../../types';
 import {useLoadingModal} from '../../contexts/LoadingModalContext';
 import TrackPlayer from 'react-native-track-player';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'ChartDetail'>,
@@ -59,7 +60,6 @@ const ChartDetail = ({navigation}: Props) => {
       const titles = ['V-POP', 'US-UK', 'KPOP'];
 
       Object.keys(weekChart).forEach(element => {
-        weekChart[element].items = weekChart[element].items.slice(0, 3);
         weekChart[element].title = titles[i];
         i++;
       });
@@ -161,12 +161,17 @@ const ChartDetail = ({navigation}: Props) => {
                     Weekly ranking
                   </Text>
                   {Object.keys(weekCharts).map((element, index) => (
-                    <WeekChartItem
+                    <TouchableOpacity
                       key={index}
-                      data={weekCharts[element].items}
-                      image={weekCharts[element].items[0].thumbnail}
-                      size={100}
-                    />
+                      onPress={() => {
+                        navigation.push('PlaylistDetail', {week_chart: weekCharts[element]});
+                      }}>
+                      <WeekChartItem
+                        data={weekCharts[element].items.slice(0, 3)}
+                        image={weekCharts[element].items[0].thumbnail}
+                        size={100}
+                      />
+                    </TouchableOpacity>
                   ))}
                 </View>
               )}
