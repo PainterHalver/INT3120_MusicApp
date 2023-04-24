@@ -9,6 +9,7 @@ import {
   Text,
   TouchableNativeFeedback,
   View,
+  Pressable,
 } from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
@@ -57,22 +58,30 @@ const MainPage: React.FC<Props> = ({navigation}) => {
               justifyContent: 'space-between',
             }}>
             <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 25, fontWeight: '600'}}>Playlists</Text>
-            <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
-              <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 16, fontWeight: '400'}}>
-                {user?.displayName || 'Chưa đăng nhập'}
-              </Text>
-              <View
-                style={{
-                  borderRadius: 50,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: 30,
-                  width: 30,
-                  backgroundColor: '#cbd6e6',
-                }}>
-                <FontAwesomeIcon name="user" size={20} color="#eff2fa" style={{fontWeight: '200'}} />
+
+            <Pressable
+              onPress={() => {
+                if (user) {
+                  navigation.navigate('Profile');
+                }
+              }}>
+              <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
+                <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 16, fontWeight: '400'}}>
+                  {user?.displayName || 'Chưa đăng nhập'}
+                </Text>
+                <View
+                  style={{
+                    borderRadius: 50,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: 30,
+                    width: 30,
+                    backgroundColor: '#cbd6e6',
+                  }}>
+                  <FontAwesomeIcon name="user" size={20} color="#eff2fa" style={{fontWeight: '200'}} />
+                </View>
               </View>
-            </View>
+            </Pressable>
           </View>
         </Shadow>
 

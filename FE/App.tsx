@@ -32,7 +32,7 @@ import Search from './src/screens/Search';
 import ChartDetail from './src/screens/ChartDetail';
 import {BottomSheetProvider} from './src/contexts/BottomSheetContext';
 import {AuthProvider} from './src/contexts/AuthContext';
-import MyPlaylists from './src/screens/MyPlaylists';
+import MyPlaylists, {MyPlaylistsStackParamList} from './src/screens/MyPlaylists';
 import {PlaylistProvider} from './src/contexts/PlaylistContext';
 import {SpinningDiscProvider} from './src/contexts/SpinningDiscContext';
 import WeekChartDetail from './src/screens/WeekChartDetail';
@@ -52,7 +52,7 @@ export type BottomTabParamList = {
   Downloaded: undefined;
   PlaylistDetail: undefined;
   ChartDetail: undefined;
-  MyPlaylists: undefined;
+  MyPlaylists: NavigatorScreenParams<MyPlaylistsStackParamList>;
 };
 
 export type RootStackParamList = {

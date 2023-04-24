@@ -10,26 +10,26 @@ import {
   StyleSheet,
   Animated,
 } from 'react-native';
-import React, { memo, useState, useRef, useEffect } from 'react';
+import React, {memo, useState, useRef, useEffect} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 
 export type banner = {
-  type: number,
-  link: string,
-  banner: string,
-  cover: string,
-  target: number,
-  title: string,
-  description: string,
-  ispr: number,
-  encodeId: string
-}
+  type: number;
+  link: string;
+  banner: string;
+  cover: string;
+  target: number;
+  title: string;
+  description: string;
+  ispr: number;
+  encodeId: string;
+};
 
 type Props = {
   data: Array<banner>;
   children: JSX.Element;
 };
-const Banner = memo(({ data, children }: Props): JSX.Element => {
+const Banner = memo(({data, children}: Props): JSX.Element => {
   const [indexOffset, setIndexOffset] = useState(0);
   const screenWidth = Dimensions.get('window').width - 20;
   const banner = useRef<ScrollView>(null);
@@ -40,7 +40,7 @@ const Banner = memo(({ data, children }: Props): JSX.Element => {
       return null;
     }
     const nativeEvent = e.nativeEvent;
-    Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], { useNativeDriver: false })(e);
+    Animated.event([{nativeEvent: {contentOffset: {x: scrollX}}}], {useNativeDriver: false})(e);
     if (nativeEvent && nativeEvent.contentOffset) {
       let imageIndex = 0;
       if (nativeEvent.contentOffset.x > 0) {
@@ -76,20 +76,23 @@ const Banner = memo(({ data, children }: Props): JSX.Element => {
 
   return (
     <SafeAreaView>
-
       <ImageBackground
-        source={{ uri: data[indexOffset]?.banner ? data[indexOffset].banner : 'https://photo-zmp3.zmdcdn.me/banner/a/d/a/4/ada41294a80feb2e51d65552835e7e81.jpg' }}
-        style={{ backgroundColor: 'red' }}
+        source={{
+          uri: data[indexOffset]?.banner
+            ? data[indexOffset].banner
+            : 'https://photo-zmp3.zmdcdn.me/banner/a/d/a/4/ada41294a80feb2e51d65552835e7e81.jpg',
+        }}
+        // style={{ backgroundColor: 'red' }}
         blurRadius={50}>
         <LinearGradient
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
+          start={{x: 0, y: 0}}
+          end={{x: 0, y: 1}}
           colors={['#FFFFFF00', '#FFFFFF']}
-          style={{ paddingHorizontal: 10 }}>
+          style={{paddingHorizontal: 10}}>
           {children}
           <View>
             <ScrollView
-              style={{ height: 200, overflow: 'hidden', position: 'relative' }}
+              style={{height: 200, overflow: 'hidden', position: 'relative'}}
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               pagingEnabled={true}
@@ -109,18 +112,19 @@ const Banner = memo(({ data, children }: Props): JSX.Element => {
                         flexDirection: 'row',
                       }}
                       key={index}>
-                      {item?.banner !== '' ? <Animated.Image
-                        source={{ uri: item?.banner ? item.banner : 'cccc' }}
-                        style={{
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          borderColor: 'black',
-                          width: '100%',
-                          height: '100%',
-                          borderRadius: 4,
-                        }}
-                      /> : null}
-
+                      {item?.banner !== '' ? (
+                        <Animated.Image
+                          source={{uri: item?.banner ? item.banner : 'cccc'}}
+                          style={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderColor: 'black',
+                            width: '100%',
+                            height: '100%',
+                            borderRadius: 4,
+                          }}
+                        />
+                      ) : null}
                     </View>
                   );
                 })}
@@ -138,7 +142,7 @@ const Banner = memo(({ data, children }: Props): JSX.Element => {
                     outputRange: [8, 16, 8],
                     extrapolate: 'clamp',
                   });
-                  return <Animated.View key={imageIndex} style={[styles.normalDot, { width }]} />;
+                  return <Animated.View key={imageIndex} style={[styles.normalDot, {width}]} />;
                 })}
             </View>
           </View>

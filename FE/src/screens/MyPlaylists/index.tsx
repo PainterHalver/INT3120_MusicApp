@@ -8,6 +8,7 @@ import MainPage from './MainPage';
 import PlaylistPage from './PlaylistPage';
 import {StatusBar} from 'react-native';
 import {MyPlaylist} from '../../types';
+import {Profile} from '../Profile';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'MyPlaylists'>,
@@ -17,6 +18,7 @@ type Props = CompositeScreenProps<
 export type MyPlaylistsStackParamList = {
   MainPage: undefined;
   PlaylistPage: {playlist: MyPlaylist};
+  Profile: undefined;
 };
 
 const MyPlaylistsStack = createNativeStackNavigator<MyPlaylistsStackParamList>();
@@ -31,13 +33,10 @@ const MyPlaylists: React.FC<Props> = ({navigation}) => {
   );
 
   return (
-    <MyPlaylistsStack.Navigator screenOptions={{headerShown: false}}>
+    <MyPlaylistsStack.Navigator screenOptions={{headerShown: false, animation: 'fade'}}>
       <MyPlaylistsStack.Screen name="MainPage" component={MainPage} />
-      <MyPlaylistsStack.Screen
-        name="PlaylistPage"
-        component={PlaylistPage}
-        options={{animation: 'fade'}}
-      />
+      <MyPlaylistsStack.Screen name="PlaylistPage" component={PlaylistPage} />
+      <MyPlaylistsStack.Screen name="Profile" component={Profile} />
     </MyPlaylistsStack.Navigator>
   );
 };
