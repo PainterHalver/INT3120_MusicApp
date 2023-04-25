@@ -22,7 +22,7 @@ const BoxSearch = () => {
       }}>
       <Pressable
         onPress={() => {
-          navigation.navigate('Profile');
+          navigation.navigate('MyPlaylists', {screen: 'Profile', initial: false});
         }}>
         <ProfileIcon size={30} />
       </Pressable>

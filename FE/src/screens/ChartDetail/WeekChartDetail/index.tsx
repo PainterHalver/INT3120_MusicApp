@@ -1,30 +1,24 @@
+import {useFocusEffect} from '@react-navigation/native';
+import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {
-  Text,
-  View,
   Image,
-  StyleSheet,
   ImageBackground,
   Platform,
   StatusBar,
+  StyleSheet,
+  Text,
   TouchableNativeFeedback,
+  View,
 } from 'react-native';
-import {useState, useEffect} from 'react';
 import {ScrollView} from 'react-native-gesture-handler';
-import VerticalItemSong from '../../components/VerticalItemSong';
-import {StackScreenProps} from '@react-navigation/stack';
-import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
-import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
-import {BottomTabParamList, RootStackParamList} from '../../../App';
-import {ZingMp3} from '../../ZingMp3';
-import {Playlist, Song, songsToTracks} from '../../types';
-import {useLoadingModal} from '../../contexts/LoadingModalContext';
-import TrackPlayer, {Track} from 'react-native-track-player';
+import TrackPlayer from 'react-native-track-player';
+import {ChartDetailParamList} from '..';
+import VerticalItemSong from '../../../components/VerticalItemSong';
+import {useLoadingModal} from '../../../contexts/LoadingModalContext';
+import {Song, songsToTracks} from '../../../types';
 
-type Props = CompositeScreenProps<
-  BottomTabScreenProps<BottomTabParamList, 'PlaylistDetail'>,
-  StackScreenProps<RootStackParamList>
->;
+type Props = StackScreenProps<ChartDetailParamList>;
 
 const WeekChartDetail = ({navigation, route}: Props) => {
   const {setLoading} = useLoadingModal();

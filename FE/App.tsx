@@ -8,35 +8,33 @@
 import {BottomTabBar, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer, NavigatorScreenParams} from '@react-navigation/native';
 import {TransitionPresets, createStackNavigator} from '@react-navigation/stack';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {Text, TouchableNativeFeedback, View} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import Test from './src/screens/Test';
-import NewApp from './src/screens/NewApp';
-import Player from './src/screens/Player';
-import PlaylistDetail from './src/screens/PlaylistDetail';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import MiniPlayer from './src/components/MiniPlayer';
 import {COLORS} from './src/constants';
+import {AuthProvider} from './src/contexts/AuthContext';
+import {BottomSheetProvider} from './src/contexts/BottomSheetContext';
 import {LoadingModalProvider} from './src/contexts/LoadingModalContext';
 import {PlayerProvider} from './src/contexts/PlayerContext';
+import {PlaylistProvider} from './src/contexts/PlaylistContext';
+import {SpinningDiscProvider} from './src/contexts/SpinningDiscContext';
+import {ChartIcon} from './src/icons/ChartIcon';
 import {DoubleCircleIcon} from './src/icons/DoubleCircleIcon';
 import {DownloadIcon} from './src/icons/DownloadIcon';
 import {SearchIcon} from './src/icons/SearchIcon';
-import Downloaded from './src/screens/Downloaded';
-import Search from './src/screens/Search';
 import ChartDetail from './src/screens/ChartDetail';
-import {BottomSheetProvider} from './src/contexts/BottomSheetContext';
-import {AuthProvider} from './src/contexts/AuthContext';
+import Downloaded from './src/screens/Downloaded';
 import MyPlaylists, {MyPlaylistsStackParamList} from './src/screens/MyPlaylists';
-import {PlaylistProvider} from './src/contexts/PlaylistContext';
-import {SpinningDiscProvider} from './src/contexts/SpinningDiscContext';
-import WeekChartDetail from './src/screens/WeekChartDetail';
-import {ChartIcon} from './src/icons/ChartIcon';
+import NewApp from './src/screens/NewApp';
+import Player from './src/screens/Player';
+import PlaylistDetail from './src/screens/PlaylistDetail';
+import Search from './src/screens/Search';
+import Test from './src/screens/Test';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -208,13 +206,6 @@ function App(): JSX.Element {
                               // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
                               ...TransitionPresets.ModalSlideFromBottomIOS,
                               // animation: 'slide_from_bottom'
-                            }}
-                          />
-                          <Stack.Screen
-                            name="WeekChartDetail"
-                            component={WeekChartDetail}
-                            options={{
-                              headerShown: false,
                             }}
                           />
                           <Stack.Screen
