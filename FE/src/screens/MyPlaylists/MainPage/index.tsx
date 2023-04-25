@@ -26,11 +26,12 @@ import {CreatePlaylistModal} from './CreatePlaylistModal';
 import {EditPlaylistMopdal as EditPlaylistModal} from './EditPlaylistModal';
 import {PlaylistBottomSheet} from './PlaylistBottomSheet';
 import {PlaylistItem} from './PlaylistItem';
+import {ProfileIcon} from '../../../components/ProfileIcon';
 
 type Props = StackScreenProps<MyPlaylistsStackParamList, 'MainPage'>;
 
 const MainPage: React.FC<Props> = ({navigation}) => {
-  const {user} = useAuth();
+  const {user, signInWithGoogle} = useAuth();
   const {loadingPlaylists, playlists} = usePlaylist();
   const [createPlaylistModalVisible, setCreatePlaylistModalVisible] = React.useState(false);
   const playlistBottomSheetRef = React.useRef<BottomSheetModal>(null);
@@ -63,23 +64,15 @@ const MainPage: React.FC<Props> = ({navigation}) => {
               onPress={() => {
                 if (user) {
                   navigation.navigate('Profile');
+                } else {
+                  signInWithGoogle();
                 }
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
                 <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 16, fontWeight: '400'}}>
                   {user?.displayName || 'Chưa đăng nhập'}
                 </Text>
-                <View
-                  style={{
-                    borderRadius: 50,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: 30,
-                    width: 30,
-                    backgroundColor: '#cbd6e6',
-                  }}>
-                  <FontAwesomeIcon name="user" size={20} color="#eff2fa" style={{fontWeight: '200'}} />
-                </View>
+                <ProfileIcon size={30} />
               </View>
             </Pressable>
           </View>

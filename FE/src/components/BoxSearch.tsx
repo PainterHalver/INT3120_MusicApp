@@ -6,13 +6,13 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {Pressable} from 'react-native';
 
 import {BottomTabParamList} from '../../App';
+import {ProfileIcon} from './ProfileIcon';
 
 const BoxSearch = () => {
   const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
 
   return (
-    <Pressable
-      onPress={() => navigation.navigate('Search', {shouldFocusSearchBar: true})}
+    <View
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -20,35 +20,33 @@ const BoxSearch = () => {
         paddingVertical: 10,
         marginTop: 40,
       }}>
-      <View
-        style={{
-          borderWidth: 1,
-          borderRadius: 50,
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: 30,
-          width: 30,
+      <Pressable
+        onPress={() => {
+          navigation.navigate('Profile');
         }}>
-        <Icon name="user" size={20} color="black" style={{fontWeight: '200'}} />
-      </View>
-      <View
-        style={{
-          paddingHorizontal: 5,
-          borderRadius: 20,
-          backgroundColor: 'white',
-          flex: 1,
-          alignItems: 'center',
-          flexDirection: 'row',
-        }}>
-        <Text style={{paddingHorizontal: 5}}>
-          <SearchIcon size={15} color={COLORS.TEXT_GRAY} />
-        </Text>
-        <TextInput
-          editable={false}
-          style={styles.inputSearch}
-          placeholder="Tìm kiếm bài hát, nghệ sĩ..."
-        />
-      </View>
+        <ProfileIcon size={30} />
+      </Pressable>
+      <Pressable
+        onPress={() => navigation.navigate('Search', {shouldFocusSearchBar: true})}
+        style={{flex: 1}}>
+        <View
+          style={{
+            paddingHorizontal: 5,
+            borderRadius: 20,
+            backgroundColor: 'white',
+            alignItems: 'center',
+            flexDirection: 'row',
+          }}>
+          <Text style={{paddingHorizontal: 5}}>
+            <SearchIcon size={15} color={COLORS.TEXT_GRAY} />
+          </Text>
+          <TextInput
+            editable={false}
+            style={styles.inputSearch}
+            placeholder="Tìm kiếm bài hát, nghệ sĩ..."
+          />
+        </View>
+      </Pressable>
       <View
         style={{
           borderRadius: 50,
@@ -59,7 +57,7 @@ const BoxSearch = () => {
         }}>
         <Icon name="bell" size={20} color="black" style={{fontWeight: '200'}} />
       </View>
-    </Pressable>
+    </View>
   );
 };
 export default BoxSearch;

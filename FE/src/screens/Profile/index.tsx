@@ -19,8 +19,7 @@ import {COLORS} from '../../constants';
 import {useNavigation} from '@react-navigation/native';
 import {LogoutIcon} from '../../icons/LogoutIcon';
 import {useLoadingModal} from '../../contexts/LoadingModalContext';
-
-const IMAGE_SIZE = 55;
+import {ProfileIcon} from '../../components/ProfileIcon';
 
 export const Profile = () => {
   const {setLoading} = useLoadingModal();
@@ -59,29 +58,7 @@ export const Profile = () => {
         </Shadow>
         <View style={{flex: 1, paddingBottom: 15, paddingTop: 30}}>
           <View style={{alignItems: 'center', gap: 15, marginBottom: 15}}>
-            {user?.photoURL ? (
-              <Image
-                source={{uri: user?.photoURL}}
-                style={{height: IMAGE_SIZE, width: IMAGE_SIZE, borderRadius: 50}}
-              />
-            ) : (
-              <View
-                style={{
-                  borderRadius: 50,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: IMAGE_SIZE,
-                  width: IMAGE_SIZE,
-                  backgroundColor: '#cbd6e6',
-                }}>
-                <FontAwesomeIcon
-                  name="user"
-                  size={IMAGE_SIZE - 15}
-                  color="#eff2fa"
-                  style={{fontWeight: '200'}}
-                />
-              </View>
-            )}
+            <ProfileIcon size={55} />
             <Text style={{fontSize: 21, fontWeight: '600', color: COLORS.TEXT_PRIMARY}}>
               {user?.displayName}
             </Text>
