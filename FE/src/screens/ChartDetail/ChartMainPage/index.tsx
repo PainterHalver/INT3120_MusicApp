@@ -1,4 +1,4 @@
-import {useFocusEffect} from '@react-navigation/native';
+import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useEffect, useState} from 'react';
 import {Platform, ScrollView, StatusBar, Text, TouchableNativeFeedback, View} from 'react-native';
@@ -11,8 +11,16 @@ import VerticalItemSong from '../../../components/VerticalItemSong';
 import {useLoadingModal} from '../../../contexts/LoadingModalContext';
 import {Song, songsToTracks} from '../../../types';
 import WeekChartItem from '../WeekChartItem';
+import {BottomTabParamList, RootStackParamList} from '../../../../App';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 
-type Props = StackScreenProps<ChartDetailParamList>;
+type Props = CompositeScreenProps<
+  CompositeScreenProps<
+    StackScreenProps<ChartDetailParamList, 'ChartMainPage'>,
+    BottomTabScreenProps<BottomTabParamList, 'ChartDetail'>
+  >,
+  StackScreenProps<RootStackParamList>
+>;
 
 const ChartMainPage = ({navigation}: Props) => {
   const {setLoading} = useLoadingModal();
@@ -31,10 +39,10 @@ const ChartMainPage = ({navigation}: Props) => {
   useEffect(() => {
     const getData = async () => {
       const data = await ZingMp3.getChartHome();
-      const items = data.data.RTChart.chart.items;
-      const times = data.data.RTChart.chart.times;
+      const items = data.RTChart.chart.items;
+      const times = data.RTChart.chart.times;
       const chart = {labels: [], datasets: []};
-      const weekChart = data.data.weekChart;
+      const weekChart = data.weekChart;
 
       let i = 0;
       Object.keys(times).forEach(element => {
@@ -68,7 +76,7 @@ const ChartMainPage = ({navigation}: Props) => {
       chart.datasets[1].color = (opacity = 5) => `rgba(80, 227, 194, ${opacity})`;
       chart.datasets[2].color = (opacity = 5) => `rgba(227, 80, 80, ${opacity})`;
       setChartData(chart);
-      setSongs(data.data.RTChart.items);
+      setSongs(data.RTChart.items);
       setWeekCharts(weekChart);
     };
     getData();

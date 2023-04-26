@@ -1,7 +1,7 @@
 // @refresh reset
 
-import { StackScreenProps } from '@react-navigation/stack';
-import React, { useEffect } from 'react';
+import {StackScreenProps} from '@react-navigation/stack';
+import React, {useEffect} from 'react';
 import {
   Platform,
   StatusBar,
@@ -13,20 +13,20 @@ import {
   TouchableOpacity,
   ToastAndroid,
 } from 'react-native';
-import { Shadow } from 'react-native-shadow-2';
+import {Shadow} from 'react-native-shadow-2';
 import OctIcon from 'react-native-vector-icons/Octicons';
-import { MyPlaylistsStackParamList } from '..';
-import { COLORS } from '../../../constants';
-import { useAuth } from '../../../contexts/AuthContext';
-import { Song, songsToTracks } from '../../../types';
+import {MyPlaylistsStackParamList} from '..';
+import {COLORS} from '../../../constants';
+import {useAuth} from '../../../contexts/AuthContext';
+import {Song, songsToTracks} from '../../../types';
 import ItemSongResult from '../../../components/ItemSongResult';
-import { useLoadingModal } from '../../../contexts/LoadingModalContext';
-import { ZingMp3 } from '../../../ZingMp3';
-import TrackPlayer, { Track } from 'react-native-track-player';
+import {useLoadingModal} from '../../../contexts/LoadingModalContext';
+import {ZingMp3} from '../../../ZingMp3';
+import TrackPlayer, {Track} from 'react-native-track-player';
 import firestore from '@react-native-firebase/firestore';
-import { CompositeScreenProps } from '@react-navigation/native';
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { BottomTabParamList, RootStackParamList } from '../../../../App';
+import {CompositeScreenProps} from '@react-navigation/native';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import {BottomTabParamList, RootStackParamList} from '../../../../App';
 
 type Props = CompositeScreenProps<
   CompositeScreenProps<
@@ -36,9 +36,9 @@ type Props = CompositeScreenProps<
   StackScreenProps<RootStackParamList>
 >;
 
-const PlaylistPage: React.FC<Props> = ({ navigation, route }) => {
-  const { playlist } = route.params;
-  const { setLoading } = useLoadingModal();
+const PlaylistPage: React.FC<Props> = ({navigation, route}) => {
+  const {playlist} = route.params;
+  const {setLoading} = useLoadingModal();
   const [loadingSongs, setLoadingSongs] = React.useState<boolean>(true);
   const [songs, setSongs] = React.useState<Song[]>([]);
 
@@ -97,7 +97,7 @@ const PlaylistPage: React.FC<Props> = ({ navigation, route }) => {
       <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
       <View style={styles.container}>
         <Shadow
-          sides={{ bottom: true, top: false, end: false, start: false }}
+          sides={{bottom: true, top: false, end: false, start: false}}
           style={styles.headerContainer}
           stretch
           distance={2.5}>
@@ -110,19 +110,19 @@ const PlaylistPage: React.FC<Props> = ({ navigation, route }) => {
               justifyContent: 'center',
               position: 'relative',
             }}>
-            <View style={{ position: 'absolute', left: 5, bottom: 5 }}>
+            <View style={{position: 'absolute', left: 5, bottom: 5}}>
               <TouchableOpacity
-                hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+                hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
                 onPress={() => {
                   navigation.goBack();
                 }}>
                 <OctIcon name="arrow-left" size={28} color={COLORS.TEXT_PRIMARY} />
               </TouchableOpacity>
             </View>
-            <Text style={{ color: COLORS.TEXT_PRIMARY, fontSize: 25, fontWeight: '600' }}>Playlist</Text>
+            <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 25, fontWeight: '600'}}>Playlist</Text>
           </View>
         </Shadow>
-        <View style={{ flex: 1, paddingVertical: 15 }}>
+        <View style={{flex: 1, paddingVertical: 15}}>
           <Text
             style={{
               fontSize: 16,
@@ -136,17 +136,16 @@ const PlaylistPage: React.FC<Props> = ({ navigation, route }) => {
           {loadingSongs ? (
             <ActivityIndicator size={'large'} color={COLORS.RED_PRIMARY} />
           ) : songs.length === 0 ? (
-            <View style={{ paddingHorizontal: 15 }}>
-              <Text style={{ color: COLORS.TEXT_PRIMARY, fontSize: 15 }}>Không có bài hát nào</Text>
+            <View style={{paddingHorizontal: 15}}>
+              <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 15}}>Không có bài hát nào</Text>
             </View>
           ) : (
             songs.map((song, index) => {
               return (
                 <TouchableNativeFeedback
                   key={song.encodeId}
-                  background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
-                  onPress={() => playSongInPlaylist(song, index)}>
-                  <View>
+                  background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}>
+                  <View style={{paddingVertical: 7}}>
                     <ItemSongResult song={song} />
                   </View>
                 </TouchableNativeFeedback>

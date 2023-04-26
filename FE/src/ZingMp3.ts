@@ -129,10 +129,18 @@ class ZingMp3Api {
       });
 
       // print http url every request, incluing query in a single line
-      // client.interceptors.request.use((req: any) => {
-      //   console.log(req.method + ' ' + req.url + ' ' + JSON.stringify(req.params));
-      //   return req;
-      // });
+      client.interceptors.request.use((req: any) => {
+        // print the whole url used by axios
+        console.log(
+          this.URL +
+            req.url +
+            '?' +
+            Object.keys(req.params)
+              .map(key => key + '=' + req.params[key])
+              .join('&'),
+        );
+        return req;
+      });
 
       client.interceptors.response.use((res: any) => res.data); // setting axios response data
 
@@ -238,7 +246,7 @@ class ZingMp3Api {
         sig: this.hashParamNoId('/api/v2/page/get/chart-home'),
       })
         .then(res => {
-          resolve(res);
+          resolve(res.data);
         })
         .catch(err => {
           rejects(err);

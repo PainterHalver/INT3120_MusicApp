@@ -1,4 +1,4 @@
-import {useFocusEffect} from '@react-navigation/native';
+import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {
@@ -17,8 +17,16 @@ import {ChartDetailParamList} from '..';
 import VerticalItemSong from '../../../components/VerticalItemSong';
 import {useLoadingModal} from '../../../contexts/LoadingModalContext';
 import {Song, songsToTracks} from '../../../types';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import {BottomTabParamList, RootStackParamList} from '../../../../App';
 
-type Props = StackScreenProps<ChartDetailParamList>;
+type Props = CompositeScreenProps<
+  CompositeScreenProps<
+    StackScreenProps<ChartDetailParamList, 'WeekChartDetail'>,
+    BottomTabScreenProps<BottomTabParamList, 'ChartDetail'>
+  >,
+  StackScreenProps<RootStackParamList>
+>;
 
 const WeekChartDetail = ({navigation, route}: Props) => {
   const {setLoading} = useLoadingModal();
