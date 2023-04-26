@@ -7,29 +7,9 @@ import ListItem from '../../components/ListItem';
 import LineChartBox from './LineChartBox';
 import { ZingMp3 } from '../../ZingMp3';
 import { banner } from '../../components/Banner';
-import { NewRelease } from './NewRelease';
+import { NewRelease, ItemReleases } from './NewRelease';
+import { Artist, Song, ItemHome } from '../../types';
 
-type ItemHome = {
-  sectionType: string,
-  viewType?: string,
-  sectionId: string,
-  title?: string,
-  items?: [],
-}
-
-type Artist = {
-  id: string,
-  name: string,
-  link: string,
-  spotlight: boolean,
-  alias: string,
-  thumbnail: string,
-  thumbnailM: string,
-  isOA: boolean,
-  isOABrand: boolean,
-  playlistId: string,
-  totalFollow: number
-}
 
 export type ArtistTrend = {
   encodeId: string,
@@ -42,20 +22,17 @@ export type ArtistTrend = {
   artistsNames: string
 }
 
-export type Release = ArtistTrend & {
-  artistsNames: string,
-  alias: string,
-  releaseDate: number,
-  isWorldWide: boolean,
-}
-
 const NewApp = memo(() => {
   const [banners, setBanners] = useState<banner[]>([])
   const [playlist, setPlaylist] = useState<ArtistTrend[]>([]);
   const [top100, setTop100] = useState<ArtistTrend[]>([])
   const [hAlbum, setHAlbum] = useState<ArtistTrend[]>([]);
   const [weekends, setWeekends] = useState<ArtistTrend[]>([])
-  const [releases, setReleases] = useState<Release[]>([])
+  const [releases, setReleases] = useState<ItemReleases>({
+    all: [],
+    vPop: [],
+    others: [],
+  });
 
   useFocusEffect(
     React.useCallback(() => {
@@ -84,12 +61,18 @@ const NewApp = memo(() => {
     setTop100(top100 && top100.length > 0 && top100[0]?.items ? top100[0].items : [])
     setHAlbum(hAlbum && hAlbum.length > 0 && hAlbum[0]?.items ? hAlbum[0].items : [])
     setWeekends(weekends && weekends.length > 0 && weekends[0]?.items ? weekends[0].items : [])
-    setReleases(newRelease?.items?.all ? newRelease.items.all : [])
+    setReleases(newRelease?.items ? newRelease.items : {
+      all: [],
+      vPop: [],
+      other: [],
+    })
   };
 
   useEffect(() => {
     getData();
   }, []);
+
+
 
 
   return (
@@ -113,7 +96,7 @@ const NewApp = memo(() => {
             }}>
             <ListItem data={playlist} name={'Nghệ sĩ thịnh hành'} />
             <ListItem data={weekends} name={'Happy Weekend'} />
-            <NewRelease releases={releases} />
+            <NewRelease items={releases} />
             <LineChartBox />
             <ListItem data={top100} name={'Top 100'} />
             <ListItem data={hAlbum} name={'Album hot >'} />

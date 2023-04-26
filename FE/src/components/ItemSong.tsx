@@ -1,5 +1,8 @@
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableNativeFeedback, Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import IonIcon from 'react-native-vector-icons/Ionicons';
+import { useBottomSheet } from '../contexts/BottomSheetContext';
+import { COLORS } from '../constants';
 
 type Props = {
   nameSong: string;
@@ -10,6 +13,7 @@ type Props = {
   select?: boolean;
 };
 const ItemSong = (props: Props) => {
+  const { setSelectedSong, songBottomSheetRef } = useBottomSheet();
   return (
     <View
       style={{
@@ -39,11 +43,18 @@ const ItemSong = (props: Props) => {
           {props.date ? <Text>{props.date}</Text> : null}
         </View>
       </View>
-      <View style={{ display: 'flex', justifyContent: 'center', paddingRight: 10 }}>
-        <Text>
-          <Icon name="ellipsis-v" size={20} color="black" style={{ fontWeight: '200' }} />
-        </Text>
-      </View>
+      <TouchableNativeFeedback
+        hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+        background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, true, 30)}
+        onPress={() => {
+          // setSelectedSong(song);
+          Keyboard.dismiss();
+          songBottomSheetRef.current?.present();
+        }}>
+        <View>
+          <IonIcon name="ios-ellipsis-vertical" size={20} color={'black'} />
+        </View>
+      </TouchableNativeFeedback>
     </View>
   );
 };

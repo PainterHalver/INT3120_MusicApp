@@ -10,10 +10,10 @@ import { useLoadingModal } from '../../contexts/LoadingModalContext';
 import { Song } from '../../types';
 import Database from './../../Database';
 
-interface Props {}
+interface Props { }
 
-const HistoryView = ({}: Props) => {
-  const {setLoading} = useLoadingModal();
+const HistoryView = ({ }: Props) => {
+  const { setLoading } = useLoadingModal();
   const [historySongs, setHistorySongs] = React.useState<Song[]>([]);
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -70,7 +70,7 @@ const HistoryView = ({}: Props) => {
                 key={song.encodeId}
                 background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
                 onPress={() => playSong(song)}>
-                <View>
+                <View style={{ paddingVertical: 7 }}>
                   <ItemSongResult song={song} />
                 </View>
               </TouchableNativeFeedback>

@@ -1,58 +1,64 @@
 import { release } from 'os';
 import { memo, useEffect, useMemo, useState } from 'react';
-import { Text, View, StyleSheet, Button, ScrollView, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, Button, ScrollView, Dimensions, TouchableNativeFeedback } from 'react-native';
 import ItemSong from '../../components/ItemSong';
-import { Release } from './index';
+import ItemSongResult from '../../components/ItemSongResult';
+import { COLORS } from '../../constants';
+import { Song, songsToTracks } from '../../types';
+import TrackPlayer from 'react-native-track-player';
 
+
+export type ItemReleases = {
+    all: Song[],
+    vPop: Song[],
+    others: Song[],
+}
 type Props = {
-    releases: Release[];
+    items: ItemReleases,
 };
-export const NewRelease = memo(({ releases }: Props) => {
-    // const [props, setProps] = useState(releases)
-    const [type, setType] = useState(1);
-    const [data, setData] = useState<Release[][]>([]);
+export const NewRelease = memo(({ items }: Props) => {
+    const [data, setData] = useState<Song[][]>([]);
+    const [type, setType] = useState<number>(1)
     const screenWidth = Dimensions.get('window').width;
 
     const buildData = () => {
-        if (releases) {
-            console.log(releases.length)
-        }
+        console.log(items.vPop.length)
+        const releases = type === 1 ? [...items.all] : type === 2 ? [...items.vPop] : [...items.others];
+
         if (releases && releases.length > 0) {
-            let filterData = releases;
-            filterData = type === 1 ? filterData : type === 2 ? filterData.filter((item => item.isWorldWide = false)) : filterData.filter(item => item.isWorldWide = true);
-            console.log(filterData.length)
             const lengthMax =
-                filterData.length % 4 === 0 ? filterData.length / 4 : Math.floor(filterData.length / 4) + 1;
-            const dataBuild = Array.from({ length: lengthMax }, () => filterData.splice(0, 4));
+                releases.length % 4 === 0 ? releases.length / 4 : Math.floor(releases.length / 4) + 1;
+            const dataBuild = Array.from({ length: lengthMax }, () => releases.splice(0, 4));
             setData(dataBuild);
         }
     };
 
     useEffect(() => {
-        console.log(type)
+        console.log('type release', type)
         buildData();
 
-    }, [releases, type]);
+    }, [items, type]);
 
-    const ColumnNewRelease = ({ items }: { items: Release[] }) => {
+    const ColumnNewRelease = ({ items }: { items: Song[] }) => {
         return useMemo(() => {
             return (
                 <View
                     style={{ flexDirection: 'column', gap: 10, paddingTop: 10, width: screenWidth - 20 }}
-                    
+
                 >
                     {items &&
                         items.length > 0 &&
-                        items.map((item: Release, index: number) => {
+                        items.map((item: Song, index: number) => {
                             return (
-                                <ItemSong
-                                    nameSong={item?.title}
-                                    artistName={item?.artistsNames}
-                                    image={item?.thumbnail}
-                                    size={60}
-                                    date="Hom nay"
-                                    key={index}
-                                />
+                                <TouchableNativeFeedback
+                                    key={item.encodeId}
+                                    background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
+                                // onPress={() => playSongInPlaylist(item, index)}
+                                >
+                                    <View>
+                                        <ItemSongResult song={item} imageSize={60} />
+                                    </View>
+                                </TouchableNativeFeedback>
                             );
                         })}
                 </View>
@@ -86,7 +92,7 @@ export const NewRelease = memo(({ releases }: Props) => {
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} pagingEnabled={true}>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     {data &&
-                        data.map((item: Release[], index) => {
+                        data.map((item: Song[], index) => {
                             return <ColumnNewRelease items={item} key={index} />;
                         })}
                 </View>

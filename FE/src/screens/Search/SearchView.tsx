@@ -1,22 +1,22 @@
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import React, {useEffect} from 'react';
-import {StyleSheet, TouchableNativeFeedback, View} from 'react-native';
-import TrackPlayer, {Track} from 'react-native-track-player';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { StyleSheet, TouchableNativeFeedback, View } from 'react-native';
+import TrackPlayer, { Track } from 'react-native-track-player';
 
-import {RootStackParamList} from '../../../App';
-import {ZingMp3} from '../../ZingMp3';
+import { RootStackParamList } from '../../../App';
+import { ZingMp3 } from '../../ZingMp3';
 import ItemSongResult from '../../components/ItemSongResult';
-import {COLORS} from '../../constants';
-import {useLoadingModal} from '../../contexts/LoadingModalContext';
-import {Song, songsToTracks} from '../../types';
+import { COLORS } from '../../constants';
+import { useLoadingModal } from '../../contexts/LoadingModalContext';
+import { Song, songsToTracks } from '../../types';
 import Database from './../../Database';
 
 interface Props {
   searchValue: string;
 }
 
-const SearchView = ({searchValue}: Props) => {
-  const {setLoading} = useLoadingModal();
+const SearchView = ({ searchValue }: Props) => {
+  const { setLoading } = useLoadingModal();
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [searchError, setSearchError] = React.useState<string | null>(null);
@@ -85,7 +85,7 @@ const SearchView = ({searchValue}: Props) => {
                   key={song.encodeId}
                   background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
                   onPress={() => playSong(song)}>
-                  <View>
+                  <View style={{ paddingVertical: 7 }}>
                     <ItemSongResult song={song} />
                   </View>
                 </TouchableNativeFeedback>

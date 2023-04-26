@@ -7,6 +7,14 @@ export type Album = {
   thumbnail: string;
 };
 
+export type ItemHome = {
+  sectionType: string;
+  viewType?: string;
+  sectionId: string;
+  title?: string;
+  items?: [];
+};
+
 export type Artist = {
   id: string;
   name: string;
@@ -26,6 +34,9 @@ export type Song = {
   thumbnailM: string;
   album?: Album;
   firebasePlaylistId?: string;
+  isWorldWide?: boolean;
+  releaseDate?: number;
+  alias?: string;
 };
 
 export type Playlist = {
