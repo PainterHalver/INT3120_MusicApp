@@ -1,7 +1,8 @@
 import ItemAlbum from './ItemAlbum';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, TouchableNativeFeedback } from 'react-native';
 import { ArtistTrend } from '../screens/NewApp/index';
 import { memo } from 'react';
+import { COLORS } from '../constants';
 
 type Props = {
   name: string;
@@ -20,7 +21,17 @@ const ListItem = ({ data, name }: Props) => {
         showsHorizontalScrollIndicator={false}>
         {data && data.length > 0 ? (
           data.map((item, index) => {
-            return <ItemAlbum description={item.title} image={item?.thumbnail ? item.thumbnail : 'cccc'} size={120} key={index} />;
+            return (
+              <TouchableNativeFeedback
+                key={index}
+                background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
+              // onPress={() => playSongInPlaylist(item, index)}
+              >
+                <View>
+                  <ItemAlbum description={item.title} image={item?.thumbnail ? item.thumbnail : 'cccc'} size={120} key={index} />
+                </View>
+              </TouchableNativeFeedback>
+            )
           })
         ) : (
           <View style={{ height: 120 }}>

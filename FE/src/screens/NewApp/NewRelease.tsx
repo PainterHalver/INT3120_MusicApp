@@ -6,7 +6,8 @@ import ItemSongResult from '../../components/ItemSongResult';
 import { COLORS } from '../../constants';
 import { Song, songsToTracks } from '../../types';
 import TrackPlayer from 'react-native-track-player';
-
+import { useLoadingModal } from '../../contexts/LoadingModalContext';
+import { useNavigation } from '@react-navigation/native';
 
 export type ItemReleases = {
     all: Song[],
@@ -17,6 +18,8 @@ type Props = {
     items: ItemReleases,
 };
 export const NewRelease = memo(({ items }: Props) => {
+    const navigation = useNavigation();
+    const { setLoading } = useLoadingModal();
     const [data, setData] = useState<Song[][]>([]);
     const [type, setType] = useState<number>(1)
     const screenWidth = Dimensions.get('window').width;
@@ -30,6 +33,28 @@ export const NewRelease = memo(({ items }: Props) => {
                 releases.length % 4 === 0 ? releases.length / 4 : Math.floor(releases.length / 4) + 1;
             const dataBuild = Array.from({ length: lengthMax }, () => releases.splice(0, 4));
             setData(dataBuild);
+        }
+    };
+
+    const playSongInPlaylist = async (track: Song, index: number) => {
+        try {
+            const releases = type === 1 ? items.all : type === 2 ? items.vPop : items.others;
+            setLoading(true);
+            const tracks = songsToTracks(releases);
+
+            await TrackPlayer.reset();
+
+            // Thêm track cần play rồi thêm các track còn lại vào trước và sau track cần play
+            await TrackPlayer.add(tracks[index]);
+            await TrackPlayer.add(tracks.slice(0, index), 0);
+            await TrackPlayer.add(tracks.slice(index + 1, tracks.length));
+
+            navigation.navigate('Player');
+            await TrackPlayer.play();
+        } catch (error) {
+            console.log('playSongInPlaylist:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -53,7 +78,7 @@ export const NewRelease = memo(({ items }: Props) => {
                                 <TouchableNativeFeedback
                                     key={item.encodeId}
                                     background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
-                                // onPress={() => playSongInPlaylist(item, index)}
+                                    onPress={() => playSongInPlaylist(item, index)}
                                 >
                                     <View>
                                         <ItemSongResult song={item} imageSize={60} />
