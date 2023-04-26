@@ -1,7 +1,6 @@
 import { release } from 'os';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { Text, View, StyleSheet, Button, ScrollView, Dimensions, TouchableNativeFeedback } from 'react-native';
-import ItemSong from '../../components/ItemSong';
 import ItemSongResult from '../../components/ItemSongResult';
 import { COLORS } from '../../constants';
 import { Song, songsToTracks } from '../../types';
@@ -136,7 +135,7 @@ const styles = StyleSheet.create({
         borderColor: '#cccccc'
     },
     chipSelected: {
-        backgroundColor: '#9b4de0',
+        backgroundColor: COLORS.PURPLE_ZING,
         color: 'white',
         borderWidth: 0,
     }

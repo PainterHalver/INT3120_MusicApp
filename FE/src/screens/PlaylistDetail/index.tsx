@@ -8,29 +8,36 @@ import {
   Platform,
   StatusBar,
   TouchableNativeFeedback,
+  SafeAreaView,
 } from 'react-native';
 import axios from 'axios';
-import {useState, useEffect} from 'react';
-import {ScrollView} from 'react-native-gesture-handler';
+import { useState, useEffect } from 'react';
+import { ScrollView } from 'react-native-gesture-handler';
 import ItemAlbum from '../../components/ItemAlbum';
 import ItemArtist from '../../components/ItemArtist';
 import VerticalItemSong from '../../components/VerticalItemSong';
-import {StackScreenProps} from '@react-navigation/stack';
-import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
-import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
-import {BottomTabParamList, RootStackParamList} from '../../../App';
-import {ZingMp3} from '../../ZingMp3';
-import {Playlist, Song, songsToTracks} from '../../types';
-import {useLoadingModal} from '../../contexts/LoadingModalContext';
-import TrackPlayer, {Track} from 'react-native-track-player';
+import { StackScreenProps } from '@react-navigation/stack';
+import { CompositeScreenProps, useFocusEffect } from '@react-navigation/native';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { BottomTabParamList, RootStackParamList } from '../../../App';
+import { ZingMp3 } from '../../ZingMp3';
+import { Playlist, Song, songsToTracks } from '../../types';
+import { useLoadingModal } from '../../contexts/LoadingModalContext';
+import TrackPlayer, { Track } from 'react-native-track-player';
+import LinearGradient from 'react-native-linear-gradient';
+import ItemSongResult from '../../components/ItemSongResult';
+import { COLORS } from '../../constants';
+import AntIcon from 'react-native-vector-icons/AntDesign';
+import { DownloadIcon } from '../../icons/DownloadIcon';
+import { HeartIcon } from '../../icons/HeartIcon';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'PlaylistDetail'>,
   StackScreenProps<RootStackParamList>
 >;
 
-const PlaylistDetail = ({navigation}: Props) => {
-  const {setLoading} = useLoadingModal();
+const PlaylistDetail = ({ navigation }: Props) => {
+  const { setLoading } = useLoadingModal();
   const [playlist, setPlaylist] = useState<Playlist>();
   const [recommends, setRecommends] = useState();
 
@@ -78,33 +85,121 @@ const PlaylistDetail = ({navigation}: Props) => {
   };
 
   return (
-    <ImageBackground
-      source={{uri: playlist.thumbnailM}}
-      resizeMode="cover"
-      onLoad={() => {
-        // console.log('loaded player background image');
-      }}
-      style={{width: '100%', height: '100%'}}
-      blurRadius={4}>
-      <View style={styles.wrapper}>
-        <View style={styles.playlistInfo}>
-          <Image
-            source={{
-              uri: playlist.thumbnail,
+    <SafeAreaView>
+      <ScrollView style={{}}>
+        <View style={styles.wrapper}>
+          <ImageBackground
+            source={{ uri: playlist.thumbnailM }}
+            resizeMode="cover"
+            onLoad={() => {
+              // console.log('loaded player background image');
             }}
-            style={{
-              height: '60%',
-              aspectRatio: 1,
-              borderRadius: 15,
-            }}
-          />
-          <Text style={styles.title}>{playlist?.title}</Text>
-          <Text style={styles.normText}>{playlist?.artistsNames}</Text>
-        </View>
-        <ScrollView
-          style={{
-            height: '50%',
-          }}>
+            style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
+            blurRadius={60}>
+            <LinearGradient
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 0.6 }}
+              colors={['#FFFFFF00', '#FFFFFF']}
+              style={{
+                paddingHorizontal: 10,
+                paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+              }}>
+              <StatusBar
+                barStyle={'light-content'}
+                translucent
+                backgroundColor={'transparent'}
+                animated={true}
+              />
+              <View>
+                <Text style={{ color: 'white', paddingVertical: 10 }}>
+                  <AntIcon size={20} name="arrowleft" color={COLORS.TEXT_WHITE_PRIMARY} />
+                </Text>
+              </View>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  width: '100%',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={{
+                    uri: playlist.thumbnail,
+                  }}
+                  style={{
+                    height: 235,
+                    width: 235,
+                    aspectRatio: 1,
+                    borderRadius: 10,
+                  }}
+                />
+                <Text style={styles.title}>{playlist?.title}</Text>
+                <Text style={styles.normText}>{playlist?.artistsNames}</Text>
+                <Text>{playlist?.song.total + ' bài hát • ' + playlist?.song.totalDuration}</Text>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    gap: 20,
+                    alignItems: 'center',
+                    marginVertical: 20,
+                  }}>
+                  <TouchableNativeFeedback
+                    onPress={() => {
+                      // downloadSong(selectedSong);
+                      // ((ref as any).current as any).close();
+                    }}>
+                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <DownloadIcon size={25} color={COLORS.TEXT_PRIMARY} />
+                      <Text style={styles.optionText}>Tải xuống</Text>
+                    </View>
+                  </TouchableNativeFeedback>
+                  <TouchableNativeFeedback
+                    style={{ borderRadius: 30 }}
+                    onPress={() => {
+                      // downloadSong(selectedSong);
+                      // ((ref as any).current as any).close();
+                    }}>
+                    <View
+                      style={{
+                        display: 'flex',
+                        borderRadius: 30,
+                        backgroundColor: COLORS.PURPLE_ZING,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: '60%',
+                        paddingVertical: 10,
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 18,
+                          color: 'white',
+                          fontWeight: 'bold',
+                        }}>
+                        Phát ngẫu nhiên
+                      </Text>
+                    </View>
+                  </TouchableNativeFeedback>
+                  <TouchableNativeFeedback
+                    onPress={() => {
+                      // downloadSong(selectedSong);
+                      // ((ref as any).current as any).close();
+                    }}>
+                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <HeartIcon size={25} color={COLORS.TEXT_PRIMARY} />
+                      <Text style={styles.optionText}>Thích</Text>
+                    </View>
+                  </TouchableNativeFeedback>
+                </View>
+                <Text style={{ color: COLORS.TEXT_PRIMARY, fontSize: 13, paddingBottom: 20 }}>
+                  {playlist?.sortDescription}
+                </Text>
+              </View>
+            </LinearGradient>
+          </ImageBackground>
+
           {playlist.song.items.map((song, index) => {
             return (
               <TouchableNativeFeedback
@@ -112,8 +207,9 @@ const PlaylistDetail = ({navigation}: Props) => {
                 onPress={() => {
                   playSongInPlaylist(song, index);
                 }}>
-                <View>
-                  <VerticalItemSong song={song} />
+                <View style={{ width: '100%', paddingVertical: 7 }}>
+                  {/* <VerticalItemSong song={song} /> */}
+                  <ItemSongResult song={song} />
                 </View>
               </TouchableNativeFeedback>
             );
@@ -158,9 +254,9 @@ const PlaylistDetail = ({navigation}: Props) => {
               </ScrollView>
             </View>
           )} */}
-        </ScrollView>
-      </View>
-    </ImageBackground>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -170,31 +266,27 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     height: '100%',
-    backgroundColor: 'rgba(0,0,0,0.45)',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-  },
-  playlistInfo: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '30%',
+    width: '100%',
+    backgroundColor: 'transparent',
+    // paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   title: {
+    paddingTop: 20,
+    paddingBottom: 10,
     textAlign: 'center',
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#ddd',
+    fontSize: 18,
+    fontWeight: '900',
+    color: COLORS.TEXT_PRIMARY,
   },
   normText: {
     textAlign: 'center',
     fontSize: 16,
     fontWeight: '400',
-    color: '#ddd',
+    color: COLORS.TEXT_GRAY,
   },
   partText: {
     fontSize: 16,
     fontWeight: '400',
-    color: '#ddd',
   },
   songContainer: {
     display: 'flex',
@@ -205,6 +297,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     paddingVertical: '2%',
     height: 80,
+  },
+  optionText: {
+    fontSize: 14.5,
+    color: COLORS.TEXT_PRIMARY,
   },
 });
 
