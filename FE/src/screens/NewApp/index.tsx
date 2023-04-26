@@ -8,7 +8,7 @@ import LineChartBox from './LineChartBox';
 import { ZingMp3 } from '../../ZingMp3';
 import { banner } from '../../components/Banner';
 import { NewRelease, ItemReleases } from './NewRelease';
-import { Artist, Song, ItemHome } from '../../types';
+import { Artist, ItemHome } from '../../types';
 
 
 export type ArtistTrend = {
