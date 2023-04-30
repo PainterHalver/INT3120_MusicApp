@@ -1,25 +1,29 @@
-import {createContext, useContext, useEffect, useState} from 'react';
-import {ToastAndroid} from 'react-native';
-import {MyPlaylist} from '../types';
-import {useAuth} from './AuthContext';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { ToastAndroid } from 'react-native';
+import { MyPlaylist, Playlist } from '../types';
+import { useAuth } from './AuthContext';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ZingMp3 } from '../ZingMp3';
 
 type PlaylistContextType = {
   loadingPlaylists: boolean;
   playlists: MyPlaylist[];
   setLoadingPlaylists: React.Dispatch<React.SetStateAction<boolean>>;
   setPlaylists: React.Dispatch<React.SetStateAction<MyPlaylist[]>>;
+  playlist: Playlist | null,
+  setPlaylist: React.Dispatch<React.SetStateAction<Playlist | null>>;
 };
 
 const PlaylistContext = createContext<PlaylistContextType>({} as PlaylistContextType);
 
 export const usePlaylist = () => useContext(PlaylistContext);
 
-export const PlaylistProvider = ({children}: {children: React.ReactNode}) => {
-  const {user} = useAuth();
+export const PlaylistProvider = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAuth();
   const [loadingPlaylists, setLoadingPlaylists] = useState<boolean>(false);
   const [playlists, setPlaylists] = useState<MyPlaylist[]>([]);
+  const [playlist, setPlaylist] = useState<Playlist | null>(null)
 
   useEffect(() => {
     if (!user) return;
@@ -84,6 +88,21 @@ export const PlaylistProvider = ({children}: {children: React.ReactNode}) => {
     })();
   }, [user]);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoadingPlaylists(true)
+        const res = await ZingMp3.getDetailPlaylist('69IAZIWU');
+        setPlaylist(res);
+        setLoadingPlaylists(false)
+      } catch (error) {
+        setLoadingPlaylists(false)
+      }
+    })();
+  }, [])
+
+
+
   return (
     <PlaylistContext.Provider
       value={{
@@ -91,6 +110,8 @@ export const PlaylistProvider = ({children}: {children: React.ReactNode}) => {
         playlists,
         setLoadingPlaylists,
         setPlaylists,
+        playlist,
+        setPlaylist
       }}>
       {children}
     </PlaylistContext.Provider>
