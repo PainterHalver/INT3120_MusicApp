@@ -132,6 +132,7 @@ const PlaylistView = ({playlist}: Props) => {
             <View
               style={{
                 marginTop: '8%',
+                alignSelf: 'flex-start',
               }}>
               <Text style={styles.partText}>Artists</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -202,6 +203,7 @@ const styles = StyleSheet.create({
   partText: {
     fontSize: 16,
     fontWeight: '400',
+    marginBottom: 4,
   },
   songContainer: {
     display: 'flex',

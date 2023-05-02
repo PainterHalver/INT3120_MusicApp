@@ -19,6 +19,7 @@ export type MyPlaylistsStackParamList = {
   MainPage: undefined;
   PlaylistPage: {playlist: MyPlaylist};
   Profile: undefined;
+  SharedPlaylist: undefined;
 };
 
 const MyPlaylistsStack = createNativeStackNavigator<MyPlaylistsStackParamList>();

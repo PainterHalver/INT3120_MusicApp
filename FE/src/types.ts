@@ -75,6 +75,13 @@ export type MyPlaylist = {
   isFavorite?: boolean;
 };
 
+export type SharedPlaylist = {
+  id: string;
+  uid: string;
+  owner: string;
+  name: string;
+};
+
 export type Lyrics = {
   file: string;
   sentences: {

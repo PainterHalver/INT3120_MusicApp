@@ -93,7 +93,7 @@ const WeekChartDetail = ({navigation, route}: Props) => {
                   playSongInPlaylist(song, index);
                 }}>
                 <View>
-                  <VerticalItemSong song={song} />
+                  <VerticalItemSong pos={index} chart={true} song={song} />
                 </View>
               </TouchableNativeFeedback>
             );
