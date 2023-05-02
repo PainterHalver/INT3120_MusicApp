@@ -36,10 +36,31 @@ import PlaylistDetail from './src/screens/NewApp/PlaylistDetail';
 import Search from './src/screens/Search';
 import Test from './src/screens/Test';
 import DiscoverScreen, {DiscoverStackParamList} from './src/screens/NewApp';
+import SharedPlaylist from './src/screens/SharedPlaylist';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
 // const Stack = createNativeStackNavigator<RootStackParamList>();
+
+const linking = {
+  prefixes: ['http://mobile3year.com', 'https://mobile3year.com', 'myapp://mobile3year.com'],
+  config: {
+    screens: {
+      PlaylistDetail: {
+        path: 'playlistdetail/:id',
+        parse: {
+          id: (id: string) => `${id}`,
+        },
+      },
+      SharedPlaylist: {
+        path: 'sharedplaylist/:id',
+        parse: {
+          id: (id: string) => `${id}`,
+        },
+      },
+    },
+  },
+};
 
 // https://reactnavigation.org/docs/typescript/#type-checking-screens
 export type BottomTabParamList = {
@@ -50,12 +71,15 @@ export type BottomTabParamList = {
   Discover: NavigatorScreenParams<DiscoverStackParamList>;
   Downloaded: undefined;
   ChartDetail: undefined;
-  MyPlaylists: NavigatorScreenParams<MyPlaylistsStackParamList>;
+  MyPlaylists: undefined;
+  WeekChartDetail: undefined;
 };
 
 export type RootStackParamList = {
   Home: NavigatorScreenParams<BottomTabParamList>;
   Player: undefined;
+  PlaylistDetail: undefined;
+  SharedPlaylist: undefined;
 };
 
 function App(): JSX.Element {
@@ -162,6 +186,7 @@ function App(): JSX.Element {
                   <BottomSheetProvider>
                     <SpinningDiscProvider>
                       <NavigationContainer
+                        linking={linking}
                         theme={{
                           dark: false,
                           colors: {
@@ -185,6 +210,13 @@ function App(): JSX.Element {
                               // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
                               ...TransitionPresets.ModalSlideFromBottomIOS,
                               // animation: 'slide_from_bottom'
+                            }}
+                          />
+                          <Stack.Screen
+                            name="SharedPlaylist"
+                            component={SharedPlaylist}
+                            options={{
+                              headerShown: false,
                             }}
                           />
                         </Stack.Navigator>

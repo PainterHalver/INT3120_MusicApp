@@ -32,7 +32,7 @@ type Props = StackScreenProps<MyPlaylistsStackParamList, 'MainPage'>;
 
 const MainPage: React.FC<Props> = ({navigation}) => {
   const {user, signInWithGoogle} = useAuth();
-  const {loadingPlaylists, playlists} = usePlaylist();
+  const {loadingPlaylists, playlists, sharedPlaylists} = usePlaylist();
   const [createPlaylistModalVisible, setCreatePlaylistModalVisible] = React.useState(false);
   const playlistBottomSheetRef = React.useRef<BottomSheetModal>(null);
   const [selectedPlaylist, setSelectedPlaylist] = React.useState<MyPlaylist>({
@@ -114,25 +114,49 @@ const MainPage: React.FC<Props> = ({navigation}) => {
               {loadingPlaylists ? (
                 <ActivityIndicator size="large" color={COLORS.RED_PRIMARY} />
               ) : (
-                playlists.map((playlist, index) => {
-                  return (
-                    <TouchableNativeFeedback
-                      key={index}
-                      background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
-                      onPress={() => {
-                        navigation.navigate('PlaylistPage', {playlist});
-                      }}>
-                      <View>
-                        <PlaylistItem
-                          playlist={playlist}
-                          setSelectedPlaylist={setSelectedPlaylist}
-                          playlistBottomSheetRef={playlistBottomSheetRef}
-                          isFavorite={index === 0}
-                        />
-                      </View>
-                    </TouchableNativeFeedback>
-                  );
-                })
+                <View>
+                  {playlists.map((playlist, index) => {
+                    return (
+                      <TouchableNativeFeedback
+                        key={index}
+                        background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
+                        onPress={() => {
+                          navigation.navigate('PlaylistPage', {playlist});
+                        }}>
+                        <View>
+                          <PlaylistItem
+                            playlist={playlist}
+                            setSelectedPlaylist={setSelectedPlaylist}
+                            playlistBottomSheetRef={playlistBottomSheetRef}
+                            isFavorite={index === 0}
+                          />
+                        </View>
+                      </TouchableNativeFeedback>
+                    );
+                  })}
+                  <Text style={{fontSize: 18, color: 'black', marginTop: 8, marginHorizontal: 16}}>
+                    Playlist Được Chia Sẻ
+                  </Text>
+                  {sharedPlaylists.map((playlist, index) => {
+                    return (
+                      <TouchableNativeFeedback
+                        key={index}
+                        background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
+                        onPress={() => {
+                          navigation.navigate('PlaylistPage', {playlist});
+                        }}>
+                        <View>
+                          <PlaylistItem
+                            playlist={playlist}
+                            setSelectedPlaylist={setSelectedPlaylist}
+                            playlistBottomSheetRef={playlistBottomSheetRef}
+                            isFavorite={index === 0}
+                          />
+                        </View>
+                      </TouchableNativeFeedback>
+                    );
+                  })}
+                </View>
               )}
             </ScrollView>
           </View>

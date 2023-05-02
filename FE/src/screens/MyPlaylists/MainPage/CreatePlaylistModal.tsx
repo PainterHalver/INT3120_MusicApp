@@ -55,6 +55,8 @@ export const CreatePlaylistModal = ({visible, onDismiss}: Props) => {
       const playlist = await firestore().collection('playlists').add({
         name: playlistName,
         uid: user.uid,
+        owner: user.displayName,
+        sharedTo: [],
       });
       setPlaylists((prev: MyPlaylist[]) => [
         ...prev,
