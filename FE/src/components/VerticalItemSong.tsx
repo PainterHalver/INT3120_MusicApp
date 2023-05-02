@@ -1,11 +1,11 @@
-import React, {useEffect, useMemo} from 'react';
-import {Image, Text, TouchableNativeFeedback, View} from 'react-native';
-import Svg, {Text as Stroke} from 'react-native-svg';
+import React, { useEffect, useMemo } from 'react';
+import { Image, Text, TouchableNativeFeedback, View } from 'react-native';
+import Svg, { Text as Stroke } from 'react-native-svg';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
-import {usePlayer} from '../contexts/PlayerContext';
-import {Song} from '../types';
-import {useBottomSheet} from '../contexts/BottomSheetContext';
-import {COLORS} from '../constants';
+import { usePlayer } from '../contexts/PlayerContext';
+import { Song } from '../types';
+import { useBottomSheet } from '../contexts/BottomSheetContext';
+import { COLORS } from '../constants';
 
 type Props = {
   song: Song;
@@ -15,8 +15,8 @@ type Props = {
 
 // Vì component này dùng context nên mỗi khi context thay đổi thì nó sẽ render lại
 // Dùng useMemo để không render lại nữa
-const VerticalItemSong = ({song, chart, pos}: Props) => {
-  const {setSelectedSong, songBottomSheetRef} = useBottomSheet();
+const VerticalItemSong = ({ song, chart, pos }: Props) => {
+  const { setSelectedSong, songBottomSheetRef } = useBottomSheet();
 
   useEffect(() => {
     // console.log('VerticalItemSong RERENDERED');
@@ -43,10 +43,10 @@ const VerticalItemSong = ({song, chart, pos}: Props) => {
                 pos == 0
                   ? 'rgba(74, 144, 226, 1)'
                   : pos == 1
-                  ? 'rgba(80, 227, 194, 1)'
-                  : pos == 2
-                  ? 'rgba(227, 80, 80, 1)'
-                  : 'white'
+                    ? 'rgba(80, 227, 194, 1)'
+                    : pos == 2
+                      ? 'rgba(227, 80, 80, 1)'
+                      : 'white'
               }
               fontSize="20"
               fontWeight="bold"
@@ -63,19 +63,19 @@ const VerticalItemSong = ({song, chart, pos}: Props) => {
           }}
           style={styles.songThumbnail}
         />
-        <View style={{width: '60%'}}>
-          <Text style={{fontSize: 14, fontWeight: '400', color: '#ddd'}}>{song.title}</Text>
-          <Text style={{fontSize: 12, fontWeight: '300', color: '#ddd'}}>{song.artistsNames}</Text>
+        <View style={{ width: '60%' }}>
+          <Text style={{ fontSize: 14, fontWeight: '400', color: 'black' }}>{song.title}</Text>
+          <Text style={{ fontSize: 12, fontWeight: '300', color: 'black' }}>{song.artistsNames}</Text>
         </View>
         <TouchableNativeFeedback
-          hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+          hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
           background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE, true, 30)}
           onPress={() => {
             setSelectedSong(song);
             songBottomSheetRef.current?.present();
           }}>
           <View>
-            <EntypoIcon name="dots-three-vertical" size={20} color="#ddd" />
+            <EntypoIcon name="dots-three-vertical" size={20} color="black" />
           </View>
         </TouchableNativeFeedback>
       </View>

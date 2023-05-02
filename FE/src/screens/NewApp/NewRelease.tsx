@@ -1,14 +1,8 @@
-import { release } from 'os';
 import { memo, useEffect, useMemo, useState } from 'react';
-import { Text, View, StyleSheet, Button, ScrollView, Dimensions, TouchableNativeFeedback } from 'react-native';
-import ItemSong from '../../components/ItemSong';
-import ItemSongResult from '../../components/ItemSongResult';
+import { Text, View, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { COLORS } from '../../constants';
-import { Song, songsToTracks } from '../../types';
-import TrackPlayer from 'react-native-track-player';
-import { useLoadingModal } from '../../contexts/LoadingModalContext';
-import { useNavigation } from '@react-navigation/native';
-
+import { Song } from '../../types';
+import ListSong from '../../components/ListSong';
 export type ItemReleases = {
     all: Song[],
     vPop: Song[],
@@ -18,8 +12,6 @@ type Props = {
     items: ItemReleases,
 };
 export const NewRelease = memo(({ items }: Props) => {
-    const navigation = useNavigation();
-    const { setLoading } = useLoadingModal();
     const [data, setData] = useState<Song[][]>([]);
     const [type, setType] = useState<number>(1)
     const screenWidth = Dimensions.get('window').width;
@@ -36,27 +28,6 @@ export const NewRelease = memo(({ items }: Props) => {
         }
     };
 
-    const playSongInPlaylist = async (track: Song, index: number) => {
-        try {
-            const releases = type === 1 ? items.all : type === 2 ? items.vPop : items.others;
-            setLoading(true);
-            const tracks = songsToTracks(releases);
-
-            await TrackPlayer.reset();
-
-            // Thêm track cần play rồi thêm các track còn lại vào trước và sau track cần play
-            await TrackPlayer.add(tracks[index]);
-            await TrackPlayer.add(tracks.slice(0, index), 0);
-            await TrackPlayer.add(tracks.slice(index + 1, tracks.length));
-
-            navigation.navigate('Player');
-            await TrackPlayer.play();
-        } catch (error) {
-            console.log('playSongInPlaylist:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     useEffect(() => {
         console.log('type release', type)
@@ -73,19 +44,8 @@ export const NewRelease = memo(({ items }: Props) => {
                 >
                     {items &&
                         items.length > 0 &&
-                        items.map((item: Song, index: number) => {
-                            return (
-                                <TouchableNativeFeedback
-                                    key={item.encodeId}
-                                    background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
-                                    onPress={() => playSongInPlaylist(item, index)}
-                                >
-                                    <View>
-                                        <ItemSongResult song={item} imageSize={60} />
-                                    </View>
-                                </TouchableNativeFeedback>
-                            );
-                        })}
+                        <ListSong songs={items} />
+                    }
                 </View>
             );
         }, [data, type])
@@ -136,7 +96,7 @@ const styles = StyleSheet.create({
         borderColor: '#cccccc'
     },
     chipSelected: {
-        backgroundColor: '#9b4de0',
+        backgroundColor: COLORS.PURPLE_ZING,
         color: 'white',
         borderWidth: 0,
     }

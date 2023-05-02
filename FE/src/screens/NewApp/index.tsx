@@ -8,26 +8,15 @@ import LineChartBox from './LineChartBox';
 import { ZingMp3 } from '../../ZingMp3';
 import { banner } from '../../components/Banner';
 import { NewRelease, ItemReleases } from './NewRelease';
-import { Artist, ItemHome } from '../../types';
+import { Artist, ItemHome, Playlist } from '../../types';
 
-
-export type ArtistTrend = {
-  encodeId: string,
-  thumbnail: string,
-  thumbnailM?: string,
-  link: string,
-  title: string,
-  sortDescription: string,
-  artists: Artist[],
-  artistsNames: string
-}
 
 const NewApp = memo(() => {
   const [banners, setBanners] = useState<banner[]>([])
-  const [playlist, setPlaylist] = useState<ArtistTrend[]>([]);
-  const [top100, setTop100] = useState<ArtistTrend[]>([])
-  const [hAlbum, setHAlbum] = useState<ArtistTrend[]>([]);
-  const [weekends, setWeekends] = useState<ArtistTrend[]>([])
+  const [playlist, setPlaylist] = useState<Playlist[]>([]);
+  const [top100, setTop100] = useState<Playlist[]>([])
+  const [hAlbum, setHAlbum] = useState<Playlist[]>([]);
+  const [weekends, setWeekends] = useState<Playlist[]>([])
   const [releases, setReleases] = useState<ItemReleases>({
     all: [],
     vPop: [],
