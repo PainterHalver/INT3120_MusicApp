@@ -19,13 +19,8 @@ const BoxSearch = () => {
         gap: 10,
         paddingVertical: 10,
         marginTop: 40,
+        marginBottom: 5,
       }}>
-      <Pressable
-        onPress={() => {
-          navigation.navigate('MyPlaylists', {screen: 'Profile', initial: false});
-        }}>
-        <ProfileIcon size={30} />
-      </Pressable>
       <Pressable
         onPress={() => navigation.navigate('Search', {shouldFocusSearchBar: true})}
         style={{flex: 1}}>
@@ -47,7 +42,13 @@ const BoxSearch = () => {
           />
         </View>
       </Pressable>
-      <View
+      <Pressable
+        onPress={() => {
+          navigation.navigate('MyPlaylists', {screen: 'Profile', initial: false});
+        }}>
+        <ProfileIcon size={30} />
+      </Pressable>
+      {/* <View
         style={{
           borderRadius: 50,
           justifyContent: 'center',
@@ -56,7 +57,7 @@ const BoxSearch = () => {
           width: 30,
         }}>
         <Icon name="bell" size={20} color="black" style={{fontWeight: '200'}} />
-      </View>
+      </View> */}
     </View>
   );
 };

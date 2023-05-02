@@ -8,7 +8,7 @@ import TrackPlayer from 'react-native-track-player';
 import App from './App';
 import { name as appName } from './app.json';
 import ChartMainPage from './src/screens/ChartDetail/ChartMainPage';
-import NewApp from './src/screens/NewApp';
+import DiscoverPage from './src/screens/NewApp/DiscoverPage';
 
 AppRegistry.registerComponent(appName, () => App);
 

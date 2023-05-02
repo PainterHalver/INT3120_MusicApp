@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet } from 'react-native';
-import TopBox from '../../components/TopBox';
-import ItemSong from '../../components/ItemSong';
-import Chart from '../../components/Chart';
+import {View, Text, StyleSheet} from 'react-native';
+import TopBox from '../../../components/TopBox';
+import ItemSong from '../../../components/ItemSong';
+import Chart from '../../../components/Chart';
 const data = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June'],
   datasets: [
@@ -39,7 +39,7 @@ const LineChartBox = () => {
         TopMusic
       </Text>
       <Chart data={data} />
-      <View style={{ paddingLeft: 20, paddingTop: 10 }}>
+      <View style={{paddingLeft: 20, paddingTop: 10}}>
         <TopBox number={1} color="blue">
           <ItemSong
             nameSong="Ten bai hat"
@@ -83,5 +83,6 @@ const styles = StyleSheet.create({
     position: 'relative',
     zIndex: 1,
     marginTop: 20,
+    marginHorizontal: 10,
   },
 });

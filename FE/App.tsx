@@ -30,11 +30,12 @@ import {SearchIcon} from './src/icons/SearchIcon';
 import ChartDetail from './src/screens/ChartDetail';
 import Downloaded from './src/screens/Downloaded';
 import MyPlaylists, {MyPlaylistsStackParamList} from './src/screens/MyPlaylists';
-import NewApp from './src/screens/NewApp';
+import DiscoverPage from './src/screens/NewApp/DiscoverPage';
 import Player from './src/screens/Player';
-import PlaylistDetail from './src/screens/PlaylistDetail';
+import PlaylistDetail from './src/screens/NewApp/PlaylistDetail';
 import Search from './src/screens/Search';
 import Test from './src/screens/Test';
+import DiscoverScreen, {DiscoverStackParamList} from './src/screens/NewApp';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -46,9 +47,8 @@ export type BottomTabParamList = {
   Search: {
     shouldFocusSearchBar?: boolean;
   };
-  Welcome: undefined;
+  Discover: NavigatorScreenParams<DiscoverStackParamList>;
   Downloaded: undefined;
-  PlaylistDetail: undefined;
   ChartDetail: undefined;
   MyPlaylists: NavigatorScreenParams<MyPlaylistsStackParamList>;
 };
@@ -56,7 +56,6 @@ export type BottomTabParamList = {
 export type RootStackParamList = {
   Home: NavigatorScreenParams<BottomTabParamList>;
   Player: undefined;
-  PlaylistDetail: undefined;
 };
 
 function App(): JSX.Element {
@@ -105,8 +104,8 @@ function App(): JSX.Element {
           ),
         }}>
         <BottomTab.Screen
-          name="Welcome"
-          component={NewApp}
+          name="Discover"
+          component={DiscoverScreen}
           options={{
             title: 'Khám phá',
             tabBarIcon: ({focused, color, size}) => <DoubleCircleIcon size={size - 5} color={color} />,
@@ -118,16 +117,6 @@ function App(): JSX.Element {
           options={{
             title: 'Tìm kiếm',
             tabBarIcon: ({focused, color, size}) => <SearchIcon size={size - 5} color={color} />,
-          }}
-        />
-        <BottomTab.Screen
-          name="PlaylistDetail"
-          component={PlaylistDetail}
-          options={{
-            title: 'Playlist',
-            tabBarIcon: ({focused, color, size}) => (
-              <DownloadIcon size={size} color={color} strokeWidth={15} />
-            ),
           }}
         />
         <BottomTab.Screen
@@ -154,17 +143,7 @@ function App(): JSX.Element {
           options={{
             title: 'Playlists',
             tabBarIcon: ({focused, color, size}) => (
-              <FontAwesomeIcon name="sun-o" size={size} color={color} />
-            ),
-          }}
-        />
-        <BottomTab.Screen
-          name="Test"
-          component={Test}
-          options={{
-            title: 'Hello',
-            tabBarIcon: ({focused, color, size}) => (
-              <FontAwesomeIcon name="sun-o" size={size} color={color} />
+              <FontAwesomeIcon name="user" size={size - 4} color={color} />
             ),
           }}
         />
@@ -206,13 +185,6 @@ function App(): JSX.Element {
                               // ...TransitionPresets.ModalPresentationIOS, // TransitionPresets.ModalSlideFromBottomIOS
                               ...TransitionPresets.ModalSlideFromBottomIOS,
                               // animation: 'slide_from_bottom'
-                            }}
-                          />
-                          <Stack.Screen
-                            name="PlaylistDetail"
-                            component={PlaylistDetail}
-                            options={{
-                              headerShown: false,
                             }}
                           />
                         </Stack.Navigator>
