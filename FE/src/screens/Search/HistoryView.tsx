@@ -1,19 +1,20 @@
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import React, { useEffect } from 'react';
-import { StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native';
-import TrackPlayer, { Track } from 'react-native-track-player';
-import { RootStackParamList } from '../../../App';
-import { ZingMp3 } from '../../ZingMp3';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import React, {useEffect} from 'react';
+import {StyleSheet, Text, TouchableNativeFeedback, View, ScrollView} from 'react-native';
+import TrackPlayer, {Track} from 'react-native-track-player';
+import {RootStackParamList} from '../../../App';
+import {ZingMp3} from '../../ZingMp3';
 import ItemSongResult from '../../components/ItemSongResult';
-import { COLORS } from '../../constants';
-import { useLoadingModal } from '../../contexts/LoadingModalContext';
-import { Song } from '../../types';
+import {COLORS} from '../../constants';
+import {useLoadingModal} from '../../contexts/LoadingModalContext';
+import {Song} from '../../types';
 import Database from './../../Database';
+import SearchView from './SearchView';
 
-interface Props { }
+interface Props {}
 
-const HistoryView = ({ }: Props) => {
-  const { setLoading } = useLoadingModal();
+const HistoryView = ({}: Props) => {
+  const {setLoading} = useLoadingModal();
   const [historySongs, setHistorySongs] = React.useState<Song[]>([]);
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -63,19 +64,21 @@ const HistoryView = ({ }: Props) => {
           }}>
           Tìm kiếm gần đây
         </Text>
-        {historySongs.length > 0 &&
-          historySongs.map((song, index) => {
-            return (
-              <TouchableNativeFeedback
-                key={song.encodeId}
-                background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
-                onPress={() => playSong(song)}>
-                <View style={{ paddingVertical: 7 }}>
-                  <ItemSongResult song={song} />
-                </View>
-              </TouchableNativeFeedback>
-            );
-          })}
+        <ScrollView contentContainerStyle={{paddingBottom: 15}}>
+          {historySongs.length > 0 &&
+            historySongs.map((song, index) => {
+              return (
+                <TouchableNativeFeedback
+                  key={song.encodeId}
+                  background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
+                  onPress={() => playSong(song)}>
+                  <View style={{paddingVertical: 7}}>
+                    <ItemSongResult song={song} />
+                  </View>
+                </TouchableNativeFeedback>
+              );
+            })}
+        </ScrollView>
       </View>
     </View>
   );

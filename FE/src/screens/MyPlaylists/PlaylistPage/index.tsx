@@ -144,7 +144,10 @@ const PlaylistPage: React.FC<Props> = ({navigation, route}) => {
               return (
                 <TouchableNativeFeedback
                   key={song.encodeId}
-                  background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}>
+                  background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
+                  onPress={() => {
+                    playSongInPlaylist(song, index);
+                  }}>
                   <View style={{paddingVertical: 7}}>
                     <ItemSongResult song={song} />
                   </View>

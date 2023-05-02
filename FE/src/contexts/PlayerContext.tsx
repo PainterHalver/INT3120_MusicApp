@@ -5,8 +5,10 @@ import TrackPlayer, {
   Capability,
   Event,
   Progress,
+  RepeatMode,
   State,
   Track,
+  usePlaybackState,
   useProgress,
   useTrackPlayerEvents,
 } from 'react-native-track-player';
@@ -98,6 +100,12 @@ export const PlayerProvider = ({children}: any) => {
   const [lyrics, setLyrics] = React.useState<LineLyric[]>([]);
   const {user} = useAuth();
 
+  const state = usePlaybackState();
+
+  useEffect(() => {
+    console.log('STATE:', state);
+  }, [state]);
+
   const getLyricSentences = async (track: Track | undefined): Promise<LineLyric[]> => {
     try {
       if (!track) return [];
@@ -167,6 +175,8 @@ export const PlayerProvider = ({children}: any) => {
   useEffect(() => {
     const playerListener = addEventListener(Event.PlaybackActiveTrackChanged, async () => {
       let track = await TrackPlayer.getActiveTrack();
+      const index = await TrackPlayer.getActiveTrackIndex();
+      console.log('TRACK CHANGED', index);
 
       // Một lần chuyển track có metadata, một lần nữa sau khi fetch được url
       if (track) {
@@ -180,10 +190,15 @@ export const PlayerProvider = ({children}: any) => {
         console.log(track.title + ': Chưa có url, đang lấy url...');
         const data = await ZingMp3.getSong(track.id);
         const url = data.data['128'];
+
+        const lastRepeatMode = await TrackPlayer.getRepeatMode();
+        await TrackPlayer.setRepeatMode(RepeatMode.Off);
         await TrackPlayer.load({
           ...track,
           url,
         });
+        await TrackPlayer.setRepeatMode(lastRepeatMode);
+
         return;
       }
 
@@ -212,6 +227,10 @@ export const PlayerProvider = ({children}: any) => {
       setLyrics(await getLyricSentences(track));
     });
 
+    const errorListener = addEventListener(Event.PlaybackError, async e => {
+      console.log('PLAYBACK ERROR:', e);
+    });
+
     const nativeEventListener = AppState.addEventListener('change', async appState => {
       if (appState === 'active') {
         const state = await TrackPlayer.getState();
@@ -221,6 +240,7 @@ export const PlayerProvider = ({children}: any) => {
 
     return () => {
       playerListener.remove();
+      errorListener.remove();
       nativeEventListener.remove();
     };
   }, []);
