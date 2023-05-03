@@ -1,30 +1,52 @@
-import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
-import {StackScreenProps} from '@react-navigation/stack';
-import React, {useEffect, useState} from 'react';
-import {Platform, ScrollView, StatusBar, Text, TouchableNativeFeedback, View} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { CompositeScreenProps, useFocusEffect, useNavigation } from '@react-navigation/native';
+import { StackScreenProps } from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import { Platform, ScrollView, StatusBar, Text, TouchableNativeFeedback, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import TrackPlayer from 'react-native-track-player';
-import {ChartDetailParamList} from '..';
-import {ZingMp3} from '../../../ZingMp3';
+import { ChartDetailParamList } from '..';
+import { ZingMp3 } from '../../../ZingMp3';
 import Chart from '../../../components/Chart';
 import VerticalItemSong from '../../../components/VerticalItemSong';
-import {useLoadingModal} from '../../../contexts/LoadingModalContext';
-import {Song, songsToTracks} from '../../../types';
+import { useLoadingModal } from '../../../contexts/LoadingModalContext';
+import { Playlist, Song, songsToTracks } from '../../../types';
 import WeekChartItem from '../WeekChartItem';
-import {BottomTabParamList, RootStackParamList} from '../../../../App';
-import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import { BottomTabParamList, RootStackParamList } from '../../../../App';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart';
 
-type Props = CompositeScreenProps<
-  CompositeScreenProps<
-    StackScreenProps<ChartDetailParamList, 'ChartMainPage'>,
-    BottomTabScreenProps<BottomTabParamList, 'ChartDetail'>
-  >,
-  StackScreenProps<RootStackParamList>
->;
+type Props = {
+  isChartHome?: boolean,
+}
 
-const ChartMainPage = ({navigation}: Props) => {
-  const {setLoading} = useLoadingModal();
-  const [chartData, setChartData] = useState();
+type time = {
+  hour: string,
+}
+
+type DataChart = {
+  RTChart: {
+    items: Song[],
+    chart: {
+      times: time[],
+      items: {
+        [key: string]: Array<{
+          time: number,
+          hour: string,
+          counter: number
+        }>
+      },
+    },
+  }
+  weekChart: {
+    [key: string]: Playlist
+  }
+}
+
+
+const ChartMainPage = ({ isChartHome = false }: Props) => {
+  const navigation = useNavigation()
+  const { setLoading } = useLoadingModal();
+  const [chartData, setChartData] = useState<LineChartData>();
   const [songs, setSongs] = useState<Song[]>([]);
   const [weekCharts, setWeekCharts] = useState({});
 
@@ -38,19 +60,20 @@ const ChartMainPage = ({navigation}: Props) => {
 
   useEffect(() => {
     const getData = async () => {
-      const data = await ZingMp3.getChartHome();
+      const data: DataChart = await ZingMp3.getChartHome();
       const items = data.RTChart.chart.items;
       const times = data.RTChart.chart.times;
-      const chart = {labels: [], datasets: []};
+      const chart: LineChartData = { labels: [], datasets: [] };
       const weekChart = data.weekChart;
 
-      let i = 0;
-      Object.keys(times).forEach(element => {
-        if (i % 2 == 0) chart.labels.push(times[element].hour);
+
+      for (let i = 0; i < times.length; i++) {
+        if (i % 2 == 0) chart.labels.push(times[i].hour);
         else chart.labels.push('');
         i++;
-      });
-      i = 0;
+      }
+
+
       Object.keys(items).forEach(element => {
         chart.datasets.push({
           data: items[element].map(item => {
@@ -58,15 +81,14 @@ const ChartMainPage = ({navigation}: Props) => {
           }),
         });
       });
-      i = 0;
+
+      let i = 0;
       const titles = ['V-POP', 'US-UK', 'KPOP'];
 
       Object.keys(weekChart).forEach(element => {
         weekChart[element].title = titles[i];
-
         i++;
       });
-      i = null;
       //console.log(chart);
       chart.datasets.forEach(element => {
         element.strokeWidth = 2;
@@ -76,7 +98,7 @@ const ChartMainPage = ({navigation}: Props) => {
       chart.datasets[1].color = (opacity = 5) => `rgba(80, 227, 194, ${opacity})`;
       chart.datasets[2].color = (opacity = 5) => `rgba(227, 80, 80, ${opacity})`;
       setChartData(chart);
-      setSongs(data.RTChart.items);
+      setSongs(isChartHome === false ? data.RTChart.items : data.RTChart.items.slice(0, 5));
       setWeekCharts(weekChart);
     };
     getData();
@@ -104,14 +126,14 @@ const ChartMainPage = ({navigation}: Props) => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: 'rgba(32,19,53,0.9)'}}>
+    <View style={{ flex: 1, backgroundColor: 'rgba(32,19,53,0.9)' }}>
       <StatusBar
         translucent
         barStyle={'light-content'}
         backgroundColor={'transparent'}
         animated={true}
       />
-      <View style={{flex: 1, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0}}>
+      <View style={{ flex: 1, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
         <ScrollView>
           <Text
             style={{
@@ -144,7 +166,7 @@ const ChartMainPage = ({navigation}: Props) => {
                   </View>
                 </TouchableNativeFeedback>
               ))}
-              {weekCharts && (
+              {weekCharts && isChartHome === false && (
                 <View
                   style={{
                     borderTopStartRadius: 15,
@@ -167,7 +189,7 @@ const ChartMainPage = ({navigation}: Props) => {
                     <TouchableOpacity
                       key={index}
                       onPress={() => {
-                        navigation.push('WeekChartDetail', {weekChart: weekCharts[element]});
+                        navigation.push('WeekChartDetail', { weekChart: weekCharts[element] });
                       }}>
                       <WeekChartItem
                         data={weekCharts[element].items.slice(0, 3)}

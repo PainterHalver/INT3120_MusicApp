@@ -1,10 +1,10 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
-import {ToastAndroid} from 'react-native';
-import {MyPlaylist, Playlist, SharedPlaylist} from '../types';
-import {useAuth} from './AuthContext';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { ToastAndroid } from 'react-native';
+import { MyPlaylist, Playlist, SharedPlaylist } from '../types';
+import { useAuth } from './AuthContext';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ZingMp3} from '../ZingMp3';
+import { ZingMp3 } from '../ZingMp3';
 
 type PlaylistContextType = {
   loadingPlaylists: boolean;
@@ -20,8 +20,8 @@ const PlaylistContext = createContext<PlaylistContextType>({} as PlaylistContext
 
 export const usePlaylist = () => useContext(PlaylistContext);
 
-export const PlaylistProvider = ({children}: {children: React.ReactNode}) => {
-  const {user} = useAuth();
+export const PlaylistProvider = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAuth();
   const [loadingPlaylists, setLoadingPlaylists] = useState<boolean>(false);
   const [playlists, setPlaylists] = useState<MyPlaylist[]>([]);
   const [sharedPlaylists, setSharedPlaylists] = useState<SharedPlaylist[]>([]);

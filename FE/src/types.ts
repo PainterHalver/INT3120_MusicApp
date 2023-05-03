@@ -54,6 +54,7 @@ export type Playlist = {
     totalDuration: number;
     items: Song[];
   };
+  items?: Song[];
 };
 
 export type WeekChart = {

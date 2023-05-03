@@ -1,31 +1,10 @@
-import {View, Text, StyleSheet} from 'react-native';
-import TopBox from '../../../components/TopBox';
-import ItemSong from '../../../components/ItemSong';
-import Chart from '../../../components/Chart';
-const data = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-  datasets: [
-    {
-      data: [20, 45, 28, 80, 99, 43],
-      color: (opacity = 1) => `rgba(50, 50, 255, ${opacity})`,
-      strokeWidth: 2,
-    },
-    {
-      data: [40, 25, 68, 20, 59, 83],
-      color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
-      strokeWidth: 2,
-      withDots: false,
-    },
-    {
-      data: [50, 55, 78, 10, 20, 13],
-      color: (opacity = 1) => `rgba(55, 50, 10, ${opacity})`,
-      strokeWidth: 2,
-      withDots: false,
-    },
-  ],
-};
+import { View, Text, StyleSheet, TouchableNativeFeedback, Button } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import ChartMainPage from '../../ChartDetail/ChartMainPage';
+import { useNavigation } from '@react-navigation/native';
 
 const LineChartBox = () => {
+  const navigation = useNavigation()
   return (
     <View style={[styles.boxChart]}>
       <Text
@@ -38,35 +17,13 @@ const LineChartBox = () => {
         }}>
         TopMusic
       </Text>
-      <Chart data={data} />
-      <View style={{paddingLeft: 20, paddingTop: 10}}>
-        <TopBox number={1} color="blue">
-          <ItemSong
-            nameSong="Ten bai hat"
-            artistName="Ha Anh Tuan"
-            image="https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0"
-            size={60}
-            date="Hom nay"
-          />
-        </TopBox>
-        <TopBox number={2} color="red">
-          <ItemSong
-            nameSong="Ten bai hat"
-            artistName="Ha Anh Tuan"
-            image="https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0"
-            size={60}
-            date="Hom nay"
-          />
-        </TopBox>
-        <TopBox number={3} color="orange">
-          <ItemSong
-            nameSong="Ten bai hat"
-            artistName="Ha Anh Tuan"
-            image="https://th.bing.com/th/id/R.c8e77fefb031b2515ff3cd3de4cb3062?rik=AVvYYwPKlxtvNw&pid=ImgRaw&r=0"
-            size={60}
-            date="Hom nay"
-          />
-        </TopBox>
+      <ChartMainPage isChartHome={true} />
+      <View style={{ height: 60, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ fontWeight: 'bold', borderWidth: 1, borderColor: '#cccccc', paddingHorizontal: 10, paddingVertical: 3, borderRadius: 20 }} onPress={() => {
+          navigation.navigate('ChartDetail')
+        }}>
+          XEM THÊM
+        </Text>
       </View>
     </View>
   );
@@ -76,8 +33,7 @@ export default LineChartBox;
 
 const styles = StyleSheet.create({
   boxChart: {
-    height: 500,
-    borderRadius: 20,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: 'black',
     position: 'relative',
