@@ -31,6 +31,7 @@ import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {BottomTabParamList, RootStackParamList} from '../../../App';
 import {ScrollView} from 'react-native-gesture-handler';
 import VerticalItemSong from '../../components/VerticalItemSong';
+import LinearGradient from 'react-native-linear-gradient';
 
 type Props = CompositeScreenProps<
   CompositeScreenProps<
@@ -96,112 +97,124 @@ const SharedPlaylist = ({navigation, route}: Props) => {
     }
   };
   return (
-    <ImageBackground
-      source={
-        songs.length > 0
-          ? {uri: songs[0].thumbnailM}
-          : require('../../../assets/festival-fireworks-crowd-black-and-white.jpg')
-      }
-      resizeMode="cover"
-      onLoad={() => {
-        // console.log('loaded player background image');
-      }}
-      style={{width: '100%', height: '100%'}}
-      blurRadius={4}>
-      <View style={styles.containerWrapper}>
-        <StatusBar
-          translucent
-          barStyle={'dark-content'}
-          backgroundColor={'transparent'}
-          animated={true}
-        />
-        <View style={styles.container}>
-          <Shadow
-            sides={{bottom: true, top: false, end: false, start: false}}
-            style={styles.headerContainer}
-            stretch
-            distance={2.5}>
-            <View
-              style={{
-                alignItems: 'center',
-                flexDirection: 'row',
-                padding: 5,
-                gap: 10,
-                justifyContent: 'center',
-                position: 'relative',
-              }}>
-              <View style={{position: 'absolute', left: 5, bottom: 5}}>
+    <View style={styles.containerWrapper}>
+      <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
+      <View style={styles.container}>
+        <Shadow
+          sides={{bottom: true, top: false, end: false, start: false}}
+          style={styles.headerContainer}
+          stretch
+          distance={2.5}>
+          <View
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+              padding: 5,
+              gap: 10,
+              justifyContent: 'center',
+              position: 'relative',
+            }}>
+            <View style={{position: 'absolute', left: 5, bottom: 5}}>
+              <TouchableOpacity
+                hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+                onPress={() => {
+                  if (navigation.canGoBack()) {
+                    navigation.goBack();
+                  } else {
+                    navigation.navigate('Home');
+                  }
+                }}>
+                <OctIcon name="arrow-left" size={28} color={COLORS.TEXT_PRIMARY} />
+              </TouchableOpacity>
+            </View>
+            <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 20, fontWeight: '600'}}>
+              {`Chia sẻ bởi ${detail?._data?.owner}`}
+            </Text>
+            {user && user.uid !== detail?._data?.uid && !detail?._data?.sharedTo.includes(user.uid) && (
+              <View style={{position: 'absolute', right: 5, bottom: 5}}>
                 <TouchableOpacity
                   hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                  onPress={() => {
-                    if (navigation.canGoBack()) {
-                      navigation.goBack();
-                    } else {
-                      navigation.navigate('Home');
-                    }
+                  onPress={async () => {
+                    await firestore()
+                      .collection('playlists')
+                      .doc(route.params.id)
+                      .update({sharedTo: [...detail._data.sharedTo, user.uid]});
+                    ToastAndroid.show('Đã thêm vào danh sách playlist', ToastAndroid.SHORT);
                   }}>
-                  <OctIcon name="arrow-left" size={28} color={COLORS.TEXT_PRIMARY} />
+                  <OctIcon name="diff-added" size={28} color={COLORS.TEXT_PRIMARY} />
                 </TouchableOpacity>
               </View>
-              <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 20, fontWeight: '600'}}>
-                {`Chia sẻ bởi ${detail?._data?.owner}`}
-              </Text>
-              {user &&
-                user.uid !== detail?._data?.uid &&
-                !detail?._data?.sharedTo.includes(user.uid) && (
-                  <View style={{position: 'absolute', right: 5, bottom: 5}}>
-                    <TouchableOpacity
-                      hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                      onPress={async () => {
-                        await firestore()
-                          .collection('playlists')
-                          .doc(route.params.id)
-                          .update({sharedTo: [...detail._data.sharedTo, user.uid]});
-                        ToastAndroid.show('Đã thêm vào danh sách playlist', ToastAndroid.SHORT);
-                      }}>
-                      <OctIcon name="diff-added" size={28} color={COLORS.TEXT_PRIMARY} />
-                    </TouchableOpacity>
-                  </View>
-                )}
-              {user && user.uid !== detail?._data?.uid && detail?._data?.sharedTo.includes(user.uid) && (
-                <View style={{position: 'absolute', right: 5, bottom: 5}}>
-                  <TouchableOpacity
-                    hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                    onPress={async () => {
-                      await firestore()
-                        .collection('playlists')
-                        .doc(route.params.id)
-                        .update({
-                          sharedTo: detail._data.sharedTo.filter(element => {
-                            element !== user.uid;
-                          }),
-                        });
-                      ToastAndroid.show('Đã loại bỏ khỏi danh sách playlist', ToastAndroid.SHORT);
-                    }}>
-                    <OctIcon name="check-circle" size={28} color={COLORS.TEXT_PRIMARY} />
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-          </Shadow>
-          <View style={{flex: 1, paddingVertical: 15}}>
-            {songs.length > 0 && (
-              <Image
-                source={{uri: songs[0].thumbnailM}}
-                style={{width: 100, height: 100, borderRadius: 10, alignSelf: 'center'}}
-              />
             )}
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: '600',
-                color: 'white',
-                paddingBottom: 7,
-                paddingHorizontal: 15,
-                textAlign: 'center',
-              }}>
-              {detail?._data?.name}
-            </Text>
+            {user && user.uid !== detail?._data?.uid && detail?._data?.sharedTo.includes(user.uid) && (
+              <View style={{position: 'absolute', right: 5, bottom: 5}}>
+                <TouchableOpacity
+                  hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+                  onPress={async () => {
+                    await firestore()
+                      .collection('playlists')
+                      .doc(route.params.id)
+                      .update({
+                        sharedTo: detail._data.sharedTo.filter(element => {
+                          element !== user.uid;
+                        }),
+                      });
+                    ToastAndroid.show('Đã loại bỏ khỏi danh sách playlist', ToastAndroid.SHORT);
+                  }}>
+                  <OctIcon name="check-circle" size={28} color={COLORS.TEXT_PRIMARY} />
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        </Shadow>
+        {songs.length > 0 && (
+          <View style={{flex: 1}}>
+            <View>
+              <ImageBackground
+                source={{uri: songs[0]?.thumbnailM}}
+                resizeMode="cover"
+                onLoad={() => {
+                  // console.log('loaded player background image');
+                }}
+                style={{width: '100%', display: 'flex', flexDirection: 'column'}}
+                blurRadius={60}>
+                <LinearGradient
+                  start={{x: 0, y: 0}}
+                  end={{x: 0, y: 1}}
+                  colors={['#FFFFFF00', '#FFFFFF']}
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+                  }}>
+                  <Image
+                    source={{uri: songs[0]?.thumbnailM}}
+                    style={{width: 150, height: 150, borderRadius: 10, alignSelf: 'center'}}
+                  />
+
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: '600',
+                      color: COLORS.TEXT_PRIMARY,
+                      paddingVertical: 8,
+                      paddingHorizontal: 15,
+                      textAlign: 'center',
+                    }}>
+                    {detail?._data?.name}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: '600',
+                      color: COLORS.TEXT_PRIMARY,
+                      paddingVertical: 8,
+                      paddingHorizontal: 15,
+                      textAlign: 'center',
+                    }}>
+                    {`${songs?.length} bài hát`}
+                  </Text>
+                </LinearGradient>
+              </ImageBackground>
+            </View>
             {loadingSongs ? (
               <ActivityIndicator size={'large'} color={COLORS.RED_PRIMARY} />
             ) : songs.length === 0 ? (
@@ -225,9 +238,9 @@ const SharedPlaylist = ({navigation, route}: Props) => {
               </ScrollView>
             )}
           </View>
-        </View>
+        )}
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 

@@ -1,14 +1,18 @@
 import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
 import React, {forwardRef} from 'react';
 import {Image, StyleSheet, Text, TouchableNativeFeedback, View, ToastAndroid, Alert} from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 import firestore from '@react-native-firebase/firestore';
 
 import {COLORS} from '../../../constants';
 import {useLoadingModal} from '../../../contexts/LoadingModalContext';
 import {EditIcon} from '../../../icons/EditIcon';
+import {ShareIcon} from '../../../icons/ShareIcon';
 import {TrashIcon} from '../../../icons/TrashIcon';
 import {MyPlaylist} from '../../../types';
 import {usePlaylist} from '../../../contexts/PlaylistContext';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useAuth} from '../../../contexts/AuthContext';
 
 interface Props {
   selectedPlaylist: MyPlaylist;
@@ -20,7 +24,7 @@ export const PlaylistBottomSheet = forwardRef<BottomSheetModal, Props>(
     const {setLoading} = useLoadingModal();
     const {setPlaylists} = usePlaylist();
     const snapPoints = React.useMemo(() => ['50%', '90%'], []);
-
+    const {user} = useAuth();
     const handleDeletePlaylist = async () => {
       try {
         setLoading(true);
@@ -69,6 +73,21 @@ export const PlaylistBottomSheet = forwardRef<BottomSheetModal, Props>(
           <View style={styles.hr} />
         </View>
         <View style={styles.options}>
+          {user && user.uid === selectedPlaylist.uid && (
+            <TouchableOpacity
+              onPress={() => {
+                Clipboard.setString(`http://mobile3year.com/sharepdlaylist/${selectedPlaylist.id}`);
+                ToastAndroid.show(
+                  `Đã copy http://mobile3year.com/sharedplaylist/${selectedPlaylist.id}`,
+                  ToastAndroid.SHORT,
+                );
+              }}>
+              <View style={styles.option}>
+                <ShareIcon size={ICON_SIZE} color={COLORS.TEXT_PRIMARY} />
+                <Text style={styles.optionText}>Chia sẻ liên kết</Text>
+              </View>
+            </TouchableOpacity>
+          )}
           <TouchableNativeFeedback
             onPress={() => {
               setEditPlaylistModalVisible(true);

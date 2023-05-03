@@ -149,7 +149,7 @@ const PlaylistPage: React.FC<Props> = ({navigation, route}) => {
                     playSongInPlaylist(song, index);
                   }}>
                   <View style={{paddingVertical: 7}}>
-                    <ItemSongResult song={song} />
+                    <ItemSongResult song={song} ownerId={playlist.uid}/>
                   </View>
                 </TouchableNativeFeedback>
               );

@@ -19,6 +19,9 @@ import {useLoadingModal} from '../../../contexts/LoadingModalContext';
 import {Song, songsToTracks} from '../../../types';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {BottomTabParamList, RootStackParamList} from '../../../../App';
+import {TouchableOpacity} from '@gorhom/bottom-sheet';
+import AntIcon from 'react-native-vector-icons/AntDesign';
+import {COLORS} from '../../../constants';
 
 type Props = CompositeScreenProps<
   CompositeScreenProps<
@@ -67,6 +70,16 @@ const WeekChartDetail = ({navigation, route}: Props) => {
       style={{width: '100%', height: '100%'}}
       blurRadius={4}>
       <View style={styles.wrapper}>
+        <View style={{position: 'absolute', left: 35, top: 30}}>
+          <Text style={{color: 'white', paddingVertical: 10}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <AntIcon size={20} name="arrowleft" color={COLORS.TEXT_WHITE_PRIMARY} />
+            </TouchableOpacity>
+          </Text>
+        </View>
         <View style={styles.playlistInfo}>
           <Image
             source={{
