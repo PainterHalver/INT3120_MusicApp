@@ -33,7 +33,7 @@ interface Props {}
 
 const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
   const {setLoading} = useLoadingModal();
-  const {selectedSong, playlistBottomSheetRef, selectedSongIsFavorite, setSelectedSongIsFavorite} =
+  const {selectedSong, playlistBottomSheetRef, selectedSongIsFavorite, setSelectedSongIsFavorite, ownerId, setOwnerId} =
     useBottomSheet();
   const {currentTrack, setCurrentTrackIsFavorite} = usePlayer();
   const {user} = useAuth();
@@ -207,7 +207,7 @@ const SongBottomSheet = forwardRef<BottomSheetModal, Props>(({}, ref) => {
         <View style={styles.hr} />
       </View>
       <View style={styles.options}>
-        {selectedSong.firebasePlaylistId && (
+        {user && selectedSong.firebasePlaylistId && user.uid === ownerId && (
           <TouchableNativeFeedback
             onPress={() => {
               removeSelectedSongFromFirebasePlaylist();

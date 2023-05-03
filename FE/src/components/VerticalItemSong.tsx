@@ -64,8 +64,12 @@ const VerticalItemSong = ({song, chart, pos}: Props) => {
           style={styles.songThumbnail}
         />
         <View style={{width: '60%'}}>
-          <Text style={{fontSize: 14, fontWeight: '400', color: 'white'}}>{song.title}</Text>
-          <Text style={{fontSize: 12, fontWeight: '300', color: 'white'}}>{song.artistsNames}</Text>
+          <Text style={{fontSize: 16, fontWeight: '400', color: chart ? 'white' : COLORS.TEXT_PRIMARY}}>
+            {song.title}
+          </Text>
+          <Text style={{fontSize: 14, fontWeight: '300', color: chart ? 'white' : COLORS.TEXT_PRIMARY}}>
+            {song.artistsNames}
+          </Text>
         </View>
         <TouchableNativeFeedback
           hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
@@ -75,7 +79,7 @@ const VerticalItemSong = ({song, chart, pos}: Props) => {
             songBottomSheetRef.current?.present();
           }}>
           <View>
-            <EntypoIcon name="dots-three-vertical" size={20} color="white" />
+            <EntypoIcon name="dots-three-vertical" size={20} color={COLORS.TEXT_PRIMARY} />
           </View>
         </TouchableNativeFeedback>
       </View>
