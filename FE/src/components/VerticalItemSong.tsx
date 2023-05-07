@@ -79,7 +79,11 @@ const VerticalItemSong = ({song, chart, pos}: Props) => {
             songBottomSheetRef.current?.present();
           }}>
           <View>
-            <EntypoIcon name="dots-three-vertical" size={20} color={COLORS.TEXT_PRIMARY} />
+            <EntypoIcon
+              name="dots-three-vertical"
+              size={20}
+              color={chart ? 'white' : COLORS.TEXT_PRIMARY}
+            />
           </View>
         </TouchableNativeFeedback>
       </View>
