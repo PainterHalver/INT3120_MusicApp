@@ -67,19 +67,23 @@ const ChartMainPage = ({ isChartHome = false }: Props) => {
       const weekChart = data.weekChart;
 
 
-      for (let i = 0; i < times.length; i++) {
-        if (i % 2 == 0) chart.labels.push(times[i].hour);
-        else chart.labels.push('');
-        i++;
-      }
+      // for (let i = 0; i < times.length; i++) {
+      //   if (i % 2 == 0) chart.labels.push(times[i].hour);
+      //   else chart.labels.push('');
+      //   i++;
+      // }
 
 
       Object.keys(items).forEach(element => {
+        const dataLine = items[element].slice(-12);
         chart.datasets.push({
-          data: items[element].map(item => {
+          data: dataLine.map((item) => {
             return item.counter;
           }),
         });
+        chart.labels = dataLine.map(item => {
+          return item?.hour
+        })
       });
 
       let i = 0;
@@ -94,9 +98,10 @@ const ChartMainPage = ({ isChartHome = false }: Props) => {
         element.strokeWidth = 2;
         element.withDots = false;
       });
-      chart.datasets[0].color = (opacity = 5) => `rgba(74, 144, 226, ${opacity})`;
-      chart.datasets[1].color = (opacity = 5) => `rgba(80, 227, 194, ${opacity})`;
-      chart.datasets[2].color = (opacity = 5) => `rgba(227, 80, 80, ${opacity})`;
+      chart.datasets[0].color = (opacity = 1) => `rgba(39,138,195, ${1})`;
+      chart.datasets[1].color = (opacity = 1) => `rgba(48,176,143, ${1})`;
+      chart.datasets[2].color = (opacity = 1) => `rgba(197,101,54, ${1})`;
+      chart.datasets[0].withDots = true
       setChartData(chart);
       setSongs(isChartHome === false ? data.RTChart.items : data.RTChart.items.slice(0, 5));
       setWeekCharts(weekChart);
