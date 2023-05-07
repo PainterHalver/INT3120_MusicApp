@@ -76,6 +76,7 @@ const SharedPlaylist = ({navigation, route}: Props) => {
     };
     addSelectedSongToPlaylist();
   }, [route.params.id]);
+
   const playSongInPlaylist = async (track: Song, index: number) => {
     try {
       setLoading(true);
