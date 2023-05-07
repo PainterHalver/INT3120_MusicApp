@@ -76,7 +76,7 @@ export const PlaylistBottomSheet = forwardRef<BottomSheetModal, Props>(
           {user && user.uid === selectedPlaylist.uid && (
             <TouchableOpacity
               onPress={() => {
-                Clipboard.setString(`http://mobile3year.com/sharepdlaylist/${selectedPlaylist.id}`);
+                Clipboard.setString(`http://mobile3year.com/sharedplaylist/${selectedPlaylist.id}`);
                 ToastAndroid.show(
                   `Đã copy http://mobile3year.com/sharedplaylist/${selectedPlaylist.id}`,
                   ToastAndroid.SHORT,
