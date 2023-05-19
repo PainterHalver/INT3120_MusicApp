@@ -6,20 +6,18 @@ import {
   Platform,
   StatusBar,
   StyleSheet,
+  Text,
   TouchableNativeFeedback,
   View,
-  Text,
 } from 'react-native';
 
-import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
-import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
-import {StackScreenProps} from '@react-navigation/stack';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { CompositeScreenProps, useFocusEffect } from '@react-navigation/native';
+import { StackScreenProps } from '@react-navigation/stack';
 
-import {BottomTabParamList, RootStackParamList} from '../../../App';
-import {useLoadingModal} from '../../contexts/LoadingModalContext';
-import {PlayPauseLottieIcon} from '../Player/PlayPauseLottieIcon';
-import FileSystem from '../../FileSystem';
-import {useAuth} from '../../contexts/AuthContext';
+import { BottomTabParamList, RootStackParamList } from '../../../App';
+import { useAuth } from '../../contexts/AuthContext';
+import { PlayPauseLottieIcon } from '../Player/PlayPauseLottieIcon';
 
 // Prop 1 là prop gần nhất, 2 là của parent
 type Props = CompositeScreenProps<

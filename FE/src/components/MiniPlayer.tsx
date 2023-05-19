@@ -1,5 +1,5 @@
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import React, {useCallback, useRef, useState} from 'react';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,18 +8,18 @@ import {
   ActivityIndicator,
   ToastAndroid,
 } from 'react-native';
-import TrackPlayer, {State, usePlaybackState, useProgress} from 'react-native-track-player';
+import TrackPlayer, { State, usePlaybackState, useProgress } from 'react-native-track-player';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 
-import {RootStackParamList} from '../../App';
-import {COLORS} from '../constants';
-import {usePlayer} from '../contexts/PlayerContext';
-import {HeartIcon} from '../icons/HeartIcon';
+import { RootStackParamList } from '../../App';
+import { COLORS } from '../constants';
+import { defaultTrack, usePlayer } from '../contexts/PlayerContext';
+import { HeartIcon } from '../icons/HeartIcon';
 import SpinningDisc from './SpinningDisc';
-import {PhoneIcon} from '../icons/PhoneIcon';
-import {tracksToSongs} from '../types';
+import { PhoneIcon } from '../icons/PhoneIcon';
+import { tracksToSongs } from '../types';
 
 const MiniPlayer = () => {
   const playbackState = usePlaybackState();
@@ -96,9 +96,13 @@ const MiniPlayer = () => {
     }
   };
 
+  if (currentTrack === defaultTrack) {
+    return null;
+  }
+
   return (
     <View>
-      <View style={{backgroundColor: '#22222233', height: 2}}>
+      <View style={{ backgroundColor: '#22222233', height: 2 }}>
         <View
           style={{
             backgroundColor: COLORS.RED_PRIMARY,
@@ -115,12 +119,12 @@ const MiniPlayer = () => {
         <View style={styles.container}>
           <SpinningDisc size={40} />
           <View style={styles.metadata}>
-            <Text style={{fontSize: 13, color: '#000'}}>
+            <Text style={{ fontSize: 13, color: '#000' }}>
               {currentTrack.title && currentTrack.title.length > 30
                 ? currentTrack.title.substring(0, 30) + '...'
                 : currentTrack.title}
             </Text>
-            <Text style={{fontSize: 13}}>
+            <Text style={{ fontSize: 13 }}>
               {currentTrack.artist && currentTrack.artist.length > 30
                 ? currentTrack.artist.substring(0, 30) + '...'
                 : currentTrack.artist}
@@ -128,7 +132,7 @@ const MiniPlayer = () => {
           </View>
           <View style={styles.controls}>
             <TouchableNativeFeedback
-              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, 35)}
               onPress={() => {
                 if (currentTrack.url.toString().startsWith('http')) {
@@ -152,7 +156,7 @@ const MiniPlayer = () => {
               </View>
             </TouchableNativeFeedback>
             <TouchableNativeFeedback
-              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, 35)}
               onPress={togglePlayback}>
               <View>
@@ -160,7 +164,7 @@ const MiniPlayer = () => {
               </View>
             </TouchableNativeFeedback>
             <TouchableNativeFeedback
-              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, 35)}
               onPress={skipToNext}>
               <View>

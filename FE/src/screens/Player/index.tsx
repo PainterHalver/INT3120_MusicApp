@@ -3,8 +3,8 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import { StackScreenProps } from '@react-navigation/stack';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Dimensions,
   Platform,
@@ -16,12 +16,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import TrackPlayer, {RepeatMode, State, usePlaybackState} from 'react-native-track-player';
+import TrackPlayer, { RepeatMode, State, usePlaybackState } from 'react-native-track-player';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import AnimatedLottieView from 'lottie-react-native';
 import Reanimated, {
   Extrapolate,
@@ -32,25 +32,25 @@ import Reanimated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {RootStackParamList} from '../../../App';
-import {COLORS} from '../../constants';
-import {usePlayer} from '../../contexts/PlayerContext';
-import {RepeatIcon} from '../../icons/RepeatIcon';
-import {RepeatOnceIcon} from '../../icons/RepeatOnceIcon';
-import {ShuffleIcon} from '../../icons/ShuffleIcon';
-import {PlayPauseLottieIcon} from './PlayPauseLottieIcon';
+import { RootStackParamList } from '../../../App';
+import { COLORS } from '../../constants';
+import { usePlayer } from '../../contexts/PlayerContext';
+import { RepeatIcon } from '../../icons/RepeatIcon';
+import { RepeatOnceIcon } from '../../icons/RepeatOnceIcon';
+import { ShuffleIcon } from '../../icons/ShuffleIcon';
+import { PlayPauseLottieIcon } from './PlayPauseLottieIcon';
 import PlayerBackground from './PlayerBackground';
 import PlayerScrollView from './PlayerScrollView';
 import PlayingSongBottomSheet from './PlayingSongBottomSheet';
-import {SliderAndProgress} from './SliderAndProgress';
+import { SliderAndProgress } from './SliderAndProgress';
 
-const {height, width: screenWidth} = Dimensions.get('screen');
+const { height, width: screenWidth } = Dimensions.get('screen');
 type Props = StackScreenProps<RootStackParamList, 'Player'>;
 
-const Player = ({navigation}: Props) => {
+const Player = ({ navigation }: Props) => {
   const playbackState = usePlaybackState();
   const isPlaying = playbackState.state === State.Playing;
-  const {currentTrack} = usePlayer();
+  const { currentTrack } = usePlayer();
   const [repeatMode, setRepeatMode] = useState<RepeatMode>(RepeatMode.Off);
   const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
   const playingSongBottonSheetRef = React.useRef<BottomSheetModal>(null);
@@ -122,7 +122,7 @@ const Player = ({navigation}: Props) => {
 
   // TODO: Shuffle or Random
   const toggleShuffleMode = async () => {
-    ToastAndroid.show('Shuffle chưa code!!!', ToastAndroid.SHORT);
+    // ToastAndroid.show('Shuffle chưa code!!!', ToastAndroid.SHORT);
     setIsShuffleEnabled(!isShuffleEnabled);
     await AsyncStorage.setItem('@shuffle_enabled', (!isShuffleEnabled).toString());
   };
@@ -136,7 +136,7 @@ const Player = ({navigation}: Props) => {
     );
 
     return {
-      transform: [{translateY: offsetY}],
+      transform: [{ translateY: offsetY }],
     };
   });
   const rControl = useAnimatedStyle(() => {
@@ -148,7 +148,7 @@ const Player = ({navigation}: Props) => {
     );
 
     return {
-      transform: [{translateY: offsetY}],
+      transform: [{ translateY: offsetY }],
     };
   });
 
@@ -164,27 +164,27 @@ const Player = ({navigation}: Props) => {
         <View style={styles.container}>
           <View style={[styles.heading]}>
             <TouchableOpacity
-              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
               onPress={() => {
                 navigation.goBack();
               }}>
               <AntDesignIcon name="down" size={23} color="#fff" />
             </TouchableOpacity>
-            <View style={{alignItems: 'center'}}>
+            <View style={{ alignItems: 'center' }}>
               {currentPage > -2 && (
-                <Reanimated.Text style={{color: '#ffffffaa', fontSize: 12}}>PHÁT TỪ</Reanimated.Text>
+                <Reanimated.Text style={{ color: '#ffffffaa', fontSize: 12 }}>PHÁT TỪ</Reanimated.Text>
               )}
               {currentPage > -2 && (
-                <Reanimated.Text style={{color: '#fff', fontSize: 13}}>...</Reanimated.Text>
+                <Reanimated.Text style={{ color: '#fff', fontSize: 13 }}>...</Reanimated.Text>
               )}
               {currentPage < -1 && (
-                <Reanimated.Text style={{color: '#ffffff', fontSize: 15, fontWeight: '500'}}>
+                <Reanimated.Text style={{ color: '#ffffff', fontSize: 15, fontWeight: '500' }}>
                   Lời bài hát
                 </Reanimated.Text>
               )}
             </View>
             <TouchableNativeFeedback
-              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
               background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE, true, 23)}
               onPress={() => {
                 playingSongBottonSheetRef.current?.present();
@@ -196,7 +196,7 @@ const Player = ({navigation}: Props) => {
           </View>
 
           {/* Scroll View Container */}
-          <View style={{flex: 10}}>
+          <View style={{ flex: 10 }}>
             {/* Paginator */}
             <View
               style={{
@@ -254,7 +254,7 @@ const Player = ({navigation}: Props) => {
 
           <Reanimated.View style={[styles.controlContainer, rControl]}>
             <TouchableNativeFeedback
-              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
               background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleShuffleMode}>
               <View>
@@ -263,7 +263,7 @@ const Player = ({navigation}: Props) => {
             </TouchableNativeFeedback>
             <View style={styles.playbackControl}>
               <TouchableNativeFeedback
-                hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE, true, CONTROL_RIPPLE_RADIUS)}
                 onPress={skipToPrevious}>
                 <View>
@@ -286,7 +286,7 @@ const Player = ({navigation}: Props) => {
               </TouchableNativeFeedback> */}
               <PlayPauseLottieIcon />
               <TouchableNativeFeedback
-                hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE, true, CONTROL_RIPPLE_RADIUS)}
                 onPress={skipToNext}>
                 <View>
@@ -295,7 +295,7 @@ const Player = ({navigation}: Props) => {
               </TouchableNativeFeedback>
             </View>
             <TouchableNativeFeedback
-              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
               background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE, true, CONTROL_RIPPLE_RADIUS)}
               onPress={toggleRepeateMode}>
               <View>

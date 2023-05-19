@@ -1,16 +1,16 @@
 // @refresh reset
 
 import React from 'react';
-import {View, TouchableNativeFeedback} from 'react-native';
+import { View, TouchableNativeFeedback } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
-import Animated, {useAnimatedProps, useSharedValue, withTiming} from 'react-native-reanimated';
+import Animated, { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import {usePlayer} from '../../contexts/PlayerContext';
+import { usePlayer } from '../../contexts/PlayerContext';
 import TrackPlayer from 'react-native-track-player';
 
 export const PlayPauseLottieIcon = () => {
   const buttonRef = React.useRef<AnimatedLottieView>(null);
-  const {isPlaying} = usePlayer();
+  const { isPlaying } = usePlayer();
   const [transitioning, setTransitioning] = React.useState(false);
 
   React.useEffect(() => {
@@ -40,7 +40,7 @@ export const PlayPauseLottieIcon = () => {
           buttonRef.current?.play(0, 25);
         }
       }}>
-      <View style={{width: 80, height: 80}}>
+      <View style={{ width: 80, height: 80 }}>
         <AnimatedLottieView
           ref={buttonRef}
           source={require('./../../icons/play_pause.json')}
