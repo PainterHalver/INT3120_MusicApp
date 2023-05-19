@@ -1,5 +1,5 @@
-import React, {createContext, useContext, useEffect} from 'react';
-import {Animated, AppState} from 'react-native';
+import React, { createContext, useContext, useEffect } from 'react';
+import { Animated, AppState } from 'react-native';
 import TrackPlayer, {
   AppKilledPlaybackBehavior,
   Capability,
@@ -12,17 +12,17 @@ import TrackPlayer, {
   useProgress,
   useTrackPlayerEvents,
 } from 'react-native-track-player';
-import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
+import { addEventListener } from 'react-native-track-player/lib/trackPlayer';
 import firestore from '@react-native-firebase/firestore';
 
-import {ZingMp3} from '../ZingMp3';
-import {Song} from '../types';
+import { ZingMp3 } from '../ZingMp3';
+import { Song } from '../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import SongBottomSheet from '../components/SongBottomSheet';
-import {BottomSheetModalMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
-import {useAuth} from './AuthContext';
+import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { useAuth } from './AuthContext';
 
 export type Word = {
   data: string;
@@ -81,14 +81,14 @@ const PlayerContext = createContext<PlayerContextType>({
   lyrics: [],
   isLoadingFavorite: false,
   currentTrackIsFavorite: false,
-  setIsPlaying: () => {},
-  setLastArtwork: () => {},
-  setLyrics: () => {},
-  setIsLoadingFavorite: () => {},
-  setCurrentTrackIsFavorite: () => {},
+  setIsPlaying: () => { },
+  setLastArtwork: () => { },
+  setLyrics: () => { },
+  setIsLoadingFavorite: () => { },
+  setCurrentTrackIsFavorite: () => { },
 });
 
-export const PlayerProvider = ({children}: any) => {
+export const PlayerProvider = ({ children }: any) => {
   const [track, setTrack] = React.useState<Track>(defaultTrack);
   const [isReady, setIsReady] = React.useState<boolean>(false);
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
@@ -98,7 +98,7 @@ export const PlayerProvider = ({children}: any) => {
   const [isLoadingFavorite, setIsLoadingFavorite] = React.useState(false);
   const [currentTrackIsFavorite, setCurrentTrackIsFavorite] = React.useState(false);
   const [lyrics, setLyrics] = React.useState<LineLyric[]>([]);
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   const state = usePlaybackState();
 
@@ -113,7 +113,7 @@ export const PlayerProvider = ({children}: any) => {
       const data = await ZingMp3.getLyric(track.id);
 
       if (!data || !data.sentences || data.sentences.length === 0) {
-        return [{words: [{data: 'Không tìm thấy lời bài hát', endTime: -1, startTime: -1}]}];
+        return [{ words: [{ data: 'Không tìm thấy lời bài hát', endTime: -1, startTime: -1 }] }];
       }
 
       return data.sentences;

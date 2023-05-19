@@ -1,5 +1,5 @@
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   DeviceEventEmitter,
   Dimensions,
@@ -9,15 +9,16 @@ import {
   View,
   ActivityIndicator,
 } from 'react-native';
-import TrackPlayer, {Event, Track} from 'react-native-track-player';
-import {addEventListener} from 'react-native-track-player/lib/trackPlayer';
-import {COLORS, SIZES} from '../../../../constants';
-import {defaultTrack} from '../../../../contexts/PlayerContext';
-import {MemoizedTrackBottomSheet, TrackBottomSheet} from './TrackBottomSheet';
-import {MemoizedTrackItem, TrackItem} from './TrackItem';
-import {FlatList} from 'react-native-gesture-handler';
+import TrackPlayer, { Event, Track } from 'react-native-track-player';
+import { addEventListener } from 'react-native-track-player/lib/trackPlayer';
+import { COLORS, SIZES } from '../../../../constants';
+import { defaultTrack, usePlayer } from '../../../../contexts/PlayerContext';
+import { MemoizedTrackBottomSheet, TrackBottomSheet } from './TrackBottomSheet';
+import { MemoizedTrackItem, TrackItem } from './TrackItem';
+import { FlatList } from 'react-native-gesture-handler';
 
 export const QueuePage = () => {
+  const { currentTrack } = usePlayer();
   const [tracks, setTracks] = useState<Track[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [selectedTrack, setSelectedTrack] = useState<Track>(defaultTrack);
@@ -50,7 +51,7 @@ export const QueuePage = () => {
 
   const keyExtractor = useCallback((item: Track, index: number) => item.id, []);
 
-  const renderItem = ({item, index}: {item: Track; index: number}) => {
+  const renderItem = ({ item, index }: { item: Track; index: number }) => {
     return (
       <TouchableNativeFeedback
         background={TouchableNativeFeedback.Ripple(COLORS.RIPPLE_LIGHT, false)}
@@ -61,7 +62,7 @@ export const QueuePage = () => {
           <MemoizedTrackItem
             track={item}
             variant="text-light"
-            playing={index === currentIndex}
+            playing={item.id === currentTrack.id}
             trackBottomSheetRef={trackBottomSheetRef}
             setSelectedTrack={setSelectedTrack}
           />
@@ -71,7 +72,7 @@ export const QueuePage = () => {
   };
 
   return (
-    <View style={{width: SIZES.SCREEN_WIDTH, paddingVertical: 15, paddingHorizontal: 5}}>
+    <View style={{ width: SIZES.SCREEN_WIDTH, paddingVertical: 15, paddingHorizontal: 5 }}>
       <Text
         style={{
           fontSize: 16,
@@ -83,7 +84,7 @@ export const QueuePage = () => {
         Danh sách phát
       </Text>
       <FlatList
-        contentContainerStyle={{paddingBottom: 20}}
+        contentContainerStyle={{ paddingBottom: 20 }}
         showsVerticalScrollIndicator={false}
         data={tracks}
         keyExtractor={keyExtractor}

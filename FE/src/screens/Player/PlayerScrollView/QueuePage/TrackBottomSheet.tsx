@@ -1,5 +1,5 @@
-import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
-import React, {forwardRef, useEffect} from 'react';
+import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
+import React, { forwardRef, useEffect } from 'react';
 import {
   Image,
   StyleSheet,
@@ -9,15 +9,16 @@ import {
   View,
   DeviceEventEmitter,
 } from 'react-native';
-import TrackPlayer, {Track} from 'react-native-track-player';
+import TrackPlayer, { Track } from 'react-native-track-player';
 
-import {COLORS} from '../../../../constants';
-import {useLoadingModal} from '../../../../contexts/LoadingModalContext';
-import {DownloadIcon} from '../../../../icons/DownloadIcon';
-import {ShareIcon} from '../../../../icons/ShareIcon';
-import {TrashIcon} from '../../../../icons/TrashIcon';
+import { COLORS } from '../../../../constants';
+import { useLoadingModal } from '../../../../contexts/LoadingModalContext';
+import { DownloadIcon } from '../../../../icons/DownloadIcon';
+import { ShareIcon } from '../../../../icons/ShareIcon';
+import { TrashIcon } from '../../../../icons/TrashIcon';
 import FileSystem from '../../../../FileSystem';
-import {ZingMp3} from '../../../../ZingMp3';
+import { ZingMp3 } from '../../../../ZingMp3';
+import { useNavigation } from '@react-navigation/native';
 
 interface Props {
   selectedTrack: Track;
@@ -26,9 +27,10 @@ interface Props {
 }
 
 export const TrackBottomSheet = forwardRef<BottomSheetModal, Props>(
-  ({selectedTrack, tracks, setTracks}, ref) => {
-    const {setLoading} = useLoadingModal();
+  ({ selectedTrack, tracks, setTracks }, ref) => {
+    const { setLoading } = useLoadingModal();
     const snapPoints = React.useMemo(() => ['50%', '90%'], []);
+    const navigation = useNavigation();
 
     const handleRemoveTrackFromQueue = async () => {
       try {
@@ -36,6 +38,12 @@ export const TrackBottomSheet = forwardRef<BottomSheetModal, Props>(
         await TrackPlayer.remove([queue.findIndex(track => track.id === selectedTrack.id)]);
         setTracks(queue.filter(track => track.id !== selectedTrack.id));
         ToastAndroid.show('Xóa thành công', ToastAndroid.SHORT);
+
+        // Nếu xóa bài hát cuối cùng
+        if (queue.length === 1) {
+          await TrackPlayer.reset();
+          navigation.goBack();
+        }
       } catch (error) {
         console.log('handleDeleteTrack', error);
         ToastAndroid.show('Có lỗi xảy ra khi xóa bài hát', ToastAndroid.SHORT);
@@ -73,9 +81,9 @@ export const TrackBottomSheet = forwardRef<BottomSheetModal, Props>(
         ref={ref}
         index={0}
         snapPoints={snapPoints}
-        backgroundStyle={{backgroundColor: COLORS.BACKGROUND_PRIMARY}}
+        backgroundStyle={{ backgroundColor: COLORS.BACKGROUND_PRIMARY }}
         style={{}}
-        handleStyle={{display: 'none'}}
+        handleStyle={{ display: 'none' }}
         backdropComponent={props => (
           <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
         )}>
@@ -88,36 +96,36 @@ export const TrackBottomSheet = forwardRef<BottomSheetModal, Props>(
               gap: 10,
               alignItems: 'center',
             }}>
-            <View style={{position: 'relative', width: 45, height: 45}}>
+            <View style={{ position: 'relative', width: 45, height: 45 }}>
               <Image
                 source={require('./../../../../../assets/default_song_thumbnail.png')}
-                style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
+                style={{ width: 45, height: 45, borderRadius: 7, position: 'absolute' }}
               />
               <Image
                 source={
                   (typeof selectedTrack.artwork === 'string'
-                    ? {uri: selectedTrack.artwork}
+                    ? { uri: selectedTrack.artwork }
                     : selectedTrack.artwork) ||
                   require('./../../../../../assets/default_song_thumbnail.png')
                 }
-                style={{width: 45, height: 45, borderRadius: 7, position: 'absolute'}}
+                style={{ width: 45, height: 45, borderRadius: 7, position: 'absolute' }}
               />
             </View>
-            <View style={{marginRight: 'auto'}}>
-              <Text style={{fontSize: 15, color: COLORS.TEXT_PRIMARY}}>
+            <View style={{ marginRight: 'auto' }}>
+              <Text style={{ fontSize: 15, color: COLORS.TEXT_PRIMARY }}>
                 {selectedTrack.title && selectedTrack.title.length > 30
                   ? selectedTrack.title.substring(0, 30) + '...'
                   : selectedTrack.title}
               </Text>
-              <Text style={{fontSize: 13, color: COLORS.TEXT_GRAY}}>
+              <Text style={{ fontSize: 13, color: COLORS.TEXT_GRAY }}>
                 {selectedTrack.artist && selectedTrack.artist.length > 40
                   ? selectedTrack.artist.substring(0, 40) + '...'
                   : selectedTrack.artist}
               </Text>
             </View>
-            <View style={{marginRight: 10}}>
+            <View style={{ marginRight: 10 }}>
               <TouchableNativeFeedback
-                hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+                hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
                 background={TouchableNativeFeedback.Ripple('#00000022', true, 30)}
                 useForeground>
                 <View>

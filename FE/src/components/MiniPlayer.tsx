@@ -96,7 +96,7 @@ const MiniPlayer = () => {
     }
   };
 
-  if (currentTrack === defaultTrack) {
+  if (currentTrack === defaultTrack || !currentTrack || playbackState.state === State.Stopped) {
     return null;
   }
 
