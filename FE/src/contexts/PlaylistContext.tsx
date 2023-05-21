@@ -28,78 +28,78 @@ export const PlaylistProvider = ({ children }: { children: React.ReactNode }) =>
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
 
   useEffect(() => {
-    if (!user) return;
+    if (user) {
+      (async () => {
+        try {
+          setLoadingPlaylists(true);
 
-    (async () => {
-      try {
-        setLoadingPlaylists(true);
+          const favPlaylist = await firestore()
+            .collection('playlists')
+            .where('uid', '==', user.uid)
+            .where('isFavorite', '==', true)
+            .get();
 
-        const favPlaylist = await firestore()
-          .collection('playlists')
-          .where('uid', '==', user.uid)
-          .where('isFavorite', '==', true)
-          .get();
+          // Nếu chưa có playlist yêu thích thì tạo mới
+          if (favPlaylist.empty) {
+            const newFavPlaylist = await firestore().collection('playlists').add({
+              uid: user.uid,
+              name: 'Yêu thích',
+              isFavorite: true,
+            });
+            await AsyncStorage.setItem('favoritePlaylistId', newFavPlaylist.id);
+          } else {
+            await AsyncStorage.setItem('favoritePlaylistId', favPlaylist.docs[0].id);
+          }
 
-        // Nếu chưa có playlist yêu thích thì tạo mới
-        if (favPlaylist.empty) {
-          const newFavPlaylist = await firestore().collection('playlists').add({
-            uid: user.uid,
-            name: 'Yêu thích',
-            isFavorite: true,
-          });
-          await AsyncStorage.setItem('favoritePlaylistId', newFavPlaylist.id);
-        } else {
-          await AsyncStorage.setItem('favoritePlaylistId', favPlaylist.docs[0].id);
-        }
+          // Lấy tất cả playlist, cho favorite lên đầu
+          const playlists = await firestore().collection('playlists').where('uid', '==', user.uid).get();
+          const myPlaylists = playlists.docs
+            .map(doc => {
+              return {
+                id: doc.id,
+                ...doc.data(),
+              } as MyPlaylist;
+            })
+            .sort((a, b) => {
+              if (a.isFavorite && !b.isFavorite) return -1;
+              if (!a.isFavorite && b.isFavorite) return 1;
+              return 0;
+            });
 
-        // Lấy tất cả playlist, cho favorite lên đầu
-        const playlists = await firestore().collection('playlists').where('uid', '==', user.uid).get();
-        const myPlaylists = playlists.docs
-          .map(doc => {
+          const sharedToMe = await firestore()
+            .collection('playlists')
+            .where('sharedTo', 'array-contains', user.uid)
+            .get();
+          const mySharedPlaylist = sharedToMe.docs.map(doc => {
             return {
               id: doc.id,
               ...doc.data(),
-            } as MyPlaylist;
-          })
-          .sort((a, b) => {
-            if (a.isFavorite && !b.isFavorite) return -1;
-            if (!a.isFavorite && b.isFavorite) return 1;
-            return 0;
+            } as SharedPlaylist;
           });
 
-        const sharedToMe = await firestore()
-          .collection('playlists')
-          .where('sharedTo', 'array-contains', user.uid)
-          .get();
-        const mySharedPlaylist = sharedToMe.docs.map(doc => {
-          return {
-            id: doc.id,
-            ...doc.data(),
-          } as SharedPlaylist;
-        });
+          setSharedPlaylists(mySharedPlaylist);
+          setPlaylists(myPlaylists);
+          setLoadingPlaylists(false);
 
-        setSharedPlaylists(mySharedPlaylist);
-        setPlaylists(myPlaylists);
-        setLoadingPlaylists(false);
+          // Cache lại favorite songs id trong AsyncStorage
+          const favSongEncodeIds = await firestore()
+            .collection('playlists')
+            .doc(myPlaylists[0].id)
+            .collection('songs')
+            .get()
+            .then(querySnapshot => {
+              return querySnapshot.docs.map(doc => doc.data().encodeId);
+            });
 
-        // Cache lại favorite songs id trong AsyncStorage
-        const favSongEncodeIds = await firestore()
-          .collection('playlists')
-          .doc(myPlaylists[0].id)
-          .collection('songs')
-          .get()
-          .then(querySnapshot => {
-            return querySnapshot.docs.map(doc => doc.data().encodeId);
-          });
-
-        await AsyncStorage.setItem('favoriteSongEncodeIds', JSON.stringify(favSongEncodeIds));
-      } catch (error) {
-        console.log(error);
-        ToastAndroid.show('Có lỗi khi tải danh sách playlist', ToastAndroid.SHORT);
-      } finally {
-        setLoadingPlaylists(false);
-      }
-    })();
+          await AsyncStorage.setItem('favoriteSongEncodeIds', JSON.stringify(favSongEncodeIds));
+        } catch (error) {
+          console.log(error);
+          ToastAndroid.show('Có lỗi khi tải danh sách playlist', ToastAndroid.SHORT);
+        } finally {
+          setLoadingPlaylists(false);
+        }
+      })();
+    }
   }, [user]);
 
   useEffect(() => {

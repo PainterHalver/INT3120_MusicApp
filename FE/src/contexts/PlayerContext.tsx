@@ -12,7 +12,7 @@ import TrackPlayer, {
   useProgress,
   useTrackPlayerEvents,
 } from 'react-native-track-player';
-import { addEventListener } from 'react-native-track-player/lib/trackPlayer';
+import { addEventListener, clearNowPlayingMetadata } from 'react-native-track-player/lib/trackPlayer';
 import firestore from '@react-native-firebase/firestore';
 
 import { ZingMp3 } from '../ZingMp3';
@@ -243,7 +243,7 @@ export const PlayerProvider = ({ children }: any) => {
       errorListener.remove();
       nativeEventListener.remove();
     };
-  }, []);
+  }, [user]);
 
   return (
     <PlayerContext.Provider
