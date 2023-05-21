@@ -96,13 +96,11 @@ const MiniPlayer = () => {
     }
   };
 
-  if (currentTrack === defaultTrack || !currentTrack || playbackState.state === State.Stopped) {
-    return null;
-  }
-
   return (
-    <View>
-      <View style={{ backgroundColor: '#22222233', height: 2 }}>
+    <View style={{
+      display: (currentTrack === defaultTrack || !currentTrack || playbackState.state === State.Stopped) ? 'none' : "flex"
+    }}>
+      <View style={{ backgroundColor: '#22222233', height: 2, }}>
         <View
           style={{
             backgroundColor: COLORS.RED_PRIMARY,
