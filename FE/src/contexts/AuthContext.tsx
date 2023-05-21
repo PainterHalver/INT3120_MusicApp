@@ -1,6 +1,6 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
-import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
-import {GoogleSignin, GoogleSigninButton, statusCodes} from '@react-native-google-signin/google-signin';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
 
 type AuthContextType = {
   user: FirebaseAuthTypes.User | null;
@@ -17,7 +17,7 @@ type AuthProviderProps = {
   children: React.ReactNode;
 };
 
-export const AuthProvider = ({children}: AuthProviderProps) => {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [initializing, setInitializing] = useState<boolean>(true);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
 
@@ -40,13 +40,13 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
   const signInWithGoogle = async () => {
     try {
       // Get the Google user data
-      const {idToken} = await GoogleSignin.signIn();
+      const { idToken } = await GoogleSignin.signIn();
 
       // Create a Firebase credential with the Google ID token
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
       // Sign in with the Firebase credential
-      const {user} = await auth().signInWithCredential(googleCredential);
+      const { user } = await auth().signInWithCredential(googleCredential);
 
       setUser(user);
     } catch (error) {
@@ -58,13 +58,14 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     try {
       await auth().signOut();
       await GoogleSignin.signOut();
+      setUser(null);
     } catch (error) {
       console.error('AuthContext/signOut:', error);
     }
   };
 
   return (
-    <AuthContext.Provider value={{user, signInWithGoogle, signOut}}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, signInWithGoogle, signOut }}>{children}</AuthContext.Provider>
   );
 };
 

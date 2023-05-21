@@ -20,8 +20,10 @@ import { HeartIcon } from '../icons/HeartIcon';
 import SpinningDisc from './SpinningDisc';
 import { PhoneIcon } from '../icons/PhoneIcon';
 import { tracksToSongs } from '../types';
+import { useAuth } from '../contexts/AuthContext';
 
 const MiniPlayer = () => {
+  const { user } = useAuth();
   const playbackState = usePlaybackState();
   const isPlaying = playbackState.state === State.Playing;
   const {
@@ -134,7 +136,11 @@ const MiniPlayer = () => {
               background={TouchableNativeFeedback.Ripple(RIPPLE_COLOR, true, 35)}
               onPress={() => {
                 if (currentTrack.url.toString().startsWith('http')) {
-                  toggleFavorite();
+                  if (user) {
+                    toggleFavorite();
+                  } else {
+                    ToastAndroid.show('Bạn cần đăng nhập để thích bài hát', ToastAndroid.SHORT);
+                  }
                 } else {
                   ToastAndroid.show('Nhạc Offline', ToastAndroid.SHORT);
                 }
