@@ -27,6 +27,8 @@ import firestore from '@react-native-firebase/firestore';
 import {CompositeScreenProps} from '@react-navigation/native';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {BottomTabParamList, RootStackParamList} from '../../../../App';
+import Clipboard from '@react-native-clipboard/clipboard';
+import {ShareIcon} from '../../../icons/ShareIcon';
 
 type Props = CompositeScreenProps<
   CompositeScreenProps<
@@ -120,6 +122,20 @@ const PlaylistPage: React.FC<Props> = ({navigation, route}) => {
               </TouchableOpacity>
             </View>
             <Text style={{color: COLORS.TEXT_PRIMARY, fontSize: 25, fontWeight: '600'}}>Playlist</Text>
+            <View style={{position: 'absolute', right: 5, bottom: 5}}>
+              <TouchableOpacity
+                onPress={() => {
+                  Clipboard.setString(`http://mobile3year.com/sharedplaylist/${playlist.id}`);
+                  ToastAndroid.show(
+                    `Đã copy http://mobile3year.com/sharedplaylist/${playlist.id}`,
+                    ToastAndroid.SHORT,
+                  );
+                }}>
+                <View>
+                  <ShareIcon size={25} color={COLORS.TEXT_PRIMARY} />
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
         </Shadow>
         <View style={{flex: 1, paddingVertical: 15}}>
@@ -149,7 +165,7 @@ const PlaylistPage: React.FC<Props> = ({navigation, route}) => {
                     playSongInPlaylist(song, index);
                   }}>
                   <View style={{paddingVertical: 7}}>
-                    <ItemSongResult song={song} ownerId={playlist.uid}/>
+                    <ItemSongResult song={song} ownerId={playlist.uid} />
                   </View>
                 </TouchableNativeFeedback>
               );
