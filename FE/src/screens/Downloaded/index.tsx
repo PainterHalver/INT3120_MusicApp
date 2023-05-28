@@ -34,6 +34,7 @@ type Props = CompositeScreenProps<
 const Downloaded = ({navigation}: Props) => {
   const {setLoading} = useLoadingModal();
   const [permissionError, setPermissionError] = React.useState<string>('');
+  const [noTracksError, setNoTracksError] = React.useState<string>('');
   const [downloadedTracks, setDownloadedTracks] = React.useState<Track[]>([]);
   const [selectedTrack, setSelectedTrack] = React.useState<Track>({} as Track);
 
@@ -41,9 +42,14 @@ const Downloaded = ({navigation}: Props) => {
 
   const init = async () => {
     try {
+      setNoTracksError('');
       await FileSystem.checkMediaPermission();
       const tracks = await FileSystem.getMusicFiles();
-      setDownloadedTracks(tracks);
+      if (tracks === null) {
+        setNoTracksError('Không có bài hát nào trong máy');
+      } else {
+        setDownloadedTracks(tracks);
+      }
     } catch (error) {
       console.log('Downloaded', error);
       setPermissionError('Bạn đã từ chối quyền truy cập thư viện');
@@ -132,7 +138,11 @@ const Downloaded = ({navigation}: Props) => {
                 Nhạc trong máy
               </Text>
               <ScrollView contentContainerStyle={{paddingBottom: 20}}>
-                {downloadedTracks.length < 1 ? (
+                {noTracksError ? (
+                  <Text style={{paddingHorizontal: 15, color: COLORS.TEXT_PRIMARY}}>
+                    {noTracksError}
+                  </Text>
+                ) : downloadedTracks.length < 1 ? (
                   <ActivityIndicator size="large" color={COLORS.RED_PRIMARY} />
                 ) : (
                   downloadedTracks.map((track, index) => {

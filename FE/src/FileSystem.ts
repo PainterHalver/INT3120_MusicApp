@@ -68,7 +68,7 @@ class FileSystem {
     }
   };
 
-  public getMusicFiles = async (): Promise<Track[]> => {
+  public getMusicFiles = async (): Promise<Track[] | null> => {
     try {
       const FROM_EXTERNAL_PATH = this.BASE_PATH + 'from_external/';
       if (!(await RNFS.exists(FROM_EXTERNAL_PATH))) {
@@ -144,7 +144,7 @@ class FileSystem {
         }),
       );
 
-      return tracks;
+      return null;
     } catch (error) {
       console.log('Downloader/getMusicFiles:', error);
       return [];
