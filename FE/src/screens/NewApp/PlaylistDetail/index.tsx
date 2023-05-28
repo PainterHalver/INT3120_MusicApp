@@ -23,14 +23,6 @@ const PlaylistDetail = ({navigation}: Props) => {
   const {playlist} = usePlaylist();
   const [recommends, setRecommends] = useState();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      StatusBar.setBarStyle('light-content');
-      StatusBar.setBackgroundColor('transparent');
-      StatusBar.setTranslucent(true);
-    }, []),
-  );
-
   if (!playlist) {
     return <View />;
   }

@@ -34,14 +34,6 @@ type Props = CompositeScreenProps<
 const WeekChartDetail = ({navigation, route}: Props) => {
   const {setLoading} = useLoadingModal();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      StatusBar.setBarStyle('light-content');
-      StatusBar.setBackgroundColor('transparent');
-      StatusBar.setTranslucent(true);
-    }, []),
-  );
-
   const playSongInPlaylist = async (track: Song, index: number) => {
     try {
       setLoading(true);

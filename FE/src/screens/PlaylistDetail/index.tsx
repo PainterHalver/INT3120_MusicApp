@@ -34,14 +34,6 @@ const PlaylistDetail = ({navigation, route}: Props) => {
   const [playlist, setPlaylist] = useState<Playlist>();
   const [recommends, setRecommends] = useState();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      StatusBar.setBarStyle('light-content');
-      StatusBar.setBackgroundColor('transparent');
-      StatusBar.setTranslucent(true);
-    }, []),
-  );
-
   useEffect(() => {
     const getPlaylist = async () => {
       const playlist = await ZingMp3.getDetailPlaylist('69IAZIWU');

@@ -20,6 +20,7 @@ import {useNavigation} from '@react-navigation/native';
 import {LogoutIcon} from '../../icons/LogoutIcon';
 import {useLoadingModal} from '../../contexts/LoadingModalContext';
 import {ProfileIcon} from '../../components/ProfileIcon';
+import FocusAwareStatusBar from '../../components/FocusAwareStatusBar';
 
 export const Profile = () => {
   const {setLoading} = useLoadingModal();
@@ -28,7 +29,7 @@ export const Profile = () => {
 
   return (
     <View style={styles.containerWrapper}>
-      <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
+      <FocusAwareStatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} />
       <View style={styles.container}>
         <Shadow
           sides={{bottom: true, top: false, end: false, start: false}}

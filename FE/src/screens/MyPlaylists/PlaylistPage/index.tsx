@@ -29,6 +29,7 @@ import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {BottomTabParamList, RootStackParamList} from '../../../../App';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {ShareIcon} from '../../../icons/ShareIcon';
+import FocusAwareStatusBar from '../../../components/FocusAwareStatusBar';
 
 type Props = CompositeScreenProps<
   CompositeScreenProps<
@@ -96,7 +97,7 @@ const PlaylistPage: React.FC<Props> = ({navigation, route}) => {
 
   return (
     <View style={styles.containerWrapper}>
-      <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
+      <FocusAwareStatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} />
       <View style={styles.container}>
         <Shadow
           sides={{bottom: true, top: false, end: false, start: false}}

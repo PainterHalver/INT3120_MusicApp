@@ -32,6 +32,7 @@ import {BottomTabParamList, RootStackParamList} from '../../../App';
 import {ScrollView} from 'react-native-gesture-handler';
 import VerticalItemSong from '../../components/VerticalItemSong';
 import LinearGradient from 'react-native-linear-gradient';
+import FocusAwareStatusBar from '../../components/FocusAwareStatusBar';
 
 type Props = CompositeScreenProps<
   CompositeScreenProps<
@@ -99,7 +100,7 @@ const SharedPlaylist = ({navigation, route}: Props) => {
   };
   return (
     <View style={styles.containerWrapper}>
-      <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
+      <FocusAwareStatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} />
       <View style={styles.container}>
         <Shadow
           sides={{bottom: true, top: false, end: false, start: false}}

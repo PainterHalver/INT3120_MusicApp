@@ -20,6 +20,7 @@ import WeekChartItem from '../WeekChartItem';
 import {LineChartData} from 'react-native-chart-kit/dist/line-chart/LineChart';
 import {COLORS} from '../../../constants';
 import {SIZES} from '../../../constants';
+import FocusAwareStatusBar from '../../../components/FocusAwareStatusBar';
 
 type Props = {
   isChartHome?: boolean;
@@ -54,14 +55,6 @@ const ChartMainPage = ({isChartHome = false}: Props) => {
   const [chartData, setChartData] = useState<LineChartData>();
   const [songs, setSongs] = useState<Song[]>([]);
   const [weekCharts, setWeekCharts] = useState({});
-
-  useFocusEffect(
-    React.useCallback(() => {
-      StatusBar.setBarStyle('light-content');
-      StatusBar.setBackgroundColor('transparent');
-      StatusBar.setTranslucent(true);
-    }, []),
-  );
 
   useEffect(() => {
     const getData = async () => {
@@ -135,12 +128,7 @@ const ChartMainPage = ({isChartHome = false}: Props) => {
 
   return (
     <View style={{flex: 1, backgroundColor: 'rgba(32,19,53,0.9)'}}>
-      <StatusBar
-        translucent
-        barStyle={'light-content'}
-        backgroundColor={'transparent'}
-        animated={true}
-      />
+      <FocusAwareStatusBar translucent barStyle={'light-content'} backgroundColor={'transparent'} />
       <View style={{flex: 1, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0}}>
         {!chartData || songs.length == 0 || !weekCharts ? (
           <View style={{display: 'flex', justifyContent: 'center', height: SIZES.SCREEN_HEIGHT}}>

@@ -21,14 +21,6 @@ export type DiscoverStackParamList = {
 const DiscoverStack = createNativeStackNavigator<DiscoverStackParamList>();
 
 const DiscoverScreen: React.FC<Props> = ({navigation}) => {
-  useFocusEffect(
-    React.useCallback(() => {
-      StatusBar.setBarStyle('dark-content');
-      StatusBar.setBackgroundColor('transparent');
-      StatusBar.setTranslucent(true);
-    }, []),
-  );
-
   return (
     <DiscoverStack.Navigator screenOptions={{headerShown: false, animation: 'fade'}}>
       <DiscoverStack.Screen name="DiscoverPage" component={DiscoverPage} />

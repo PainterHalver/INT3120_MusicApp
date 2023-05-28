@@ -1,5 +1,5 @@
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
-import {CompositeScreenProps, useFocusEffect} from '@react-navigation/native';
+import {CompositeScreenProps, useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {
@@ -25,6 +25,7 @@ import FileSystem from '../../FileSystem';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import DownloadedTrackBottomSheet from './DownloadedTrackBottomSheet';
 import ItemDownloadedTrackResult from './ItemDownloadedTrackResult';
+import FocusAwareStatusBar from '../../components/FocusAwareStatusBar';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'Downloaded'>,
@@ -60,14 +61,6 @@ const Downloaded = ({navigation}: Props) => {
     init();
   }, []);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      StatusBar.setBarStyle('dark-content');
-      StatusBar.setBackgroundColor('transparent');
-      StatusBar.setTranslucent(true);
-    }, []),
-  );
-
   const playDownloadedTrack = async (track: Track) => {
     try {
       await TrackPlayer.reset();
@@ -88,7 +81,7 @@ const Downloaded = ({navigation}: Props) => {
 
   return (
     <View style={styles.containerWrapper}>
-      <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
+      <FocusAwareStatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} />
       <View style={styles.container}>
         <Shadow
           sides={{bottom: true, top: false, end: false, start: false}}

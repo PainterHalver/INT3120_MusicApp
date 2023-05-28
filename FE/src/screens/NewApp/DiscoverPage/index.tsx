@@ -1,4 +1,4 @@
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import React, {memo, useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView, StatusBar, View} from 'react-native';
 import Banner from '../../../components/Banner';
@@ -9,6 +9,11 @@ import {ZingMp3} from '../../../ZingMp3';
 import {banner} from '../../../components/Banner';
 import {NewRelease, ItemReleases} from './NewRelease';
 import {Artist, ItemHome, Playlist} from '../../../types';
+
+const FocusAwareStatusBar = (props: any) => {
+  const isFocused = useIsFocused();
+  return isFocused ? <StatusBar {...props} /> : null;
+};
 
 const DiscoverPage = memo(() => {
   const [banners, setBanners] = useState<banner[]>([]);
@@ -21,14 +26,6 @@ const DiscoverPage = memo(() => {
     vPop: [],
     others: [],
   });
-
-  useFocusEffect(
-    React.useCallback(() => {
-      StatusBar.setBarStyle('light-content');
-      StatusBar.setBackgroundColor('transparent');
-      StatusBar.setTranslucent(true);
-    }, []),
-  );
 
   const getItem = (data: Array<ItemHome>, sectionId: string): ItemHome[] => {
     return data.filter(item => item.sectionId === sectionId);
@@ -67,17 +64,12 @@ const DiscoverPage = memo(() => {
   }, []);
 
   return (
-    <SafeAreaView>
+    <View>
+      <FocusAwareStatusBar translucent barStyle={'light-content'} backgroundColor={'transparent'} />
       <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={{paddingBottom: 20}}>
         <View style={{backgroundColor: 'transparent'}}>
           <Banner data={banners}>
             <View>
-              <StatusBar
-                barStyle={'light-content'}
-                translucent
-                backgroundColor={'transparent'}
-                animated={true}
-              />
               <BoxSearch />
             </View>
           </Banner>
@@ -91,7 +83,7 @@ const DiscoverPage = memo(() => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 });
 

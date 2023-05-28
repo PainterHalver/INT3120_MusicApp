@@ -11,6 +11,7 @@ import {SearchIcon} from '../../icons/SearchIcon';
 import {XCloseIcon} from '../../icons/XCloseIcon';
 import HistoryView from './HistoryView';
 import SearchView from './SearchView';
+import FocusAwareStatusBar from '../../components/FocusAwareStatusBar';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, 'Search'>,
@@ -20,14 +21,6 @@ type Props = CompositeScreenProps<
 const {width, height} = Dimensions.get('screen');
 
 const Search = ({route}: Props) => {
-  useFocusEffect(
-    React.useCallback(() => {
-      StatusBar.setBarStyle('dark-content');
-      StatusBar.setBackgroundColor('transparent');
-      StatusBar.setTranslucent(true);
-    }, []),
-  );
-
   const searchInputRef = React.useRef<TextInput>(null);
   useEffect(() => {
     if (route.params?.shouldFocusSearchBar) {
@@ -40,7 +33,7 @@ const Search = ({route}: Props) => {
 
   return (
     <Animated.View entering={FadeIn} style={styles.containerWrapper}>
-      <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
+      <FocusAwareStatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} />
       <View style={styles.container}>
         <Shadow
           sides={{bottom: true, top: false, end: false, start: false}}

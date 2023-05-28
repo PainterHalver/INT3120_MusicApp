@@ -25,14 +25,6 @@ export type MyPlaylistsStackParamList = {
 const MyPlaylistsStack = createNativeStackNavigator<MyPlaylistsStackParamList>();
 
 const MyPlaylists: React.FC<Props> = ({navigation}) => {
-  useFocusEffect(
-    React.useCallback(() => {
-      StatusBar.setBarStyle('dark-content');
-      StatusBar.setBackgroundColor('transparent');
-      StatusBar.setTranslucent(true);
-    }, []),
-  );
-
   return (
     <MyPlaylistsStack.Navigator screenOptions={{headerShown: false, animation: 'fade'}}>
       <MyPlaylistsStack.Screen name="MainPage" component={MainPage} />

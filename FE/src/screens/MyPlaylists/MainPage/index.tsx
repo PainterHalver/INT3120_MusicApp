@@ -27,6 +27,7 @@ import {EditPlaylistMopdal as EditPlaylistModal} from './EditPlaylistModal';
 import {PlaylistBottomSheet} from './PlaylistBottomSheet';
 import {PlaylistItem} from './PlaylistItem';
 import {ProfileIcon} from '../../../components/ProfileIcon';
+import FocusAwareStatusBar from '../../../components/FocusAwareStatusBar';
 
 type Props = StackScreenProps<MyPlaylistsStackParamList, 'MainPage'>;
 
@@ -44,7 +45,7 @@ const MainPage: React.FC<Props> = ({navigation}) => {
 
   return (
     <View style={styles.containerWrapper}>
-      <StatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} animated={true} />
+      <FocusAwareStatusBar translucent barStyle={'dark-content'} backgroundColor={'transparent'} />
       <View style={styles.container}>
         <Shadow
           sides={{bottom: true, top: false, end: false, start: false}}
