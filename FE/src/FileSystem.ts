@@ -144,7 +144,11 @@ class FileSystem {
         }),
       );
 
-      return null;
+      if (tracks.length === 0) {
+        return null;
+      }
+
+      return tracks;
     } catch (error) {
       console.log('Downloader/getMusicFiles:', error);
       return [];

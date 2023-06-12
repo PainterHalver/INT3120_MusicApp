@@ -43,3 +43,18 @@
 - [ ] Screen user chứa nút đăng xuất và vài cài đặt
 - [ ] Title của player thay đổi theo từng page
 - [x] Lyrics Karaoke
+
+## Các tính năng
+
+- Màn hình chính (Khám phá), mới phát hành và playlist từ Zing
+- Phát nhạc: Play, Pause, Next, Prev, Repeat.
+  - Đồng bộ các phím chức năng, disc giữa Player chính và Miniplayer.
+- Sử dụng Service để chạy ngầm, điều khiển được từ thông báo và màn hình khóa.
+- Tìm kiếm bài hát. (zing api)
+- Xem lịch sử tìm kiếm nhạc. (sqlite)
+- Xem bảng xếp hạng top 100 (Chart).
+- Tải nhạc về và quét nhạc offline có sẵn trong máy.
+- Đăng nhập bằng Google với Firebase.
+- Thêm sửa xóa Playlist cá nhân, yêu thích bài hát.
+- Chỉnh sửa queue phát nhạc: Xóa khỏi queue, thêm vào sau bài đang phát, thêm vào cuối.
+- Lyrics Karaoke.
